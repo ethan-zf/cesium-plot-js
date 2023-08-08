@@ -1,14 +1,34 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CesiumPlot</title>
+    <style>
+      @import url(/examples/cesium/Widgets/widgets.css);
+      html,
+      body,
+      #cesiumContainer {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+      #drawStraightArrow {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
-    <button id='drawStraightArrow' class="btn btn-success" >测试文本标绘</button>
-    <script type="module" src="/examples/index.ts"></script>
+    <div id="cesiumContainer"></div>
+    <button id="drawStraightArrow" class="btn btn-success">直箭头</button>
+    <script>
+      window.CESIUM_BASE_URL = "./examples/cesium";
+    </script>
+    <script type="module" src="./examples/index.ts"></script>
   </body>
 </html>

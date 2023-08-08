@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../../Source/Widgets/VRButton/VRButton.css"],
+  "sourcesContent": [".cesium-button.cesium-vrButton {\r\n  display: block;\r\n  width: 100%;\r\n  height: 100%;\r\n  margin: 0;\r\n  border-radius: 0;\r\n}\r\n"],
+  "mappings": ";AAAA;AACE;AACA;AACA;AACA;AACA;AAAA;",
+  "names": []
+}

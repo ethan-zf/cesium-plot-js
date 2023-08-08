@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../../Source/Widgets/BaseLayerPicker/lighter.css"],
+  "sourcesContent": [".cesium-lighter .cesium-baseLayerPicker-itemIcon {\r\n  border-color: #759dc0;\r\n}\r\n\r\n.cesium-lighter .cesium-baseLayerPicker-dropDown {\r\n  background-color: rgba(240, 240, 240, 0.75);\r\n}\r\n\r\n.cesium-lighter .cesium-baseLayerPicker-sectionTitle {\r\n  color: black;\r\n}\r\n\r\n.cesium-lighter .cesium-baseLayerPicker-itemLabel {\r\n  color: black;\r\n}\r\n\r\n.cesium-lighter\r\n  .cesium-baseLayerPicker-item:hover\r\n  .cesium-baseLayerPicker-itemIcon {\r\n  border-color: #000;\r\n}\r\n\r\n.cesium-lighter\r\n  .cesium-baseLayerPicker-selectedItem\r\n  .cesium-baseLayerPicker-itemLabel {\r\n  color: rgb(0, 61, 168);\r\n}\r\n\r\n.cesium-lighter\r\n  .cesium-baseLayerPicker-selectedItem\r\n  .cesium-baseLayerPicker-itemIcon {\r\n  border: double 4px rgb(0, 61, 168);\r\n}\r\n"],
+  "mappings": ";AAAA;AACE;AAAA;AAGF;AACE;AAAA;AAGF;AACE;AAAA;AAGF;AACE;AAAA;AAGF;AAGE;AAAA;AAGF;AAGE;AAAA;AAGF;AAGE;AAAA;",
+  "names": []
+}
