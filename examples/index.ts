@@ -22,11 +22,11 @@ const viewer = new Cesium.Viewer("cesiumContainer", {
   },
 });
 
+viewer.scene.postProcessStages.fxaa.enabled = true;
 viewer.scene.camera.setView({
   destination: Cesium.Cartesian3.fromDegrees(107.857, 35.594498, 8000000),
 });
 
-
 document.getElementById("drawStraightArrow").onclick = () => {
-  new CesiumPlot();
+  new CesiumPlot.FineArrow(Cesium, viewer, {});
 };
