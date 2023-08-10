@@ -1,36 +1,48 @@
 import Draw from '../draw';
 import * as Utils from '../utils';
+import { Cartesian3 } from '../../examples/cesium';
 
 export default class FineArrow extends Draw {
-  points: any = [];
-  constructor(cesium, viewer, style) {
+  points: Cartesian3[] = [];
+
+  constructor(cesium: any, viewer: any, style: any) {
     super(cesium, viewer);
     this.cesium = cesium;
-    // this.setPoints = this.setPoints.bind(this);
     this.onClick();
   }
 
-  addPoint(cartesian) {
+  /**
+   * Add points only on click events
+   */
+  addPoint(cartesian: Cartesian3) {
     this.points.push(cartesian);
-    if (this.points.length == 2) {
+    if (this.points.length === 1) {
+      this.onMouseMove();
+    }
+    if (this.points.length === 2) {
       const geometryPoints = this.createPolygon(this.points);
       this.setGeometryPoints(geometryPoints);
       this.addToMap();
-      this.removeEventListener();
+      this.removeClickListener();
+      this.removeMoveListener();
     }
   }
 
-  updateMovingPoint(cartesian) {
-    let tempPoints = [].concat(this.points);
-    tempPoints = tempPoints.concat([cartesian]);
+  /**
+   * Update the last point as the mouse moves.
+   */
+  updateMovingPoint(cartesian: Cartesian3) {
+    let tempPoints = [...this.points, cartesian];
     const geometryPoints = this.createPolygon(tempPoints);
     this.setGeometryPoints(geometryPoints);
     this.addToMap();
   }
 
-  createPolygon(positions) {
-    const p1 = this.cartesianToLnglat(positions[0]);
-    const p2 = this.cartesianToLnglat(positions[1]);
+  /**
+   * Generate geometric shapes based on key points.
+   */
+  createPolygon(positions: Cartesian3[]) {
+    const [p1, p2] = positions.map(this.cartesianToLnglat);
     const len = Utils.getBaseLength([p1, p2]);
     const tailWidth = len * this.tailWidthFactor;
     const neckWidth = len * this.neckWidthFactor;
