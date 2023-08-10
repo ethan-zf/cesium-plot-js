@@ -12,6 +12,9 @@ export default class Draw {
   neckAngle: number;
   eventHandler: any;
   clickListener: any;
+  entity: any;
+  renderingPoints: any;
+  geometryPoints: any;
 
   constructor(cesium, viewer) {
     this.cesium = cesium;
@@ -23,13 +26,13 @@ export default class Draw {
     this.neckAngle = Math.PI / 13;
   }
 
-  onClick(callback?: Function) {
+  onClick() {
     // 添加点击事件监听器
     this.eventHandler = new this.cesium.ScreenSpaceEventHandler(this.viewer.canvas);
     this.clickListener = this.eventHandler.setInputAction((evt) => {
-      const ray = this.viewer.camera.getPickRay(evt.position);
-      const cartesian = this.viewer.scene.globe.pick(ray, this.viewer.scene);
-      callback && callback(cartesian);
+      const cartesian = this.pixelToCartesian(evt.position);
+      this.addPoint(cartesian);
+      this.onMouseMove();
     }, this.cesium.ScreenSpaceEventType.LEFT_CLICK);
   }
 
@@ -37,35 +40,38 @@ export default class Draw {
     this.eventHandler.removeInputAction(this.cesium.ScreenSpaceEventType.LEFT_CLICK, this.clickListener);
   }
 
-  onMove() {}
+  onMouseMove() {
+    this.eventHandler.setInputAction((evt) => {
+      const cartesian = this.pixelToCartesian(evt.endPosition);
+      const lnglat = this.cartesianToLnglat(cartesian);
+      const lastPoint = this.cartesianToLnglat(this.points[this.points.length - 1]);
+      const distance = Utils.MathDistance(lnglat, lastPoint);
 
-  addToMap(positions) {
+      if (distance < 0.0001) {
+        return false;
+      }
+      this.updateMovingPoint(cartesian);
+    }, this.cesium.ScreenSpaceEventType.MOUSE_MOVE);
+  }
+
+  setGeometryPoints(geometryPoints) {
+    this.geometryPoints = geometryPoints;
+  }
+
+  addToMap() {
     const callback = () => {
-      const p1 = this.cartesianToLnglat(positions[0]);
-      const p2 = this.cartesianToLnglat(positions[1]);
-      const len = Utils.getBaseLength([p1, p2]);
-      const tailWidth = len * this.tailWidthFactor;
-      const neckWidth = len * this.neckWidthFactor;
-      const headWidth = len * this.headWidthFactor;
-      const tailLeft = Utils.getThirdPoint(p2, p1, Math.PI / 2, tailWidth, true);
-      const tailRight = Utils.getThirdPoint(p2, p1, Math.PI / 2, tailWidth, false);
-      const headLeft = Utils.getThirdPoint(p1, p2, this.headAngle, headWidth, false);
-      const headRight = Utils.getThirdPoint(p1, p2, this.headAngle, headWidth, true);
-      const neckLeft = Utils.getThirdPoint(p1, p2, this.neckAngle, neckWidth, false);
-      const neckRight = Utils.getThirdPoint(p1, p2, this.neckAngle, neckWidth, true);
-      const points = [...tailLeft, ...neckLeft, ...headLeft, ...p2, ...headRight, ...neckRight, ...tailRight, ...p1];
-      const cartesianPoints = this.cesium.Cartesian3.fromDegreesArray(points);
-      debugger;
-      return new this.cesium.PolygonHierarchy(cartesianPoints);
+      return new this.cesium.PolygonHierarchy(this.geometryPoints);
     };
-    return this.viewer.entities.add({
-      polygon: new this.cesium.PolygonGraphics({
-        hierarchy: new this.cesium.CallbackProperty(callback, false),
-        show: true,
-        // fill: true,
-        // material: this.cesium.Color.LIGHTSKYBLUE.withAlpha(0.8),
-      }),
-    });
+    if (!this.entity) {
+      this.entity = this.viewer.entities.add({
+        polygon: new this.cesium.PolygonGraphics({
+          hierarchy: new this.cesium.CallbackProperty(callback, false),
+          show: true,
+          // fill: true,
+          // material: this.cesium.Color.LIGHTSKYBLUE.withAlpha(0.8),
+        }),
+      });
+    }
   }
 
   cartesianToLnglat(cartesian) {
@@ -73,5 +79,11 @@ export default class Draw {
     var lat = this.cesium.Math.toDegrees(lnglat.latitude);
     var lng = this.cesium.Math.toDegrees(lnglat.longitude);
     return [lng, lat];
+  }
+
+  pixelToCartesian(position) {
+    const ray = this.viewer.camera.getPickRay(position);
+    const cartesian = this.viewer.scene.globe.pick(ray, this.viewer.scene);
+    return cartesian;
   }
 }
