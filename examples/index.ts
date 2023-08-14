@@ -1,8 +1,14 @@
 import CesiumPlot from "../src";
+// import CesiumPlot from "../dist/CesiumPlot";
 import * as Cesium from "./cesium/index";
 
-let raster = new Cesium.ArcGisMapServerImageryProvider({
-  url: "https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer",
+// let raster = new Cesium.ArcGisMapServerImageryProvider({
+//   url: "https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer",
+// });
+
+let keda = new Cesium.UrlTemplateImageryProvider({
+  url: "https://10.68.8.41:9043/kmap-server/gridMap/tile/{z}/{y}/{x}",
+  // url: 'http://10.68.8.58:8080/3d/dom2/{z}/{x}/{y}.png'
 });
 const viewer = new Cesium.Viewer("cesiumContainer", {
   animation: false,
@@ -16,7 +22,8 @@ const viewer = new Cesium.Viewer("cesiumContainer", {
   timeline: false,
   navigationHelpButton: false,
   baseLayerPicker: false,
-  imageryProvider: raster,
+  // imageryProvider: raster,
+  imageryProvider: keda,
   contextOptions: {
     requestWebgl2: true,
   },

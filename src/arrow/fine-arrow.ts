@@ -8,32 +8,33 @@ export default class FineArrow extends Draw {
   constructor(cesium: any, viewer: any, style: any) {
     super(cesium, viewer);
     this.cesium = cesium;
-    this.onClick();
+    this.setState('drawing');
   }
 
   /**
    * Add points only on click events
    */
   addPoint(cartesian: Cartesian3) {
-    this.points.push(cartesian);
-    if (this.points.length === 1) {
+    this.points.push();
+    if (this.points.length === 0) {
+      this.points[0] = cartesian;
       this.onMouseMove();
     }
     if (this.points.length === 2) {
       const geometryPoints = this.createPolygon(this.points);
       this.setGeometryPoints(geometryPoints);
       this.addToMap();
-      this.removeClickListener();
       this.removeMoveListener();
+      this.setState('static');
     }
   }
 
   /**
    * Update the last point as the mouse moves.
    */
-  updateMovingPoint(cartesian: Cartesian3) {
-    let tempPoints = [...this.points, cartesian];
-    const geometryPoints = this.createPolygon(tempPoints);
+  updateMovingPoint(cartesian: Cartesian3, index: number) {
+    this.points[index] = cartesian;
+    const geometryPoints = this.createPolygon(this.points);
     this.setGeometryPoints(geometryPoints);
     this.addToMap();
   }
@@ -56,5 +57,9 @@ export default class FineArrow extends Draw {
     const points = [...tailLeft, ...neckLeft, ...headLeft, ...p2, ...headRight, ...neckRight, ...tailRight, ...p1];
     const cartesianPoints = this.cesium.Cartesian3.fromDegreesArray(points);
     return cartesianPoints;
+  }
+
+  getPoints() {
+    return this.points;
   }
 }
