@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite';
-import { resolve } from 'path';
+import path from 'path';
 
 export default defineConfig(({ mode }) => {
   let config = {};
@@ -20,12 +20,19 @@ export default defineConfig(({ mode }) => {
     config = {
       build: {
         lib: {
-          entry: resolve(__dirname, 'src/index.ts'),
+          entry: path.resolve(__dirname, 'src/index.ts'),
           name: 'CesiumPlot',
           fileName: 'CesiumPlot',
         },
       },
     };
   }
+
+  config.resolve = {
+    alias: {
+      '@': path.resolve(__dirname, 'src'),
+      '@examples': path.resolve(__dirname, './examples'),
+    },
+  };
   return config;
 });

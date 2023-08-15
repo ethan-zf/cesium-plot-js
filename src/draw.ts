@@ -1,5 +1,5 @@
 import * as Utils from './utils';
-import * as CesiumTypeOnly from '../examples/cesium';
+import * as CesiumTypeOnly from '@examples/cesium';
 import { State } from './interface';
 
 export default class Draw {
@@ -52,7 +52,7 @@ export default class Draw {
    */
   onClick() {
     this.eventHandler = new this.cesium.ScreenSpaceEventHandler(this.viewer.canvas);
-    this.eventHandler.setInputAction((evt) => {
+    this.eventHandler.setInputAction((evt: any) => {
       const pickedObject = this.viewer.scene.pick(evt.position);
       const hitEntities = this.cesium.defined(pickedObject) && pickedObject.id instanceof CesiumTypeOnly.Entity;
       if (this.state === 'drawing') {
@@ -79,7 +79,7 @@ export default class Draw {
   }
 
   onMouseMove() {
-    this.eventHandler.setInputAction((evt) => {
+    this.eventHandler.setInputAction((evt: any) => {
       this.drawingWhileMoving(evt.endPosition, 1);
     }, this.cesium.ScreenSpaceEventType.MOUSE_MOVE);
   }
@@ -122,6 +122,7 @@ export default class Draw {
         polygon: new this.cesium.PolygonGraphics({
           hierarchy: new this.cesium.CallbackProperty(callback, false),
           show: true,
+          heightReference: this.cesium.HeightReference.CLAMP_TO_GROUND,
           // fill: true,
           // material: this.cesium.Color.LIGHTSKYBLUE.withAlpha(0.8),
         }),
@@ -143,31 +144,55 @@ export default class Draw {
   }
 
   /**
-   * Display key points when creating a shape, allowing dragging of these points to edit and generate new shapes.
+   * Display key points when creating a shape, allowing geometryDragging of these points to edit and generate new shapes.
    */
   addControlPoints() {
-    const points = this.getPoints();
+    let points = this.getPoints();
     this.controlPoints = points.map((position) => {
+      // return this.viewer.entities.add({
+      //   position,
+      //   billboard: {
+      //     image: './src/assets/circle_red.png',
+      //     heightReference: this.cesium.HeightReference.CLAMP_TO_GROUND,
+      //   },
+      // });
+      
       return this.viewer.entities.add({
         position,
-        billboard: {
-          image: './src/assets/circle_red.png',
+        point: {
+          pixelSize: 10,
+          heightReference: this.cesium.HeightReference.CLAMP_TO_GROUND,
+          color:this.cesium.Color.RED
         },
       });
     });
 
-    let isDragging = false;
+    let controlPointDragging = false;
     let draggedIcon: CesiumTypeOnly.Entity = null;
+
+    //--------------
+    let geometryDragging = false;
+    let startPosition: CesiumTypeOnly.Cartesian3 | undefined;
+    //--------------
 
     this.controlPointsEventHandler = new this.cesium.ScreenSpaceEventHandler(this.viewer.canvas);
     // Listen for left mouse button press events
-    this.controlPointsEventHandler.setInputAction((clickEvent) => {
+    this.controlPointsEventHandler.setInputAction((clickEvent: any) => {
       const pickedObject = this.viewer.scene.pick(clickEvent.position);
 
       if (this.cesium.defined(pickedObject)) {
+        //----
+        // const pickedPosition = this.viewer.scene.pickPosition(clickEvent.position);
+        const pickedPosition = this.viewer.camera.pickEllipsoid(clickEvent.position, this.viewer.scene.globe.ellipsoid);
+        if (pickedObject.id == this.entity) {
+          geometryDragging = true;
+          startPosition = pickedPosition;
+        }
+
+        //----
         for (let i = 0; i < this.controlPoints.length; i++) {
           if (pickedObject.id === this.controlPoints[i]) {
-            isDragging = true;
+            controlPointDragging = true;
             draggedIcon = this.controlPoints[i];
             draggedIcon.index = i; //Save the index of dragged points for dynamic updates during movement
             break;
@@ -179,21 +204,53 @@ export default class Draw {
     }, this.cesium.ScreenSpaceEventType.LEFT_DOWN);
 
     // Listen for mouse movement events
-    this.controlPointsEventHandler.setInputAction((moveEvent) => {
-      if (isDragging && draggedIcon) {
+    this.controlPointsEventHandler.setInputAction((moveEvent: any) => {
+      if (controlPointDragging && draggedIcon) {
         const cartesian = this.viewer.camera.pickEllipsoid(moveEvent.endPosition, this.viewer.scene.globe.ellipsoid);
         if (cartesian) {
           draggedIcon.position.setValue(cartesian);
           this.drawingWhileMoving(moveEvent.endPosition, draggedIcon.index);
         }
       }
+
+      if (geometryDragging && startPosition) {
+        const endPosition = this.viewer.camera.pickEllipsoid(moveEvent.endPosition, this.viewer.scene.globe.ellipsoid);
+        if (endPosition) {
+          // Calculate the Displacement Vector
+          const translation = this.cesium.Cartesian3.subtract(endPosition, startPosition, new this.cesium.Cartesian3());
+          this.geometryPoints = this.geometryPoints.map((cartesian3) => {
+            const newPosition = this.cesium.Cartesian3.add(cartesian3, translation, new this.cesium.Cartesian3());
+            return newPosition;
+          });
+          startPosition = endPosition;
+
+          points = points.map((cartesian3) => {
+            const newPosition = this.cesium.Cartesian3.add(cartesian3, translation, new this.cesium.Cartesian3());
+            return newPosition;
+          });
+          this.setPoints(points);
+
+          this.controlPoints.forEach((point: CesiumTypeOnly.Entity) => {
+            const newPosition = this.cesium.Cartesian3.add(
+              point.position._value,
+              translation,
+              new this.cesium.Cartesian3(),
+            );
+            point.position.setValue(newPosition);
+          });
+        }
+      }
     }, this.cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
     // Listen for left mouse button release events
     this.controlPointsEventHandler.setInputAction(() => {
-      isDragging = false;
+      controlPointDragging = false;
+      geometryDragging = false;
       draggedIcon = null;
       this.viewer.scene.screenSpaceCameraController.enableRotate = true;
+      // console.error('x-----',this.controlPoints[0].position._value.x, this.points[0].x);
+      // console.error('y-----',this.controlPoints[0].position._value.y, this.points[0].y);
+      // console.error('z-----',this.controlPoints[0].position._value.z, this.points[0].z);
     }, this.cesium.ScreenSpaceEventType.LEFT_UP);
   }
 

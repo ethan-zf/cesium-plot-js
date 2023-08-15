@@ -1,6 +1,6 @@
 import Draw from '../draw';
 import * as Utils from '../utils';
-import { Cartesian3 } from '../../examples/cesium';
+import { Cartesian3 } from '@examples/cesium';
 
 export default class FineArrow extends Draw {
   points: Cartesian3[] = [];
@@ -26,6 +26,7 @@ export default class FineArrow extends Draw {
       this.addToMap();
       this.removeMoveListener();
       this.setState('static');
+      this.entity.position;
     }
   }
 
@@ -61,5 +62,9 @@ export default class FineArrow extends Draw {
 
   getPoints() {
     return this.points;
+  }
+
+  setPoints(points: Cartesian3[]) {
+    this.points = points;
   }
 }
