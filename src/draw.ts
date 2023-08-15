@@ -1,5 +1,5 @@
 import * as Utils from './utils';
-import * as CesiumTypeOnly from '../examples/cesium';
+import * as CesiumTypeOnly from '@examples/cesium';
 import { State } from './interface';
 
 export default class Draw {

@@ -1,6 +1,6 @@
 import Draw from '../draw';
 import * as Utils from '../utils';
-import { Cartesian3 } from '../../examples/cesium';
+import { Cartesian3 } from '@examples/cesium';
 
 export default class FineArrow extends Draw {
   points: Cartesian3[] = [];
