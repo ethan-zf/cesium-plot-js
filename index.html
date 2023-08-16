@@ -15,19 +15,41 @@
         padding: 0;
         overflow: hidden;
       }
-      #drawStraightArrow {
+      /* #btn {
         position: absolute;
         top: 10px;
         left: 10px;
+      } */
+
+      .button-container {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        display: flex; /* 使用 Flex 布局 */
+        justify-content: center; /* 水平居中对齐 */
+      }
+
+      .button {
+        margin: 0 10px; /* 按钮之间的间距 */
+        padding: 6px 10px; /* 按钮内边距 */
+        background-color: #3498db; /* 按钮背景颜色 */
+        color: #ffffff; /* 按钮文字颜色 */
+        border: none; /* 去除边框 */
+        border-radius: 5px; /* 圆角边框 */
+        cursor: pointer; /* 鼠标指针样式 */
       }
     </style>
   </head>
   <body>
     <div id="root"></div>
     <div id="cesiumContainer"></div>
-    <button id="drawStraightArrow" class="btn btn-success">直箭头</button>
+    <div class="button-container">
+      <button id="drawFineArrow" class="button">直箭头</button>
+      <button id="drawAttackArrow" class="button">进攻方向箭头</button>
+    </div>
+
     <script>
-      window.CESIUM_BASE_URL = "./examples/cesium";
+      window.CESIUM_BASE_URL = './examples/cesium';
     </script>
     <script type="module" src="./examples/index.ts"></script>
   </body>

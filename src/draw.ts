@@ -5,28 +5,18 @@ import { State } from './interface';
 export default class Draw {
   cesium: typeof CesiumTypeOnly;
   viewer: CesiumTypeOnly.Viewer;
-  arrowLengthScale: number = 5;
-  maxArrowLength: number = 2;
-  tailWidthFactor: number;
-  neckWidthFactor: number;
-  headWidthFactor: number;
-  headAngle: number;
-  neckAngle: number;
   eventHandler: CesiumTypeOnly.ScreenSpaceEventHandler;
-  entity: CesiumTypeOnly.Entity;
+  polygonEntity: CesiumTypeOnly.Entity;
   geometryPoints: CesiumTypeOnly.Cartesian3[] = [];
   state: State = 'drawing';
   controlPoints: CesiumTypeOnly.EntityCollection;
   controlPointsEventHandler: CesiumTypeOnly.ScreenSpaceEventHandler;
+  lineEntity: CesiumTypeOnly.Entity;
 
   constructor(cesium: typeof CesiumTypeOnly, viewer: CesiumTypeOnly.Viewer) {
     this.cesium = cesium;
     this.viewer = viewer;
-    this.tailWidthFactor = 0.1;
-    this.neckWidthFactor = 0.2;
-    this.headWidthFactor = 0.25;
-    this.headAngle = Math.PI / 8.5;
-    this.neckAngle = Math.PI / 13;
+
     this.cartesianToLnglat = this.cartesianToLnglat.bind(this);
     this.pixelToCartesian = this.pixelToCartesian.bind(this);
     this.onClick();
@@ -52,12 +42,18 @@ export default class Draw {
    */
   onClick() {
     this.eventHandler = new this.cesium.ScreenSpaceEventHandler(this.viewer.canvas);
-    this.eventHandler.setInputAction((evt) => {
+    this.eventHandler.setInputAction((evt: any) => {
       const pickedObject = this.viewer.scene.pick(evt.position);
       const hitEntities = this.cesium.defined(pickedObject) && pickedObject.id instanceof CesiumTypeOnly.Entity;
       if (this.state === 'drawing') {
         // In the drawing state, the points clicked are key nodes of the shape, and they are saved in this.points.
         const cartesian = this.pixelToCartesian(evt.position);
+        const points = this.getPoints();
+        // If clicked outside the sphere or if the distance between the current click position and
+        // the previous click position is less than 10 meters, it is considered an invalid point.
+        if (!cartesian || (points.length > 0 && !this.checkDistance(cartesian, points[points.length - 1]))) {
+          return;
+        }
         this.addPoint(cartesian);
       } else if (this.state === 'edit') {
         //In edit mode, exiting the edit state and deleting control points when clicking in the blank area.
@@ -79,22 +75,38 @@ export default class Draw {
   }
 
   onMouseMove() {
-    this.eventHandler.setInputAction((evt) => {
-      this.drawingWhileMoving(evt.endPosition, 1);
+    this.eventHandler.setInputAction((evt: any) => {
+      const points = this.getPoints();
+      const cartesian = this.pixelToCartesian(evt.endPosition);
+      if (!cartesian) {
+        return;
+      }
+      if (this.checkDistance(cartesian, points[points.length - 1])) {
+        // Synchronize data to subclasses.If the distance is less than 10 meters, do not proceed
+        this.updateMovingPoint(cartesian, points.length);
+      }
     }, this.cesium.ScreenSpaceEventType.MOUSE_MOVE);
   }
 
-  drawingWhileMoving(position: CesiumTypeOnly.Cartesian2, index: number) {
-    const cartesian = this.pixelToCartesian(position);
-    const lnglat = this.cartesianToLnglat(cartesian);
-    const points = this.getPoints();
-    const lastPoint = this.cartesianToLnglat(points[points.length - 1]);
-    const distance = Utils.MathDistance(lnglat, lastPoint);
-    if (distance < 0.0001) {
-      return false;
-    }
-    // Synchronize data to subclasses.
-    this.updateMovingPoint(cartesian, index);
+  onDoubleClick() {
+    // this.eventHandler = new this.cesium.ScreenSpaceEventHandler(this.viewer.canvas);
+    this.eventHandler.setInputAction((evt: any) => {
+      console.error('db click...');
+      this.finishDrawing();
+    }, this.cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
+  }
+
+  /**
+   * Check if the distance between two points is greater than 10 meters.
+   */
+  checkDistance(cartesian1: CesiumTypeOnly.Cartesian3, cartesian2: CesiumTypeOnly.Cartesian3) {
+    const distance = this.cesium.Cartesian3.distance(cartesian1, cartesian2);
+    return distance > 10;
+  }
+
+  finishDrawing() {
+    this.removeMoveListener();
+    this.setState('static');
   }
 
   removeClickListener() {
@@ -117,14 +129,27 @@ export default class Draw {
     const callback = () => {
       return new this.cesium.PolygonHierarchy(this.geometryPoints);
     };
-    if (!this.entity) {
-      this.entity = this.viewer.entities.add({
+    if (!this.polygonEntity) {
+      this.polygonEntity = this.viewer.entities.add({
         polygon: new this.cesium.PolygonGraphics({
           hierarchy: new this.cesium.CallbackProperty(callback, false),
           show: true,
           // fill: true,
           // material: this.cesium.Color.LIGHTSKYBLUE.withAlpha(0.8),
         }),
+      });
+    }
+  }
+
+  drawLine() {
+    if (!this.lineEntity) {
+      this.lineEntity = this.viewer.entities.add({
+        polyline: {
+          positions: new this.cesium.CallbackProperty(() => this.geometryPoints, false),
+          width: 5,
+          // material: this.cesium.Color.RED,
+          clampToGround: true,
+        },
       });
     }
   }
@@ -161,7 +186,7 @@ export default class Draw {
 
     this.controlPointsEventHandler = new this.cesium.ScreenSpaceEventHandler(this.viewer.canvas);
     // Listen for left mouse button press events
-    this.controlPointsEventHandler.setInputAction((clickEvent) => {
+    this.controlPointsEventHandler.setInputAction((clickEvent: any) => {
       const pickedObject = this.viewer.scene.pick(clickEvent.position);
 
       if (this.cesium.defined(pickedObject)) {
@@ -179,12 +204,12 @@ export default class Draw {
     }, this.cesium.ScreenSpaceEventType.LEFT_DOWN);
 
     // Listen for mouse movement events
-    this.controlPointsEventHandler.setInputAction((moveEvent) => {
+    this.controlPointsEventHandler.setInputAction((moveEvent: any) => {
       if (isDragging && draggedIcon) {
         const cartesian = this.viewer.camera.pickEllipsoid(moveEvent.endPosition, this.viewer.scene.globe.ellipsoid);
         if (cartesian) {
           draggedIcon.position.setValue(cartesian);
-          this.drawingWhileMoving(moveEvent.endPosition, draggedIcon.index);
+          this.updateDraggingPoint(cartesian, draggedIcon.index);
         }
       }
     }, this.cesium.ScreenSpaceEventType.MOUSE_MOVE);
@@ -215,7 +240,11 @@ export default class Draw {
     return this.cesium.Cartesian3();
   }
 
-  updateMovingPoint(cartesian: CesiumTypeOnly.Cartesian3, index: number) {
+  updateMovingPoint(cartesian: CesiumTypeOnly.Cartesian3, index?: number) {
+    //Abstract method that must be implemented by subclasses.
+  }
+
+  updateDraggingPoint(cartesian: CesiumTypeOnly.Cartesian3, index: number) {
     //Abstract method that must be implemented by subclasses.
   }
 }

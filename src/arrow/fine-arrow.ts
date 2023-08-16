@@ -4,10 +4,22 @@ import { Cartesian3 } from '@examples/cesium';
 
 export default class FineArrow extends Draw {
   points: Cartesian3[] = [];
+  arrowLengthScale: number = 5;
+  maxArrowLength: number = 2;
+  tailWidthFactor: number;
+  neckWidthFactor: number;
+  headWidthFactor: number;
+  headAngle: number;
+  neckAngle: number;
 
   constructor(cesium: any, viewer: any, style: any) {
     super(cesium, viewer);
     this.cesium = cesium;
+    this.tailWidthFactor = 0.1;
+    this.neckWidthFactor = 0.2;
+    this.headWidthFactor = 0.25;
+    this.headAngle = Math.PI / 8.5;
+    this.neckAngle = Math.PI / 13;
     this.setState('drawing');
   }
 
@@ -15,24 +27,32 @@ export default class FineArrow extends Draw {
    * Add points only on click events
    */
   addPoint(cartesian: Cartesian3) {
-    this.points.push();
-    if (this.points.length === 0) {
-      this.points[0] = cartesian;
+    if (this.points.length < 2) {
+      this.points.push(cartesian);
       this.onMouseMove();
     }
     if (this.points.length === 2) {
       const geometryPoints = this.createPolygon(this.points);
       this.setGeometryPoints(geometryPoints);
       this.addToMap();
-      this.removeMoveListener();
-      this.setState('static');
+      this.finishDrawing();
     }
   }
 
   /**
-   * Update the last point as the mouse moves.
+   * Draw a shape based on mouse movement points during the initial drawing.
    */
-  updateMovingPoint(cartesian: Cartesian3, index: number) {
+  updateMovingPoint(cartesian: Cartesian3) {
+    const tempPoints = [...this.points, cartesian];
+    const geometryPoints = this.createPolygon(tempPoints);
+    this.setGeometryPoints(geometryPoints);
+    this.addToMap();
+  }
+
+  /**
+   * In edit mode, drag key points to update corresponding key point data.
+   */
+  updateDraggingPoint(cartesian: Cartesian3, index: number) {
     this.points[index] = cartesian;
     const geometryPoints = this.createPolygon(this.points);
     this.setGeometryPoints(geometryPoints);
