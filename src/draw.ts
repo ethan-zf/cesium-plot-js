@@ -8,7 +8,7 @@ export default class Draw {
   polygonEntity: CesiumTypeOnly.Entity;
   geometryPoints: CesiumTypeOnly.Cartesian3[] = [];
   state: State = 'drawing';
-  controlPoints: CesiumTypeOnly.EntityCollection;
+  controlPoints: CesiumTypeOnly.EntityCollection = [];
   controlPointsEventHandler: CesiumTypeOnly.ScreenSpaceEventHandler;
   lineEntity: CesiumTypeOnly.Entity;
 
@@ -55,8 +55,8 @@ export default class Draw {
         }
         this.addPoint(cartesian);
       } else if (this.state === 'edit') {
-        //In edit mode, exiting the edit state and deleting control points when clicking in the blank area.
-        if (!hitEntities) {
+        //In edit mode, exit the editing state and delete control points when clicking outside the currently edited shape.
+        if (!hitEntities || this.polygonEntity.id !== pickedObject.id.id) {
           this.setState('static');
           this.removeControlPoints();
         }
@@ -217,6 +217,7 @@ export default class Draw {
         const cartesian = this.viewer.camera.pickEllipsoid(moveEvent.endPosition, this.viewer.scene.globe.ellipsoid);
         if (cartesian) {
           draggedIcon.position.setValue(cartesian);
+          console.error(123);
           this.updateDraggingPoint(cartesian, draggedIcon.index);
         }
       }
@@ -231,12 +232,14 @@ export default class Draw {
   }
 
   removeControlPoints() {
-    this.controlPoints.forEach((entity: CesiumTypeOnly.Entity) => {
-      this.viewer.entities.remove(entity);
-    });
-    this.controlPointsEventHandler.removeInputAction(this.cesium.ScreenSpaceEventType.LEFT_DOWN);
-    this.controlPointsEventHandler.removeInputAction(this.cesium.ScreenSpaceEventType.MOUSE_MOVE);
-    this.controlPointsEventHandler.removeInputAction(this.cesium.ScreenSpaceEventType.LEFT_UP);
+    if (this.controlPoints.length > 0) {
+      this.controlPoints.forEach((entity: CesiumTypeOnly.Entity) => {
+        this.viewer.entities.remove(entity);
+      });
+      this.controlPointsEventHandler.removeInputAction(this.cesium.ScreenSpaceEventType.LEFT_DOWN);
+      this.controlPointsEventHandler.removeInputAction(this.cesium.ScreenSpaceEventType.MOUSE_MOVE);
+      this.controlPointsEventHandler.removeInputAction(this.cesium.ScreenSpaceEventType.LEFT_UP);
+    }
   }
 
   addPoint(cartesian: CesiumTypeOnly.Cartesian3) {

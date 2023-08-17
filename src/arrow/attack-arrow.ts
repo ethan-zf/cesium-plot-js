@@ -135,4 +135,14 @@ export default class AttackArrow extends Draw {
     }
     return leftBodyPnts.concat(rightBodyPnts);
   }
+
+  /**
+   * In edit mode, drag key points to update corresponding key point data.
+   */
+  updateDraggingPoint(cartesian: Cartesian3, index: number) {
+    this.points[index] = cartesian;
+    const geometryPoints = this.createPolygon(this.points);
+    this.setGeometryPoints(geometryPoints);
+    this.addToMap();
+  }
 }
