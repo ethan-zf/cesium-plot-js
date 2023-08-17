@@ -1,4 +1,3 @@
-import * as Utils from './utils';
 import * as CesiumTypeOnly from '@examples/cesium';
 import { State } from './interface';
 
@@ -62,7 +61,8 @@ export default class Draw {
           this.removeControlPoints();
         }
       } else if (this.state === 'static') {
-        if (hitEntities) {
+        //When drawing multiple shapes, the click events for all shapes are triggered. Only when hitting a completed shape should it enter editing mode.
+        if (hitEntities && this.polygonEntity.id === pickedObject.id.id) {
           const pickedEntity = pickedObject.id;
           if (this.cesium.defined(pickedEntity.polygon)) {
             // Hit PolygonGraphics geometry.
@@ -91,7 +91,6 @@ export default class Draw {
   onDoubleClick() {
     // this.eventHandler = new this.cesium.ScreenSpaceEventHandler(this.viewer.canvas);
     this.eventHandler.setInputAction((evt: any) => {
-      console.error('db click...');
       this.finishDrawing();
     }, this.cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
   }
@@ -146,7 +145,7 @@ export default class Draw {
       this.lineEntity = this.viewer.entities.add({
         polyline: {
           positions: new this.cesium.CallbackProperty(() => this.geometryPoints, false),
-          width: 5,
+          width: 2,
           // material: this.cesium.Color.RED,
           clampToGround: true,
         },
@@ -173,10 +172,19 @@ export default class Draw {
   addControlPoints() {
     const points = this.getPoints();
     this.controlPoints = points.map((position) => {
+      // return this.viewer.entities.add({
+      //   position,
+      //   billboard: {
+      //     image: './src/assets/circle_red.png',
+      //   },
+      // });
+
       return this.viewer.entities.add({
         position,
-        billboard: {
-          image: './src/assets/circle_red.png',
+        point: {
+          pixelSize: 10,
+          heightReference: this.cesium.HeightReference.CLAMP_TO_GROUND,
+          color: this.cesium.Color.RED,
         },
       });
     });

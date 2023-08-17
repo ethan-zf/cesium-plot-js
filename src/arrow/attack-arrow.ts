@@ -32,9 +32,8 @@ export default class AttackArrow extends Draw {
     } else if (this.points.length === 2) {
       this.setGeometryPoints(this.points);
       this.addToMap();
-      this.lineEntity && this.viewer.entities.remove(this.lineEntity);
     } else {
-      console.error('click...');
+      this.lineEntity && this.viewer.entities.remove(this.lineEntity);
     }
   }
 
