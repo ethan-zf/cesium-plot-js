@@ -43,3 +43,8 @@ const attackArrow = document.getElementById('drawAttackArrow') as HTMLElement;
 attackArrow.onclick = () => {
   new CesiumPlot.AttackArrow(Cesium, viewer, {});
 };
+
+const swallowtailAttackArrow = document.getElementById('drawSwallowtailAttackArrow') as HTMLElement;
+swallowtailAttackArrow.onclick = () => {
+  new CesiumPlot.SwallowtailAttackArrow(Cesium, viewer, {});
+};

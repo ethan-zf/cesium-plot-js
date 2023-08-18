@@ -122,7 +122,6 @@ export default class AttackArrow extends Draw {
     const tailWidth = len * tailWidthFactor;
     const neckWidth = Utils.MathDistance(neckLeft, neckRight);
     const widthDif = (tailWidth - neckWidth) / 2;
-    // eslint-disable-next-line
     let [tempLen, leftBodyPnts, rightBodyPnts] = [0, [], []];
     for (let i = 1; i < points.length - 1; i++) {
       const angle = Utils.getAngleOfThreePoints(points[i - 1], points[i], points[i + 1]) / 2;

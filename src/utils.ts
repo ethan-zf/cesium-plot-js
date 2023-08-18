@@ -171,7 +171,7 @@ export const getCubicValue = (t, startPnt, cPnt1, cPnt2, endPnt) => {
  * @param clockWise
  * @returns {[*,*]}
  */
-export const getThirdPoint = (startPnt, endPnt, angle, distance, clockWise) => {
+export const getThirdPoint = (startPnt, endPnt, angle, distance, clockWise): [number, number] => {
   const azimuth = getAzimuth(startPnt, endPnt);
   const alpha = clockWise ? azimuth + angle : azimuth - angle;
   const dx = distance * Math.cos(alpha);

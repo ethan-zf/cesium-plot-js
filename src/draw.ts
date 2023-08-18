@@ -217,7 +217,6 @@ export default class Draw {
         const cartesian = this.viewer.camera.pickEllipsoid(moveEvent.endPosition, this.viewer.scene.globe.ellipsoid);
         if (cartesian) {
           draggedIcon.position.setValue(cartesian);
-          console.error(123);
           this.updateDraggingPoint(cartesian, draggedIcon.index);
         }
       }
