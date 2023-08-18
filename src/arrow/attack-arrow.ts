@@ -42,7 +42,6 @@ export default class AttackArrow extends Draw {
    */
   updateMovingPoint(cartesian: Cartesian3) {
     const tempPoints = [...this.points, cartesian];
-    //
     this.setGeometryPoints(tempPoints);
     if (tempPoints.length === 2) {
       this.drawLine();

@@ -48,3 +48,8 @@ const swallowtailAttackArrow = document.getElementById('drawSwallowtailAttackArr
 swallowtailAttackArrow.onclick = () => {
   new CesiumPlot.SwallowtailAttackArrow(Cesium, viewer, {});
 };
+
+const squadCombat = document.getElementById('drawSquadCombat') as HTMLElement;
+squadCombat.onclick = () => {
+  new CesiumPlot.SquadCombat(Cesium, viewer, {});
+};
