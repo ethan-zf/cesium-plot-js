@@ -69,3 +69,8 @@ const assaultDirection = document.getElementById('drawAssaultDirection') as HTML
 assaultDirection.onclick = () => {
   new CesiumPlot.AssaultDirection(Cesium, viewer, {});
 };
+
+const curvedArrow = document.getElementById('drawCurvedArrow') as HTMLElement;
+curvedArrow.onclick = () => {
+  new CesiumPlot.CurvedArrow(Cesium, viewer, {});
+};
