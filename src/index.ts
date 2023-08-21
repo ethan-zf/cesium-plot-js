@@ -4,6 +4,7 @@ import SwallowtailAttackArrow from './arrow/swallowtail-attack-arrow';
 import SquadCombat from './arrow/squad-combat';
 import SwallowtailSquadCombat from './arrow/swallowtail-squad-combat';
 import StraightArrow from './arrow/straight-arrow';
+import AssaultDirection from './arrow/assault-direction';
 
 const CesiumPlot = {
   FineArrow,
@@ -12,6 +13,7 @@ const CesiumPlot = {
   SquadCombat,
   SwallowtailSquadCombat,
   StraightArrow,
+  AssaultDirection,
 };
 
 export default CesiumPlot;

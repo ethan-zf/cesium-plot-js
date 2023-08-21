@@ -64,3 +64,8 @@ const straightArrow = document.getElementById('drawStraightArrow') as HTMLElemen
 straightArrow.onclick = () => {
   new CesiumPlot.StraightArrow(Cesium, viewer, {});
 };
+
+const assaultDirection = document.getElementById('drawAssaultDirection') as HTMLElement;
+assaultDirection.onclick = () => {
+  new CesiumPlot.AssaultDirection(Cesium, viewer, {});
+};
