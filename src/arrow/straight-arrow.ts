@@ -5,7 +5,7 @@ import { Cartesian3 } from '@examples/cesium';
 export default class StraightArrow extends Draw {
   points: Cartesian3[] = [];
   arrowLengthScale: number = 5;
-  maxArrowLength: number = 2;
+  maxArrowLength: number = 3000000;
   type: 'polygon' | 'line';
 
   constructor(cesium: any, viewer: any, style: any) {

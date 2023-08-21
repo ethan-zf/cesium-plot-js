@@ -69,9 +69,9 @@ export default class Draw {
       } else if (this.state === 'static') {
         //When drawing multiple shapes, the click events for all shapes are triggered. Only when hitting a completed shape should it enter editing mode.
         if (hitEntities && activeEntity.id === pickedObject.id.id) {
-          const pickedEntity = pickedObject.id;
-          if (this.cesium.defined(pickedEntity.polygon)) {
-            // Hit PolygonGraphics geometry.
+          const pickedGraphics = this.type === 'line' ? pickedObject.id.polyline : pickedObject.id.polygon;
+          if (this.cesium.defined(pickedGraphics)) {
+            // Hit Geometry Shape.
             this.setState('edit');
             this.addControlPoints();
           }
