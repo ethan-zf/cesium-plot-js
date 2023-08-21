@@ -9,16 +9,17 @@ export default class SquadCombat extends AttackArrow {
   neckHeightFactor: number;
   neckWidthFactor: number;
   tailWidthFactor: number;
+  type: 'polygon' | 'line';
 
   constructor(cesium: any, viewer: any, style: any) {
     super(cesium, viewer, {});
-
+    this.cesium = cesium;
+    this.type = 'polygon';
     this.headHeightFactor = 0.18;
     this.headWidthFactor = 0.3;
     this.neckHeightFactor = 0.85;
     this.neckWidthFactor = 0.15;
     this.tailWidthFactor = 0.1;
-    this.cesium = cesium;
   }
 
   /**
@@ -32,7 +33,7 @@ export default class SquadCombat extends AttackArrow {
     } else {
       const geometryPoints = this.createPolygon(tempPoints);
       this.setGeometryPoints(geometryPoints);
-      this.addToMap();
+      this.drawPolygon();
     }
   }
 

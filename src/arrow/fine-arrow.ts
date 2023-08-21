@@ -11,10 +11,12 @@ export default class FineArrow extends Draw {
   headWidthFactor: number;
   headAngle: number;
   neckAngle: number;
+  type: 'polygon' | 'line';
 
   constructor(cesium: any, viewer: any, style: any) {
     super(cesium, viewer);
     this.cesium = cesium;
+    this.type = 'polygon';
     this.tailWidthFactor = 0.1;
     this.neckWidthFactor = 0.2;
     this.headWidthFactor = 0.25;
@@ -34,7 +36,7 @@ export default class FineArrow extends Draw {
     if (this.points.length === 2) {
       const geometryPoints = this.createPolygon(this.points);
       this.setGeometryPoints(geometryPoints);
-      this.addToMap();
+      this.drawPolygon();
       this.finishDrawing();
     }
   }
@@ -46,7 +48,7 @@ export default class FineArrow extends Draw {
     const tempPoints = [...this.points, cartesian];
     const geometryPoints = this.createPolygon(tempPoints);
     this.setGeometryPoints(geometryPoints);
-    this.addToMap();
+    this.drawPolygon();
   }
 
   /**
@@ -56,7 +58,7 @@ export default class FineArrow extends Draw {
     this.points[index] = cartesian;
     const geometryPoints = this.createPolygon(this.points);
     this.setGeometryPoints(geometryPoints);
-    this.addToMap();
+    this.drawPolygon();
   }
 
   /**

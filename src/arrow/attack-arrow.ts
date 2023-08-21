@@ -9,10 +9,12 @@ export default class AttackArrow extends Draw {
   neckHeightFactor: number;
   neckWidthFactor: number;
   headTailFactor: number;
+  type: 'polygon' | 'line';
 
   constructor(cesium: any, viewer: any, style: any) {
     super(cesium, viewer);
     this.cesium = cesium;
+    this.type = 'polygon';
     this.headHeightFactor = 0.18;
     this.headWidthFactor = 0.3;
     this.neckHeightFactor = 0.85;
@@ -31,7 +33,7 @@ export default class AttackArrow extends Draw {
       this.onMouseMove();
     } else if (this.points.length === 2) {
       this.setGeometryPoints(this.points);
-      this.addToMap();
+      this.drawPolygon();
     } else {
       this.lineEntity && this.viewer.entities.remove(this.lineEntity);
     }
@@ -48,7 +50,7 @@ export default class AttackArrow extends Draw {
     } else {
       const geometryPoints = this.createPolygon(tempPoints);
       this.setGeometryPoints(geometryPoints);
-      this.addToMap();
+      this.drawPolygon();
     }
   }
 
@@ -141,6 +143,6 @@ export default class AttackArrow extends Draw {
     this.points[index] = cartesian;
     const geometryPoints = this.createPolygon(this.points);
     this.setGeometryPoints(geometryPoints);
-    this.addToMap();
+    this.drawPolygon();
   }
 }

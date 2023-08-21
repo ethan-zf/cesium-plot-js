@@ -27,6 +27,7 @@ const viewer = new Cesium.Viewer('cesiumContainer', {
   contextOptions: {
     requestWebgl2: true,
   },
+  // msaaSamples: 4,
 });
 
 viewer.scene.postProcessStages.fxaa.enabled = true;
@@ -57,4 +58,9 @@ squadCombat.onclick = () => {
 const swallowtailSquadCombat = document.getElementById('drawSwallowtailSquadCombat') as HTMLElement;
 swallowtailSquadCombat.onclick = () => {
   new CesiumPlot.SwallowtailSquadCombat(Cesium, viewer, {});
+};
+
+const straightArrow = document.getElementById('drawStraightArrow') as HTMLElement;
+straightArrow.onclick = () => {
+  new CesiumPlot.StraightArrow(Cesium, viewer, {});
 };

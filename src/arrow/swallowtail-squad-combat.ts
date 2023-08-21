@@ -10,17 +10,19 @@ export default class SwallowtailSquadCombat extends SquadCombat {
   neckWidthFactor: number;
   tailWidthFactor: number;
   swallowTailFactor: number;
+  type: 'polygon' | 'line';
 
   constructor(cesium: any, viewer: any, style: any) {
     super(cesium, viewer, {});
 
+    this.cesium = cesium;
+    this.type = 'polygon';
     this.headHeightFactor = 0.18;
     this.headWidthFactor = 0.3;
     this.neckHeightFactor = 0.85;
     this.neckWidthFactor = 0.15;
     this.tailWidthFactor = 0.1;
     this.swallowTailFactor = 1;
-    this.cesium = cesium;
   }
 
   /**

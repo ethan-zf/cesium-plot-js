@@ -11,6 +11,7 @@ export default class Draw {
   controlPoints: CesiumTypeOnly.EntityCollection = [];
   controlPointsEventHandler: CesiumTypeOnly.ScreenSpaceEventHandler;
   lineEntity: CesiumTypeOnly.Entity;
+  type!: 'polygon' | 'line';
 
   constructor(cesium: typeof CesiumTypeOnly, viewer: CesiumTypeOnly.Viewer) {
     this.cesium = cesium;
@@ -44,6 +45,11 @@ export default class Draw {
     this.eventHandler.setInputAction((evt: any) => {
       const pickedObject = this.viewer.scene.pick(evt.position);
       const hitEntities = this.cesium.defined(pickedObject) && pickedObject.id instanceof CesiumTypeOnly.Entity;
+      let activeEntity = this.polygonEntity;
+      if (this.type === 'line') {
+        activeEntity = this.lineEntity;
+      }
+
       if (this.state === 'drawing') {
         // In the drawing state, the points clicked are key nodes of the shape, and they are saved in this.points.
         const cartesian = this.pixelToCartesian(evt.position);
@@ -56,13 +62,13 @@ export default class Draw {
         this.addPoint(cartesian);
       } else if (this.state === 'edit') {
         //In edit mode, exit the editing state and delete control points when clicking outside the currently edited shape.
-        if (!hitEntities || this.polygonEntity.id !== pickedObject.id.id) {
+        if (!hitEntities || activeEntity.id !== pickedObject.id.id) {
           this.setState('static');
           this.removeControlPoints();
         }
       } else if (this.state === 'static') {
         //When drawing multiple shapes, the click events for all shapes are triggered. Only when hitting a completed shape should it enter editing mode.
-        if (hitEntities && this.polygonEntity.id === pickedObject.id.id) {
+        if (hitEntities && activeEntity.id === pickedObject.id.id) {
           const pickedEntity = pickedObject.id;
           if (this.cesium.defined(pickedEntity.polygon)) {
             // Hit PolygonGraphics geometry.
@@ -124,7 +130,7 @@ export default class Draw {
     return this.geometryPoints;
   }
 
-  addToMap() {
+  drawPolygon() {
     const callback = () => {
       return new this.cesium.PolygonHierarchy(this.geometryPoints);
     };
