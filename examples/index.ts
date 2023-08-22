@@ -69,6 +69,9 @@ buttonGroup.onclick = (evt) => {
     case 'drawFreehandLine':
       new CesiumPlot.FreehandLine(Cesium, viewer, {});
       break;
+    case 'drawFreehandPolygon':
+      new CesiumPlot.FreehandPolygon(Cesium, viewer, {});
+      break;
 
     default:
       break;
