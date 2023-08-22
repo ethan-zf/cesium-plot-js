@@ -1,5 +1,6 @@
 import * as Utils from '../utils';
 import SquadCombat from './squad-combat';
+// @ts-ignore
 import { Cartesian3 } from '@examples/cesium';
 import { PolygonStyle } from '../interface';
 

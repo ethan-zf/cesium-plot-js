@@ -1,4 +1,5 @@
 import Base from '../base';
+// @ts-ignore
 import { Cartesian3 } from '@examples/cesium';
 import { PolygonStyle } from '../interface';
 

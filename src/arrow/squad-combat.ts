@@ -1,5 +1,6 @@
 import * as Utils from '../utils';
 import AttackArrow from './attack-arrow';
+// @ts-ignore
 import { Cartesian3 } from '@examples/cesium';
 import { PolygonStyle } from '../interface';
 

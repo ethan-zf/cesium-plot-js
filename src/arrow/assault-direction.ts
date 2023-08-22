@@ -1,5 +1,6 @@
 import FineArrow from './fine-arrow';
 import * as Utils from '../utils';
+// @ts-ignore
 import { Cartesian3 } from '@examples/cesium';
 import { PolygonStyle } from '../interface';
 

@@ -1,3 +1,4 @@
+// @ts-ignore
 import * as CesiumTypeOnly from '@examples/cesium';
 import { State, GeometryStyle, PolygonStyle, LineStyle } from './interface';
 
