@@ -12,6 +12,7 @@ export default class Draw {
   controlPointsEventHandler: CesiumTypeOnly.ScreenSpaceEventHandler;
   lineEntity: CesiumTypeOnly.Entity;
   type!: 'polygon' | 'line';
+  freehand!: boolean;
 
   constructor(cesium: typeof CesiumTypeOnly, viewer: CesiumTypeOnly.Viewer) {
     this.cesium = cesium;
@@ -54,9 +55,12 @@ export default class Draw {
         // In the drawing state, the points clicked are key nodes of the shape, and they are saved in this.points.
         const cartesian = this.pixelToCartesian(evt.position);
         const points = this.getPoints();
-        // If clicked outside the sphere or if the distance between the current click position and
-        // the previous click position is less than 10 meters, it is considered an invalid point.
-        if (!cartesian || (points.length > 0 && !this.checkDistance(cartesian, points[points.length - 1]))) {
+        // If the click is outside the sphere, position information cannot be obtained.
+        if (!cartesian) {
+          return;
+        }
+        // "For non-freehand drawn shapes, validate that the distance between two consecutive clicks is greater than 10 meters
+        if (!this.freehand && points.length > 0 && !this.checkDistance(cartesian, points[points.length - 1])) {
           return;
         }
         this.addPoint(cartesian);

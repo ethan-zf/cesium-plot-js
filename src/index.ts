@@ -7,6 +7,7 @@ import StraightArrow from './arrow/straight-arrow';
 import CurvedArrow from './arrow/curved-arrow';
 import AssaultDirection from './arrow/assault-direction';
 import DoubleArrow from './arrow/double-arrow';
+import FreehandLine from './line/freehand-line';
 
 const CesiumPlot = {
   FineArrow,
@@ -18,6 +19,7 @@ const CesiumPlot = {
   CurvedArrow,
   AssaultDirection,
   DoubleArrow,
+  FreehandLine,
 };
 
 export default CesiumPlot;

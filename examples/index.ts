@@ -63,9 +63,12 @@ buttonGroup.onclick = (evt) => {
     case 'drawCurvedArrow':
       new CesiumPlot.CurvedArrow(Cesium, viewer, {});
       break;
-      case 'drawDoubleArrow':
-        new CesiumPlot.DoubleArrow(Cesium, viewer, {});
-        break;
+    case 'drawDoubleArrow':
+      new CesiumPlot.DoubleArrow(Cesium, viewer, {});
+      break;
+    case 'drawFreehandLine':
+      new CesiumPlot.FreehandLine(Cesium, viewer, {});
+      break;
 
     default:
       break;
