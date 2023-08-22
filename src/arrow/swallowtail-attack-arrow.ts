@@ -1,6 +1,7 @@
 import * as Utils from '../utils';
 import AttackArrow from './attack-arrow';
 import { Cartesian3 } from '@examples/cesium';
+import { PolygonStyle } from '../interface';
 
 export default class SwallowtailAttackArrow extends AttackArrow {
   points: Cartesian3[] = [];
@@ -14,8 +15,8 @@ export default class SwallowtailAttackArrow extends AttackArrow {
   swallowTailPnt: [number, number];
   type: 'polygon' | 'line';
 
-  constructor(cesium: any, viewer: any, style: any) {
-    super(cesium, viewer, {});
+    constructor(cesium: any, viewer: any, style: PolygonStyle) {
+    super(cesium, viewer, style);
 
     this.cesium = cesium;
     this.type = 'polygon';

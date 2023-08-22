@@ -1,6 +1,7 @@
 import FineArrow from './fine-arrow';
 import * as Utils from '../utils';
 import { Cartesian3 } from '@examples/cesium';
+import { PolygonStyle } from '../interface';
 
 export default class AssaultDirection extends FineArrow {
   points: Cartesian3[] = [];
@@ -13,8 +14,8 @@ export default class AssaultDirection extends FineArrow {
   neckAngle: number;
   type: 'polygon' | 'line';
 
-  constructor(cesium: any, viewer: any, style: any) {
-    super(cesium, viewer, {});
+  constructor(cesium: any, viewer: any, style: PolygonStyle) {
+    super(cesium, viewer, style);
     this.cesium = cesium;
     this.type = 'polygon';
     this.tailWidthFactor = 0.08;

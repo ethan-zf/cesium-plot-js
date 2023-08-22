@@ -1,8 +1,9 @@
-import Draw from '../draw';
+import Base from '../base';
 import * as Utils from '../utils';
 import { Cartesian3 } from '@examples/cesium';
+import { PolygonStyle } from '../interface';
 
-export default class AttackArrow extends Draw {
+export default class AttackArrow extends Base {
   points: Cartesian3[] = [];
   headHeightFactor: number;
   headWidthFactor: number;
@@ -11,8 +12,8 @@ export default class AttackArrow extends Draw {
   headTailFactor: number;
   type: 'polygon' | 'line';
 
-  constructor(cesium: any, viewer: any, style: any) {
-    super(cesium, viewer);
+    constructor(cesium: any, viewer: any, style: PolygonStyle) {
+    super(cesium, viewer, style);
     this.cesium = cesium;
     this.type = 'polygon';
     this.headHeightFactor = 0.18;

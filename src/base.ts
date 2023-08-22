@@ -1,7 +1,7 @@
 import * as CesiumTypeOnly from '@examples/cesium';
-import { State } from './interface';
+import { State, GeometryStyle, PolygonStyle, LineStyle } from './interface';
 
-export default class Draw {
+export default class Base {
   cesium: typeof CesiumTypeOnly;
   viewer: CesiumTypeOnly.Viewer;
   eventHandler: CesiumTypeOnly.ScreenSpaceEventHandler;
@@ -13,11 +13,13 @@ export default class Draw {
   lineEntity: CesiumTypeOnly.Entity;
   type!: 'polygon' | 'line';
   freehand!: boolean;
+  style: GeometryStyle;
+  outlineEntity: CesiumTypeOnly.Entity;
 
-  constructor(cesium: typeof CesiumTypeOnly, viewer: CesiumTypeOnly.Viewer) {
+  constructor(cesium: CesiumTypeOnly, viewer: CesiumTypeOnly.Viewer, style: GeometryStyle) {
     this.cesium = cesium;
     this.viewer = viewer;
-
+    this.style = style;
     this.cartesianToLnglat = this.cartesianToLnglat.bind(this);
     this.pixelToCartesian = this.pixelToCartesian.bind(this);
     this.onClick();
@@ -139,13 +141,27 @@ export default class Draw {
       return new this.cesium.PolygonHierarchy(this.geometryPoints);
     };
     if (!this.polygonEntity) {
+      const style = this.style as PolygonStyle;
       this.polygonEntity = this.viewer.entities.add({
         polygon: new this.cesium.PolygonGraphics({
           hierarchy: new this.cesium.CallbackProperty(callback, false),
           show: true,
           // fill: true,
           // material: this.cesium.Color.LIGHTSKYBLUE.withAlpha(0.8),
+          material: style.fillColor || this.cesium.Color.fromCssColorString('rgba(59, 178, 208, 0.2)'),
         }),
+      });
+
+      // Due to limitations in PolygonGraphics outlining, a separate line style is drawn.
+      this.outlineEntity = this.viewer.entities.add({
+        polyline: {
+          positions: new this.cesium.CallbackProperty(() => {
+            return [...this.geometryPoints, this.geometryPoints[0]];
+          }, false),
+          width: style.outlineWidth || 2,
+          material: style.outlineColor || this.cesium.Color.fromCssColorString('rgba(59, 178, 208, 1.0)'),
+          clampToGround: true,
+        },
       });
     }
   }
@@ -156,7 +172,7 @@ export default class Draw {
         polyline: {
           positions: new this.cesium.CallbackProperty(() => this.geometryPoints, false),
           width: 2,
-          // material: this.cesium.Color.RED,
+          material: this.cesium.Color.fromCssColorString('rgba(59, 178, 208, 1.0)'),
           clampToGround: true,
         },
       });

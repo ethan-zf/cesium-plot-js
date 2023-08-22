@@ -1,6 +1,7 @@
 import * as Utils from '../utils';
 import SquadCombat from './squad-combat';
 import { Cartesian3 } from '@examples/cesium';
+import { PolygonStyle } from '../interface';
 
 export default class SwallowtailSquadCombat extends SquadCombat {
   points: Cartesian3[] = [];
@@ -12,8 +13,8 @@ export default class SwallowtailSquadCombat extends SquadCombat {
   swallowTailFactor: number;
   type: 'polygon' | 'line';
 
-  constructor(cesium: any, viewer: any, style: any) {
-    super(cesium, viewer, {});
+    constructor(cesium: any, viewer: any, style: PolygonStyle) {
+    super(cesium, viewer, style);
 
     this.cesium = cesium;
     this.type = 'polygon';

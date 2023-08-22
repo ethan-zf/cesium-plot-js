@@ -1,16 +1,17 @@
 import * as Utils from '../utils';
-import Draw from '../draw';
+import Base from '../base';
 import { Cartesian3 } from '@examples/cesium';
+import { PolygonStyle } from '../interface';
 
-export default class CurvedArrow extends Draw {
+export default class CurvedArrow extends Base {
   points: Cartesian3[] = [];
   arrowLengthScale: number = 5;
   maxArrowLength: number = 3000000;
   type: 'polygon' | 'line';
   t: number;
 
-  constructor(cesium: any, viewer: any, style: any) {
-    super(cesium, viewer);
+    constructor(cesium: any, viewer: any, style: PolygonStyle) {
+    super(cesium, viewer, style);
     this.cesium = cesium;
     this.type = 'line';
     this.t = 0.3;

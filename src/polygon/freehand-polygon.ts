@@ -1,13 +1,14 @@
-import Draw from '../draw';
+import Base from '../base';
 import { Cartesian3 } from '@examples/cesium';
+import { PolygonStyle } from '../interface';
 
-export default class FreehandPolygon extends Draw {
+export default class FreehandPolygon extends Base {
   points: Cartesian3[] = [];
   type: 'polygon' | 'line';
   freehand: boolean;
 
-  constructor(cesium: any, viewer: any, style: any) {
-    super(cesium, viewer);
+  constructor(cesium: any, viewer: any, style: PolygonStyle) {
+    super(cesium, viewer, style);
     this.cesium = cesium;
     this.type = 'polygon';
     this.freehand = true;

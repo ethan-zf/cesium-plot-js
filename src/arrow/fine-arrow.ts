@@ -1,8 +1,9 @@
-import Draw from '../draw';
+import Base from '../base';
 import * as Utils from '../utils';
 import { Cartesian3 } from '@examples/cesium';
+import { PolygonStyle } from '../interface';
 
-export default class FineArrow extends Draw {
+export default class FineArrow extends Base {
   points: Cartesian3[] = [];
   arrowLengthScale: number = 5;
   maxArrowLength: number = 2;
@@ -13,8 +14,8 @@ export default class FineArrow extends Draw {
   neckAngle: number;
   type: 'polygon' | 'line';
 
-  constructor(cesium: any, viewer: any, style: any) {
-    super(cesium, viewer);
+    constructor(cesium: any, viewer: any, style: PolygonStyle) {
+    super(cesium, viewer, style);
     this.cesium = cesium;
     this.type = 'polygon';
     this.tailWidthFactor = 0.1;

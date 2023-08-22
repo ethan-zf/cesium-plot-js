@@ -1,9 +1,10 @@
-import Draw from '../draw';
+import Base from '../base';
 import * as Utils from '../utils';
 import { Cartesian3 } from '@examples/cesium';
+import { PolygonStyle } from '../interface';
 type Position = [number, number];
 
-export default class DoubleArrow extends Draw {
+export default class DoubleArrow extends Base {
   points: Cartesian3[] = [];
   arrowLengthScale: number = 5;
   maxArrowLength: number = 2;
@@ -15,8 +16,8 @@ export default class DoubleArrow extends Draw {
   connPoint: Position;
   tempPoint4: Position;
 
-  constructor(cesium: any, viewer: any, style: any) {
-    super(cesium, viewer);
+    constructor(cesium: any, viewer: any, style: PolygonStyle) {
+    super(cesium, viewer, style);
     this.cesium = cesium;
     this.type = 'polygon';
     this.headHeightFactor = 0.25;
