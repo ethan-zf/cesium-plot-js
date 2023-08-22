@@ -32,45 +32,42 @@ const viewer = new Cesium.Viewer('cesiumContainer', {
 
 viewer.scene.postProcessStages.fxaa.enabled = true;
 viewer.scene.camera.setView({
-  destination: Cesium.Cartesian3.fromDegrees(107.857, 35.594498, 8000000),
+  destination: Cesium.Cartesian3.fromDegrees(107.857, 35.594498, 7000000),
 });
 
-const fineArrow = document.getElementById('drawFineArrow') as HTMLElement;
-fineArrow.onclick = () => {
-  new CesiumPlot.FineArrow(Cesium, viewer, {});
-};
+const buttonGroup = document.getElementById('button-group') as HTMLElement;
+buttonGroup.onclick = (evt) => {
+  const targetElement = evt.target as HTMLElement;
+  switch (targetElement.id) {
+    case 'drawFineArrow':
+      new CesiumPlot.FineArrow(Cesium, viewer, {});
+      break;
+    case 'drawAttackArrow':
+      new CesiumPlot.AttackArrow(Cesium, viewer, {});
+      break;
+    case 'drawSwallowtailAttackArrow':
+      new CesiumPlot.SwallowtailAttackArrow(Cesium, viewer, {});
+      break;
+    case 'drawSquadCombat':
+      new CesiumPlot.SquadCombat(Cesium, viewer, {});
+      break;
+    case 'drawSwallowtailSquadCombat':
+      new CesiumPlot.SwallowtailSquadCombat(Cesium, viewer, {});
+      break;
+    case 'drawStraightArrow':
+      new CesiumPlot.StraightArrow(Cesium, viewer, {});
+      break;
+    case 'drawAssaultDirection':
+      new CesiumPlot.AssaultDirection(Cesium, viewer, {});
+      break;
+    case 'drawCurvedArrow':
+      new CesiumPlot.CurvedArrow(Cesium, viewer, {});
+      break;
+      case 'drawDoubleArrow':
+        new CesiumPlot.DoubleArrow(Cesium, viewer, {});
+        break;
 
-const attackArrow = document.getElementById('drawAttackArrow') as HTMLElement;
-attackArrow.onclick = () => {
-  new CesiumPlot.AttackArrow(Cesium, viewer, {});
-};
-
-const swallowtailAttackArrow = document.getElementById('drawSwallowtailAttackArrow') as HTMLElement;
-swallowtailAttackArrow.onclick = () => {
-  new CesiumPlot.SwallowtailAttackArrow(Cesium, viewer, {});
-};
-
-const squadCombat = document.getElementById('drawSquadCombat') as HTMLElement;
-squadCombat.onclick = () => {
-  new CesiumPlot.SquadCombat(Cesium, viewer, {});
-};
-
-const swallowtailSquadCombat = document.getElementById('drawSwallowtailSquadCombat') as HTMLElement;
-swallowtailSquadCombat.onclick = () => {
-  new CesiumPlot.SwallowtailSquadCombat(Cesium, viewer, {});
-};
-
-const straightArrow = document.getElementById('drawStraightArrow') as HTMLElement;
-straightArrow.onclick = () => {
-  new CesiumPlot.StraightArrow(Cesium, viewer, {});
-};
-
-const assaultDirection = document.getElementById('drawAssaultDirection') as HTMLElement;
-assaultDirection.onclick = () => {
-  new CesiumPlot.AssaultDirection(Cesium, viewer, {});
-};
-
-const curvedArrow = document.getElementById('drawCurvedArrow') as HTMLElement;
-curvedArrow.onclick = () => {
-  new CesiumPlot.CurvedArrow(Cesium, viewer, {});
+    default:
+      break;
+  }
 };

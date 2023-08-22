@@ -40,7 +40,7 @@ export const getBaseLength = (points) => wholeDistance(points) ** 0.99;
  * @returns {[*,*]}
  * @constructor
  */
-export const Mid = (point1, point2) => [(point1[0] + point2[0]) / 2, (point1[1] + point2[1]) / 2];
+export const Mid = (point1, point2): [number, number] => [(point1[0] + point2[0]) / 2, (point1[1] + point2[1]) / 2];
 
 /**
  * 通过三个点确定一个圆的中心点

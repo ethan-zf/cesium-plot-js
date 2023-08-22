@@ -159,7 +159,7 @@ export default class Draw {
     }
   }
 
-  cartesianToLnglat(cartesian: CesiumTypeOnly.Cartesian3): number[] {
+  cartesianToLnglat(cartesian: CesiumTypeOnly.Cartesian3): [number, number] {
     const lnglat = this.viewer.scene.globe.ellipsoid.cartesianToCartographic(cartesian);
     const lat = this.cesium.Math.toDegrees(lnglat.latitude);
     const lng = this.cesium.Math.toDegrees(lnglat.longitude);
