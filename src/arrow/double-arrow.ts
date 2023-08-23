@@ -11,16 +11,14 @@ export default class DoubleArrow extends Base {
   maxArrowLength: number = 2;
   neckWidthFactor: number;
   headWidthFactor: number;
-  type: 'polygon' | 'line';
   headHeightFactor: number;
   neckHeightFactor: number;
   connPoint: Position;
   tempPoint4: Position;
 
-    constructor(cesium: any, viewer: any, style: PolygonStyle) {
+  constructor(cesium: any, viewer: any, style?: PolygonStyle) {
     super(cesium, viewer, style);
     this.cesium = cesium;
-    this.type = 'polygon';
     this.headHeightFactor = 0.25;
     this.headWidthFactor = 0.3;
     this.neckHeightFactor = 0.85;
@@ -28,6 +26,10 @@ export default class DoubleArrow extends Base {
     this.connPoint = [0, 0];
     this.tempPoint4 = [0, 0];
     this.setState('drawing');
+  }
+
+  getType(): 'polygon' | 'line' {
+    return 'polygon';
   }
 
   /**

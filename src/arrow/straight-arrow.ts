@@ -8,13 +8,15 @@ export default class StraightArrow extends Base {
   points: Cartesian3[] = [];
   arrowLengthScale: number = 5;
   maxArrowLength: number = 3000000;
-  type: 'polygon' | 'line';
 
-    constructor(cesium: any, viewer: any, style: LineStyle) {
+  constructor(cesium: any, viewer: any, style?: LineStyle) {
     super(cesium, viewer, style);
     this.cesium = cesium;
-    this.type = 'line';
     this.setState('drawing');
+  }
+
+  getType(): 'polygon' | 'line' {
+    return 'line';
   }
 
   /**

@@ -2,22 +2,24 @@ import * as Utils from '../utils';
 import Base from '../base';
 // @ts-ignore
 import { Cartesian3 } from '@examples/cesium';
-import { PolygonStyle } from '../interface';
+import { LineStyle } from '../interface';
 
 export default class CurvedArrow extends Base {
   points: Cartesian3[] = [];
   arrowLengthScale: number = 5;
   maxArrowLength: number = 3000000;
-  type: 'polygon' | 'line';
   t: number;
 
-  constructor(cesium: any, viewer: any, style: PolygonStyle) {
+  constructor(cesium: any, viewer: any, style?: LineStyle) {
     super(cesium, viewer, style);
     this.cesium = cesium;
-    this.type = 'line';
     this.t = 0.3;
     this.setState('drawing');
     this.onDoubleClick();
+  }
+
+  getType(): 'polygon' | 'line' {
+    return 'line';
   }
 
   /**
@@ -45,13 +47,13 @@ export default class CurvedArrow extends Base {
       geometryPoints = this.createLine(tempPoints);
     }
     this.setGeometryPoints(geometryPoints);
-      this.drawLine();
+    this.drawLine();
   }
 
   createStraightArrow(positions: Cartesian3[]) {
     const [pnt1, pnt2] = positions.map(this.cartesianToLnglat);
     let len = 1.5;
-    
+
     len = len > this.maxArrowLength ? this.maxArrowLength : len;
     const leftPnt = Utils.getThirdPoint(pnt1, pnt2, Math.PI / 6, len, false);
     const rightPnt = Utils.getThirdPoint(pnt1, pnt2, Math.PI / 6, len, true);

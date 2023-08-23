@@ -55,10 +55,10 @@ buttonGroup.onclick = (evt) => {
       });
       break;
     case 'drawSquadCombat':
-      new CesiumPlot.SquadCombat(Cesium, viewer, {});
+      new CesiumPlot.SquadCombat(Cesium, viewer);
       break;
     case 'drawSwallowtailSquadCombat':
-      new CesiumPlot.SwallowtailSquadCombat(Cesium, viewer, {});
+      new CesiumPlot.SwallowtailSquadCombat(Cesium, viewer);
       break;
     case 'drawStraightArrow':
       new CesiumPlot.StraightArrow(Cesium, viewer, {
@@ -66,7 +66,7 @@ buttonGroup.onclick = (evt) => {
       });
       break;
     case 'drawAssaultDirection':
-      new CesiumPlot.AssaultDirection(Cesium, viewer, {});
+      new CesiumPlot.AssaultDirection(Cesium, viewer);
       break;
     case 'drawCurvedArrow':
       new CesiumPlot.CurvedArrow(Cesium, viewer, {
@@ -79,10 +79,10 @@ buttonGroup.onclick = (evt) => {
       });
       break;
     case 'drawFreehandLine':
-      new CesiumPlot.FreehandLine(Cesium, viewer, {});
+      new CesiumPlot.FreehandLine(Cesium, viewer);
       break;
     case 'drawFreehandPolygon':
-      new CesiumPlot.FreehandPolygon(Cesium, viewer, {});
+      new CesiumPlot.FreehandPolygon(Cesium, viewer);
       break;
 
     default:

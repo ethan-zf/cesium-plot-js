@@ -14,13 +14,10 @@ export default class SwallowtailAttackArrow extends AttackArrow {
   tailWidthFactor: number;
   swallowTailFactor: number;
   swallowTailPnt: [number, number];
-  type: 'polygon' | 'line';
 
-    constructor(cesium: any, viewer: any, style: PolygonStyle) {
+  constructor(cesium: any, viewer: any, style: PolygonStyle) {
     super(cesium, viewer, style);
-
     this.cesium = cesium;
-    this.type = 'polygon';
     this.headHeightFactor = 0.18;
     this.headWidthFactor = 0.3;
     this.neckHeightFactor = 0.85;

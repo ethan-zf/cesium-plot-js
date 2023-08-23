@@ -11,12 +11,10 @@ export default class AttackArrow extends Base {
   neckHeightFactor: number;
   neckWidthFactor: number;
   headTailFactor: number;
-  type: 'polygon' | 'line';
 
-  constructor(cesium: any, viewer: any, style: PolygonStyle) {
+  constructor(cesium: any, viewer: any, style?: PolygonStyle) {
     super(cesium, viewer, style);
     this.cesium = cesium;
-    this.type = 'polygon';
     this.headHeightFactor = 0.18;
     this.headWidthFactor = 0.3;
     this.neckHeightFactor = 0.85;
@@ -24,6 +22,10 @@ export default class AttackArrow extends Base {
     this.headTailFactor = 0.8;
     this.setState('drawing');
     this.onDoubleClick();
+  }
+
+  getType(): 'polygon' | 'line' {
+    return 'polygon';
   }
 
   /**

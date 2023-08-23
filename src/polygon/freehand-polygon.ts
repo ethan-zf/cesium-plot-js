@@ -5,15 +5,17 @@ import { PolygonStyle } from '../interface';
 
 export default class FreehandPolygon extends Base {
   points: Cartesian3[] = [];
-  type: 'polygon' | 'line';
   freehand: boolean;
 
-  constructor(cesium: any, viewer: any, style: PolygonStyle) {
+  constructor(cesium: any, viewer: any, style?: PolygonStyle) {
     super(cesium, viewer, style);
     this.cesium = cesium;
-    this.type = 'polygon';
     this.freehand = true;
     this.setState('drawing');
+  }
+
+  getType(): 'polygon' | 'line' {
+    return 'polygon';
   }
 
   /**

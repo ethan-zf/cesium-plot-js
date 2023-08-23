@@ -13,18 +13,20 @@ export default class FineArrow extends Base {
   headWidthFactor: number;
   headAngle: number;
   neckAngle: number;
-  type: 'polygon' | 'line';
 
-    constructor(cesium: any, viewer: any, style: PolygonStyle) {
+  constructor(cesium: any, viewer: any, style?: PolygonStyle) {
     super(cesium, viewer, style);
     this.cesium = cesium;
-    this.type = 'polygon';
     this.tailWidthFactor = 0.1;
     this.neckWidthFactor = 0.2;
     this.headWidthFactor = 0.25;
     this.headAngle = Math.PI / 8.5;
     this.neckAngle = Math.PI / 13;
     this.setState('drawing');
+  }
+
+  getType(): 'polygon' | 'line' {
+    return 'polygon';
   }
 
   /**

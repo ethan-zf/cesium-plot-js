@@ -14,16 +14,38 @@ export default class Base {
   lineEntity: CesiumTypeOnly.Entity;
   type!: 'polygon' | 'line';
   freehand!: boolean;
-  style: GeometryStyle;
+  style: GeometryStyle | undefined;
   outlineEntity: CesiumTypeOnly.Entity;
 
-  constructor(cesium: CesiumTypeOnly, viewer: CesiumTypeOnly.Viewer, style: GeometryStyle) {
+  constructor(cesium: CesiumTypeOnly, viewer: CesiumTypeOnly.Viewer, style?: GeometryStyle) {
     this.cesium = cesium;
     this.viewer = viewer;
-    this.style = style;
+    this.type = this.getType();
+    this.mergeStyle(style);
     this.cartesianToLnglat = this.cartesianToLnglat.bind(this);
     this.pixelToCartesian = this.pixelToCartesian.bind(this);
     this.onClick();
+  }
+
+  mergeStyle(style: GeometryStyle | undefined) {
+    if (this.type === 'polygon') {
+      this.style = Object.assign(
+        {
+          fillColor: this.cesium.Color.fromCssColorString('rgba(59, 178, 208, 0.2)'),
+          outlineColor: this.cesium.Color.fromCssColorString('rgba(59, 178, 208, 1.0)'),
+          outlineWidth: 2,
+        },
+        style,
+      );
+    } else if (this.type === 'line') {
+      this.style = Object.assign(
+        {
+          lineColor: this.cesium.Color.fromCssColorString('rgba(59, 178, 208, 1.0)'),
+          lineWidth: 2,
+        },
+        style,
+      );
+    }
   }
 
   /**
@@ -147,9 +169,7 @@ export default class Base {
         polygon: new this.cesium.PolygonGraphics({
           hierarchy: new this.cesium.CallbackProperty(callback, false),
           show: true,
-          // fill: true,
-          // material: this.cesium.Color.LIGHTSKYBLUE.withAlpha(0.8),
-          material: style.fillColor || this.cesium.Color.fromCssColorString('rgba(59, 178, 208, 0.2)'),
+          material: style.fillColor, // || this.cesium.Color.fromCssColorString('rgba(59, 178, 208, 0.2)'),
         }),
       });
 
@@ -159,8 +179,8 @@ export default class Base {
           positions: new this.cesium.CallbackProperty(() => {
             return [...this.geometryPoints, this.geometryPoints[0]];
           }, false),
-          width: style.outlineWidth || 2,
-          material: style.outlineColor || this.cesium.Color.fromCssColorString('rgba(59, 178, 208, 1.0)'),
+          width: style.outlineWidth, // || 2,
+          material: style.outlineColor, // || this.cesium.Color.fromCssColorString('rgba(59, 178, 208, 1.0)'),
           clampToGround: true,
         },
       });
@@ -190,8 +210,8 @@ export default class Base {
     const entity = this.viewer.entities.add({
       polyline: {
         positions: new this.cesium.CallbackProperty(() => this.geometryPoints, false),
-        width: style.lineWidth || 2,
-        material: style.lineColor || this.cesium.Color.fromCssColorString('rgba(59, 178, 208, 1.0)'),
+        width: style.lineWidth, // || 2,
+        material: style.lineColor, // || this.cesium.Color.fromCssColorString('rgba(59, 178, 208, 1.0)'),
         clampToGround: true,
       },
     });
@@ -286,6 +306,24 @@ export default class Base {
     }
   }
 
+  show() {
+    if (this.type === 'polygon') {
+      this.polygonEntity.show = true;
+      this.outlineEntity.show = true;
+    } else if (this.type === 'line') {
+      this.lineEntity.show = true;
+    }
+  }
+
+  hide() {
+    if (this.type === 'polygon') {
+      this.polygonEntity.show = false;
+      this.outlineEntity.show = false;
+    } else if (this.type === 'line') {
+      this.lineEntity.show = false;
+    }
+  }
+
   addPoint(cartesian: CesiumTypeOnly.Cartesian3) {
     //Abstract method that must be implemented by subclasses.
   }
@@ -300,6 +338,11 @@ export default class Base {
   }
 
   updateDraggingPoint(cartesian: CesiumTypeOnly.Cartesian3, index: number) {
+    //Abstract method that must be implemented by subclasses.
+  }
+
+  getType(): 'polygon' | 'line' {
+    return 'polygon';
     //Abstract method that must be implemented by subclasses.
   }
 }

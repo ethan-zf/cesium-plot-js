@@ -13,12 +13,10 @@ export default class AssaultDirection extends FineArrow {
   headWidthFactor: number;
   headAngle: number;
   neckAngle: number;
-  type: 'polygon' | 'line';
 
-  constructor(cesium: any, viewer: any, style: PolygonStyle) {
+  constructor(cesium: any, viewer: any, style?: PolygonStyle) {
     super(cesium, viewer, style);
     this.cesium = cesium;
-    this.type = 'polygon';
     this.tailWidthFactor = 0.08;
     this.neckWidthFactor = 0.1;
     this.headWidthFactor = 0.13;
