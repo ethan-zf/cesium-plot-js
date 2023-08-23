@@ -40,13 +40,19 @@ buttonGroup.onclick = (evt) => {
   const targetElement = evt.target as HTMLElement;
   switch (targetElement.id) {
     case 'drawFineArrow':
-      new CesiumPlot.FineArrow(Cesium, viewer, {});
+      new CesiumPlot.FineArrow(Cesium, viewer, {
+        fillColor: Cesium.Color.fromCssColorString('rgba(59, 178, 208, 0.5)'),
+      });
       break;
     case 'drawAttackArrow':
-      new CesiumPlot.AttackArrow(Cesium, viewer, {});
+      new CesiumPlot.AttackArrow(Cesium, viewer, {
+        outlineColor: Cesium.Color.RED,
+      });
       break;
     case 'drawSwallowtailAttackArrow':
-      new CesiumPlot.SwallowtailAttackArrow(Cesium, viewer, {});
+      new CesiumPlot.SwallowtailAttackArrow(Cesium, viewer, {
+        outlineColor: Cesium.Color.BLUE,
+      });
       break;
     case 'drawSquadCombat':
       new CesiumPlot.SquadCombat(Cesium, viewer, {});
@@ -55,16 +61,22 @@ buttonGroup.onclick = (evt) => {
       new CesiumPlot.SwallowtailSquadCombat(Cesium, viewer, {});
       break;
     case 'drawStraightArrow':
-      new CesiumPlot.StraightArrow(Cesium, viewer, {});
+      new CesiumPlot.StraightArrow(Cesium, viewer, {
+        lineColor: Cesium.Color.RED,
+      });
       break;
     case 'drawAssaultDirection':
       new CesiumPlot.AssaultDirection(Cesium, viewer, {});
       break;
     case 'drawCurvedArrow':
-      new CesiumPlot.CurvedArrow(Cesium, viewer, {});
+      new CesiumPlot.CurvedArrow(Cesium, viewer, {
+        lineColor: Cesium.Color.BLUE,
+      });
       break;
     case 'drawDoubleArrow':
-      new CesiumPlot.DoubleArrow(Cesium, viewer, {});
+      new CesiumPlot.DoubleArrow(Cesium, viewer, {
+        outlineColor: Cesium.Color.GREEN,
+      });
       break;
     case 'drawFreehandLine':
       new CesiumPlot.FreehandLine(Cesium, viewer, {});

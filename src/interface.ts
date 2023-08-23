@@ -1,3 +1,4 @@
+// @ts-ignore
 import * as CesiumTypeOnly from '@examples/cesium';
 
 export type PolygonStyle = {
@@ -7,7 +8,7 @@ export type PolygonStyle = {
 };
 
 export type LineStyle = {
-  color?: CesiumTypeOnly.Color;
+  lineColor?: CesiumTypeOnly.Color;
   lineWidth?: number;
 };
 

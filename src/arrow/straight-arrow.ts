@@ -2,7 +2,7 @@ import * as Utils from '../utils';
 import Base from '../base';
 // @ts-ignore
 import { Cartesian3 } from '@examples/cesium';
-import { PolygonStyle } from '../interface';
+import { LineStyle } from '../interface';
 
 export default class StraightArrow extends Base {
   points: Cartesian3[] = [];
@@ -10,7 +10,7 @@ export default class StraightArrow extends Base {
   maxArrowLength: number = 3000000;
   type: 'polygon' | 'line';
 
-    constructor(cesium: any, viewer: any, style: PolygonStyle) {
+    constructor(cesium: any, viewer: any, style: LineStyle) {
     super(cesium, viewer, style);
     this.cesium = cesium;
     this.type = 'line';

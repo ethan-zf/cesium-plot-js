@@ -11,7 +11,7 @@ export default class CurvedArrow extends Base {
   type: 'polygon' | 'line';
   t: number;
 
-    constructor(cesium: any, viewer: any, style: PolygonStyle) {
+  constructor(cesium: any, viewer: any, style: PolygonStyle) {
     super(cesium, viewer, style);
     this.cesium = cesium;
     this.type = 'line';
@@ -38,14 +38,26 @@ export default class CurvedArrow extends Base {
    */
   updateMovingPoint(cartesian: Cartesian3) {
     const tempPoints = [...this.points, cartesian];
+    let geometryPoints = [];
     if (tempPoints.length === 2) {
-      this.setGeometryPoints(tempPoints);
-      this.drawLine();
+      geometryPoints = this.createStraightArrow(tempPoints);
     } else {
-      const geometryPoints = this.createLine(tempPoints);
-      this.setGeometryPoints(geometryPoints);
-      this.drawLine();
+      geometryPoints = this.createLine(tempPoints);
     }
+    this.setGeometryPoints(geometryPoints);
+      this.drawLine();
+  }
+
+  createStraightArrow(positions: Cartesian3[]) {
+    const [pnt1, pnt2] = positions.map(this.cartesianToLnglat);
+    let len = 1.5;
+    
+    len = len > this.maxArrowLength ? this.maxArrowLength : len;
+    const leftPnt = Utils.getThirdPoint(pnt1, pnt2, Math.PI / 6, len, false);
+    const rightPnt = Utils.getThirdPoint(pnt1, pnt2, Math.PI / 6, len, true);
+    const points = [...pnt1, ...pnt2, ...leftPnt, ...pnt2, ...rightPnt];
+    const cartesianPoints = this.cesium.Cartesian3.fromDegreesArray(points);
+    return cartesianPoints;
   }
 
   /**

@@ -169,15 +169,33 @@ export default class Base {
 
   drawLine() {
     if (!this.lineEntity) {
-      this.lineEntity = this.viewer.entities.add({
-        polyline: {
-          positions: new this.cesium.CallbackProperty(() => this.geometryPoints, false),
-          width: 2,
-          material: this.cesium.Color.fromCssColorString('rgba(59, 178, 208, 1.0)'),
-          clampToGround: true,
-        },
-      });
+      const style = this.style as LineStyle;
+      this.lineEntity = this.addLineEntity(style);
     }
+  }
+
+  addFirstLineOfTheArrow() {
+    if (!this.lineEntity) {
+      // The line style between the first two points matches the outline style.
+      const style = this.style as PolygonStyle;
+      const lineStyle = {
+        lineColor: style.outlineColor,
+        lineWidth: style.outlineWidth,
+      };
+      this.lineEntity = this.addLineEntity(lineStyle);
+    }
+  }
+
+  addLineEntity(style: LineStyle) {
+    const entity = this.viewer.entities.add({
+      polyline: {
+        positions: new this.cesium.CallbackProperty(() => this.geometryPoints, false),
+        width: style.lineWidth || 2,
+        material: style.lineColor || this.cesium.Color.fromCssColorString('rgba(59, 178, 208, 1.0)'),
+        clampToGround: true,
+      },
+    });
+    return entity;
   }
 
   cartesianToLnglat(cartesian: CesiumTypeOnly.Cartesian3): [number, number] {

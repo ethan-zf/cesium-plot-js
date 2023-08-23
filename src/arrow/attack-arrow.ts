@@ -13,7 +13,7 @@ export default class AttackArrow extends Base {
   headTailFactor: number;
   type: 'polygon' | 'line';
 
-    constructor(cesium: any, viewer: any, style: PolygonStyle) {
+  constructor(cesium: any, viewer: any, style: PolygonStyle) {
     super(cesium, viewer, style);
     this.cesium = cesium;
     this.type = 'polygon';
@@ -48,7 +48,7 @@ export default class AttackArrow extends Base {
     const tempPoints = [...this.points, cartesian];
     this.setGeometryPoints(tempPoints);
     if (tempPoints.length === 2) {
-      this.drawLine();
+      this.addFirstLineOfTheArrow();
     } else {
       const geometryPoints = this.createPolygon(tempPoints);
       this.setGeometryPoints(geometryPoints);

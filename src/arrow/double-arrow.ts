@@ -53,7 +53,7 @@ export default class DoubleArrow extends Base {
     const tempPoints = [...this.points, cartesian];
     this.setGeometryPoints(tempPoints);
     if (tempPoints.length === 2) {
-      this.drawLine();
+      this.addFirstLineOfTheArrow();
     } else if (tempPoints.length > 2) {
       const geometryPoints = this.createPolygon(tempPoints);
       this.setGeometryPoints(geometryPoints);
