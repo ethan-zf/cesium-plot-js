@@ -124,7 +124,6 @@ export default class Base {
   }
 
   onDoubleClick() {
-    // this.eventHandler = new this.cesium.ScreenSpaceEventHandler(this.viewer.canvas);
     this.eventHandler.setInputAction((evt: any) => {
       this.finishDrawing();
     }, this.cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
@@ -169,7 +168,7 @@ export default class Base {
         polygon: new this.cesium.PolygonGraphics({
           hierarchy: new this.cesium.CallbackProperty(callback, false),
           show: true,
-          material: style.fillColor, // || this.cesium.Color.fromCssColorString('rgba(59, 178, 208, 0.2)'),
+          material: style.fillColor,
         }),
       });
 
@@ -179,8 +178,8 @@ export default class Base {
           positions: new this.cesium.CallbackProperty(() => {
             return [...this.geometryPoints, this.geometryPoints[0]];
           }, false),
-          width: style.outlineWidth, // || 2,
-          material: style.outlineColor, // || this.cesium.Color.fromCssColorString('rgba(59, 178, 208, 1.0)'),
+          width: style.outlineWidth,
+          material: style.outlineColor,
           clampToGround: true,
         },
       });
@@ -210,8 +209,8 @@ export default class Base {
     const entity = this.viewer.entities.add({
       polyline: {
         positions: new this.cesium.CallbackProperty(() => this.geometryPoints, false),
-        width: style.lineWidth, // || 2,
-        material: style.lineColor, // || this.cesium.Color.fromCssColorString('rgba(59, 178, 208, 1.0)'),
+        width: style.lineWidth,
+        material: style.lineColor,
         clampToGround: true,
       },
     });
@@ -306,11 +305,21 @@ export default class Base {
     }
   }
 
+  /**
+   * Uncertain whether it's a Cesium bug, but the lines do not render properly when 'clampToGround'
+   * is not set (display irregularities). After drawing, the camera adjusts its view based on the shape,
+   * which is not desired. Setting 'clampToGround' to true results in proper rendering and no change in
+   * the camera's perspective. However, when hiding this entity, the camera strangely moves towards the Earth's
+   * center at a precision-less position. Thus, when toggling the visibility state, adjust the 'clampToGround'
+   *  status first to avoid this issue.
+   */
   show() {
     if (this.type === 'polygon') {
       this.polygonEntity.show = true;
+      this.outlineEntity.polyline.clampToGround = true;
       this.outlineEntity.show = true;
     } else if (this.type === 'line') {
+      this.lineEntity.polyline.clampToGround = true;
       this.lineEntity.show = true;
     }
   }
@@ -318,9 +327,20 @@ export default class Base {
   hide() {
     if (this.type === 'polygon') {
       this.polygonEntity.show = false;
+      this.outlineEntity.polyline.clampToGround = false;
       this.outlineEntity.show = false;
     } else if (this.type === 'line') {
+      this.lineEntity.polyline.clampToGround = false;
       this.lineEntity.show = false;
+    }
+  }
+
+  remove() {
+    if (this.type === 'polygon') {
+      this.viewer.entities.remove(this.polygonEntity);
+      this.viewer.entities.remove(this.outlineEntity);
+    } else if (this.type === 'line') {
+      this.viewer.entities.remove(this.lineEntity);
     }
   }
 

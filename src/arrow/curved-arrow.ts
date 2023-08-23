@@ -52,8 +52,8 @@ export default class CurvedArrow extends Base {
 
   createStraightArrow(positions: Cartesian3[]) {
     const [pnt1, pnt2] = positions.map(this.cartesianToLnglat);
-    let len = 1.5;
-
+    const distance = Utils.MathDistance(pnt1, pnt2);
+    let len = distance / this.arrowLengthScale;
     len = len > this.maxArrowLength ? this.maxArrowLength : len;
     const leftPnt = Utils.getThirdPoint(pnt1, pnt2, Math.PI / 6, len, false);
     const rightPnt = Utils.getThirdPoint(pnt1, pnt2, Math.PI / 6, len, true);
@@ -83,10 +83,8 @@ export default class CurvedArrow extends Base {
     const pnt1 = lnglatPoints[lnglatPoints.length - 2];
     const pnt2 = lnglatPoints[lnglatPoints.length - 1];
 
-    // const distance = Utils.MathDistance(pnt1, pnt2);
-    // const distance = Utils.wholeDistance(lnglatPoints);
-    // let len = distance / this.arrowLengthScale;
-    let len = 1.5;
+    const distance = Utils.wholeDistance(lnglatPoints);
+    let len = distance / this.arrowLengthScale;
     len = len > this.maxArrowLength ? this.maxArrowLength : len;
     const leftPnt = Utils.getThirdPoint(pnt1, pnt2, Math.PI / 6, len, false);
     const rightPnt = Utils.getThirdPoint(pnt1, pnt2, Math.PI / 6, len, true);
