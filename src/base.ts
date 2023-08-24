@@ -308,7 +308,7 @@ export default class Base {
     // Listen for left mouse button release events
     this.controlPointsEventHandler.setInputAction(() => {
       // Trigger 'drawUpdate' when there is a change in coordinates before and after dragging.
-      if (!this.cesium.Cartesian3.equals(dragStartPosition, draggedIcon.position._value)) {
+      if (draggedIcon && !this.cesium.Cartesian3.equals(dragStartPosition, draggedIcon.position._value)) {
         this.eventDispatcher.dispatchEvent('drawUpdate', draggedIcon.position._value);
       }
       isDragging = false;
