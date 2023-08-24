@@ -37,6 +37,7 @@ export default class FreehandLine extends Base {
     this.points.push(cartesian);
     this.setGeometryPoints(this.points);
     this.drawLine();
+    this.eventDispatcher.dispatchEvent('drawUpdate', cartesian);
   }
 
   /**

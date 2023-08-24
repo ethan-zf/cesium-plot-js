@@ -1,6 +1,7 @@
 // @ts-ignore
 import * as CesiumTypeOnly from '@examples/cesium';
-import { State, GeometryStyle, PolygonStyle, LineStyle } from './interface';
+import { State, GeometryStyle, PolygonStyle, LineStyle, EventType, EventListener } from './interface';
+import EventDispatcher from './events';
 
 export default class Base {
   cesium: typeof CesiumTypeOnly;
@@ -16,6 +17,7 @@ export default class Base {
   freehand!: boolean;
   style: GeometryStyle | undefined;
   outlineEntity: CesiumTypeOnly.Entity;
+  eventDispatcher: EventDispatcher;
 
   constructor(cesium: CesiumTypeOnly, viewer: CesiumTypeOnly.Viewer, style?: GeometryStyle) {
     this.cesium = cesium;
@@ -24,6 +26,7 @@ export default class Base {
     this.mergeStyle(style);
     this.cartesianToLnglat = this.cartesianToLnglat.bind(this);
     this.pixelToCartesian = this.pixelToCartesian.bind(this);
+    this.eventDispatcher = new EventDispatcher();
     this.onClick();
   }
 
@@ -89,11 +92,18 @@ export default class Base {
           return;
         }
         this.addPoint(cartesian);
+        // Trigger 'drawStart' when the first point is being drawn.
+        if (this.getPoints().length === 1) {
+          this.eventDispatcher.dispatchEvent('drawStart');
+        }
+        this.eventDispatcher.dispatchEvent('drawUpdate', cartesian);
       } else if (this.state === 'edit') {
         //In edit mode, exit the editing state and delete control points when clicking outside the currently edited shape.
         if (!hitEntities || activeEntity.id !== pickedObject.id.id) {
           this.setState('static');
           this.removeControlPoints();
+          // Trigger 'drawEnd' and return the geometry shape points when exiting the edit mode.
+          this.eventDispatcher.dispatchEvent('drawEnd', this.getPoints());
         }
       } else if (this.state === 'static') {
         //When drawing multiple shapes, the click events for all shapes are triggered. Only when hitting a completed shape should it enter editing mode.
@@ -103,6 +113,7 @@ export default class Base {
             // Hit Geometry Shape.
             this.setState('edit');
             this.addControlPoints();
+            this.eventDispatcher.dispatchEvent('editStart');
           }
         }
       }
@@ -140,6 +151,7 @@ export default class Base {
   finishDrawing() {
     this.removeMoveListener();
     this.setState('static');
+    this.eventDispatcher.dispatchEvent('drawEnd', this.getPoints());
   }
 
   removeClickListener() {
@@ -148,6 +160,10 @@ export default class Base {
 
   removeMoveListener() {
     this.eventHandler.removeInputAction(this.cesium.ScreenSpaceEventType.MOUSE_MOVE);
+  }
+
+  removeDoubleClickListener() {
+    this.eventHandler.removeInputAction(this.cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
   }
 
   setGeometryPoints(geometryPoints: CesiumTypeOnly.Cartesian3[]) {
@@ -255,6 +271,7 @@ export default class Base {
 
     let isDragging = false;
     let draggedIcon: CesiumTypeOnly.Entity = null;
+    let dragStartPosition: CesiumTypeOnly.Cartesian3;
 
     this.controlPointsEventHandler = new this.cesium.ScreenSpaceEventHandler(this.viewer.canvas);
     // Listen for left mouse button press events
@@ -266,7 +283,9 @@ export default class Base {
           if (pickedObject.id === this.controlPoints[i]) {
             isDragging = true;
             draggedIcon = this.controlPoints[i];
-            draggedIcon.index = i; //Save the index of dragged points for dynamic updates during movement
+            dragStartPosition = draggedIcon.position._value;
+            //Save the index of dragged points for dynamic updates during movement
+            draggedIcon.index = i;
             break;
           }
         }
@@ -288,6 +307,10 @@ export default class Base {
 
     // Listen for left mouse button release events
     this.controlPointsEventHandler.setInputAction(() => {
+      // Trigger 'drawUpdate' when there is a change in coordinates before and after dragging.
+      if (!this.cesium.Cartesian3.equals(dragStartPosition, draggedIcon.position._value)) {
+        this.eventDispatcher.dispatchEvent('drawUpdate', draggedIcon.position._value);
+      }
       isDragging = false;
       draggedIcon = null;
       this.viewer.scene.screenSpaceCameraController.enableRotate = true;
@@ -342,6 +365,17 @@ export default class Base {
     } else if (this.type === 'line') {
       this.viewer.entities.remove(this.lineEntity);
     }
+    this.removeClickListener();
+    this.removeMoveListener();
+    this.removeDoubleClickListener();
+  }
+
+  on(eventType: EventType, listener: EventListener) {
+    this.eventDispatcher.on(eventType, listener);
+  }
+
+  off(eventType: EventType, listener: EventListener) {
+    this.eventDispatcher.off(eventType, listener);
   }
 
   addPoint(cartesian: CesiumTypeOnly.Cartesian3) {

@@ -103,7 +103,11 @@ buttonGroup.onclick = (evt) => {
       geometry = new CesiumPlot.FreehandLine(Cesium, viewer);
       break;
     case 'drawFreehandPolygon':
-      geometry = new CesiumPlot.FreehandPolygon(Cesium, viewer);
+      geometry = new CesiumPlot.FreehandPolygon(Cesium, viewer, {
+        material: Cesium.Color.GREEN,
+        outlineMaterial: Cesium.Color.fromCssColorString('rgba(59, 178, 208, 1)'),
+        outlineWidth: 2,
+      });
       break;
     case 'hide':
       geometry && geometry.hide();
@@ -114,6 +118,25 @@ buttonGroup.onclick = (evt) => {
     case 'remove':
       geometry && geometry.remove();
       geometry = null;
+      break;
+    case 'addEvent':
+      if (geometry) {
+        geometry.on('drawStart', () => {
+          console.error('start');
+        });
+        geometry.on('drawUpdate', (cartesian: Cesium.Cartesian3) => {
+          console.error('update', cartesian);
+        });
+        geometry.on('drawEnd', (geometryPoints: any) => {
+          console.error('drawEnd', geometryPoints);
+        });
+        geometry.on('editStart', () => {
+          console.error('editStart');
+        });
+        geometry.on('editEnd', (geometryPoints: any) => {
+          console.error('editEnd', geometryPoints);
+        });
+      }
       break;
     default:
       break;

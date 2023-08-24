@@ -38,6 +38,7 @@ export default class FreehandPolygon extends Base {
     if (this.points.length > 2) {
       this.setGeometryPoints(this.points);
       this.drawPolygon();
+      this.eventDispatcher.dispatchEvent('drawUpdate', cartesian);
     }
   }
 

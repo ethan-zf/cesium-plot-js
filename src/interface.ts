@@ -14,3 +14,6 @@ export type LineStyle = {
 
 export type State = 'drawing' | 'edit' | 'static';
 export type GeometryStyle = PolygonStyle | LineStyle;
+
+export type EventType = 'drawStart' | 'drawUpdate' | 'drawEnd' | 'editEnd' | 'editStart';
+export type EventListener = (eventData?: any) => void;
