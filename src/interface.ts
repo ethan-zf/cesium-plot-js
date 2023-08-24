@@ -2,13 +2,13 @@
 import * as CesiumTypeOnly from '@examples/cesium';
 
 export type PolygonStyle = {
-  fillColor?: CesiumTypeOnly.Color;
+  material?: CesiumTypeOnly.MaterialProperty;
   outlineWidth?: number;
-  outlineColor?: CesiumTypeOnly.Color;
+  outlineMaterial?: CesiumTypeOnly.MaterialProperty;
 };
 
 export type LineStyle = {
-  lineColor?: CesiumTypeOnly.Color;
+  material?: CesiumTypeOnly.Color;
   lineWidth?: number;
 };
 

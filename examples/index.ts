@@ -23,7 +23,6 @@ const viewer = new Cesium.Viewer('cesiumContainer', {
   navigationHelpButton: false,
   baseLayerPicker: false,
   imageryProvider: raster,
-  // imageryProvider: raster,
   contextOptions: {
     requestWebgl2: true,
   },
@@ -56,28 +55,35 @@ buttonGroup.onclick = (evt) => {
   switch (targetElement.id) {
     case 'drawFineArrow':
       geometry = new CesiumPlot.FineArrow(Cesium, viewer, {
-        fillColor: Cesium.Color.fromCssColorString('rgba(59, 178, 208, 0.5)'),
+        material: Cesium.Color.fromCssColorString('rgba(59, 178, 208, 0.5)'),
+        outlineMaterial: Cesium.Color.fromCssColorString('rgba(59, 178, 208, 1)'),
+        outlineWidth: 3,
       });
       break;
     case 'drawAttackArrow':
       geometry = new CesiumPlot.AttackArrow(Cesium, viewer, {
-        outlineColor: Cesium.Color.RED,
+        outlineMaterial: Cesium.Color.RED,
       });
       break;
     case 'drawSwallowtailAttackArrow':
       geometry = new CesiumPlot.SwallowtailAttackArrow(Cesium, viewer, {
-        outlineColor: Cesium.Color.BLUE,
+        outlineMaterial: Cesium.Color.BLUE,
       });
       break;
     case 'drawSquadCombat':
-      geometry = new CesiumPlot.SquadCombat(Cesium, viewer);
+      geometry = new CesiumPlot.SquadCombat(Cesium, viewer, {
+        outlineMaterial: new Cesium.PolylineDashMaterialProperty({
+          color: Cesium.Color.RED,
+          dashLength: 16.0,
+        }),
+      });
       break;
     case 'drawSwallowtailSquadCombat':
       geometry = new CesiumPlot.SwallowtailSquadCombat(Cesium, viewer);
       break;
     case 'drawStraightArrow':
       geometry = new CesiumPlot.StraightArrow(Cesium, viewer, {
-        lineColor: Cesium.Color.RED,
+        material: Cesium.Color.RED,
       });
       break;
     case 'drawAssaultDirection':
@@ -85,12 +91,12 @@ buttonGroup.onclick = (evt) => {
       break;
     case 'drawCurvedArrow':
       geometry = new CesiumPlot.CurvedArrow(Cesium, viewer, {
-        lineColor: Cesium.Color.BLUE,
+        material: Cesium.Color.BLUE,
       });
       break;
     case 'drawDoubleArrow':
       geometry = new CesiumPlot.DoubleArrow(Cesium, viewer, {
-        outlineColor: Cesium.Color.GREEN,
+        outlineMaterial: Cesium.Color.GREEN,
       });
       break;
     case 'drawFreehandLine':
@@ -101,7 +107,6 @@ buttonGroup.onclick = (evt) => {
       break;
     case 'hide':
       geometry && geometry.hide();
-      // setTimeout(getCameraInfo, 2000);
       break;
     case 'show':
       geometry && geometry.show();

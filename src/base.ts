@@ -31,8 +31,8 @@ export default class Base {
     if (this.type === 'polygon') {
       this.style = Object.assign(
         {
-          fillColor: this.cesium.Color.fromCssColorString('rgba(59, 178, 208, 0.2)'),
-          outlineColor: this.cesium.Color.fromCssColorString('rgba(59, 178, 208, 1.0)'),
+          material: this.cesium.Color.fromCssColorString('rgba(59, 178, 208, 0.2)'),
+          outlineMaterial: this.cesium.Color.fromCssColorString('rgba(59, 178, 208, 1.0)'),
           outlineWidth: 2,
         },
         style,
@@ -40,7 +40,7 @@ export default class Base {
     } else if (this.type === 'line') {
       this.style = Object.assign(
         {
-          lineColor: this.cesium.Color.fromCssColorString('rgba(59, 178, 208, 1.0)'),
+          material: this.cesium.Color.fromCssColorString('rgba(59, 178, 208, 1.0)'),
           lineWidth: 2,
         },
         style,
@@ -168,7 +168,7 @@ export default class Base {
         polygon: new this.cesium.PolygonGraphics({
           hierarchy: new this.cesium.CallbackProperty(callback, false),
           show: true,
-          material: style.fillColor,
+          material: style.material,
         }),
       });
 
@@ -179,7 +179,7 @@ export default class Base {
             return [...this.geometryPoints, this.geometryPoints[0]];
           }, false),
           width: style.outlineWidth,
-          material: style.outlineColor,
+          material: style.outlineMaterial,
           clampToGround: true,
         },
       });
@@ -198,7 +198,7 @@ export default class Base {
       // The line style between the first two points matches the outline style.
       const style = this.style as PolygonStyle;
       const lineStyle = {
-        lineColor: style.outlineColor,
+        material: style.outlineMaterial,
         lineWidth: style.outlineWidth,
       };
       this.lineEntity = this.addLineEntity(lineStyle);
@@ -210,7 +210,7 @@ export default class Base {
       polyline: {
         positions: new this.cesium.CallbackProperty(() => this.geometryPoints, false),
         width: style.lineWidth,
-        material: style.lineColor,
+        material: style.material,
         clampToGround: true,
       },
     });
