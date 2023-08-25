@@ -151,6 +151,24 @@ export default class Base {
   finishDrawing() {
     this.removeMoveListener();
     this.setState('static');
+
+    /**
+     * "I've noticed that CallbackProperty can lead to significant performance issues.
+     *  After drawing multiple shapes, the map becomes noticeably laggy. Using methods
+     * like requestAnimationFrame or setInterval doesn't provide a smooth way to display
+     *  shapes during the drawing process. As a temporary solution, I've set the hierarchy
+     *  or positions to static after drawing is complete. This addresses the performance
+     *  problem, but introduces a new issue: after setting the data to static, the shapes
+     *  redraw, resulting in a flicker. However, this seems to be a relatively reasonable
+     *  approach given the current circumstances."
+     */
+    if (this.type === 'polygon') {
+      this.polygonEntity.polygon.hierarchy = new this.cesium.PolygonHierarchy(this.geometryPoints);
+      this.outlineEntity.polyline.positions = [...this.geometryPoints, this.geometryPoints[0]];
+    } else if (this.type === 'line') {
+      this.lineEntity.polyline.positions = this.geometryPoints;
+    }
+
     this.eventDispatcher.dispatchEvent('drawEnd', this.getPoints());
   }
 
@@ -384,7 +402,7 @@ export default class Base {
 
   getPoints(): CesiumTypeOnly.Cartesian3[] {
     //Abstract method that must be implemented by subclasses.
-    return this.cesium.Cartesian3();
+    return [new this.cesium.Cartesian3()];
   }
 
   updateMovingPoint(cartesian: CesiumTypeOnly.Cartesian3, index?: number) {
