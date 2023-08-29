@@ -49,6 +49,24 @@ const getCameraInfo = () => {
 };
 
 let geometry: any;
+const dragStartHandler = () => {
+  console.error('start');
+};
+const drawUpdateHandler = (cartesian: Cesium.Cartesian3) => {
+  console.error('update', cartesian);
+};
+
+const drawEndHandler = (geometryPoints: any) => {
+  console.error('drawEnd', geometryPoints);
+};
+
+const editStartHandler = () => {
+  console.error('editStart');
+};
+
+const editEndHandler = (geometryPoints: any) => {
+  console.error('editEnd', geometryPoints);
+};
 const buttonGroup = document.getElementById('button-group') as HTMLElement;
 buttonGroup.onclick = (evt) => {
   const targetElement = evt.target as HTMLElement;
@@ -121,21 +139,20 @@ buttonGroup.onclick = (evt) => {
       break;
     case 'addEvent':
       if (geometry) {
-        geometry.on('drawStart', () => {
-          console.error('start');
-        });
-        geometry.on('drawUpdate', (cartesian: Cesium.Cartesian3) => {
-          console.error('update', cartesian);
-        });
-        geometry.on('drawEnd', (geometryPoints: any) => {
-          console.error('drawEnd', geometryPoints);
-        });
-        geometry.on('editStart', () => {
-          console.error('editStart');
-        });
-        geometry.on('editEnd', (geometryPoints: any) => {
-          console.error('editEnd', geometryPoints);
-        });
+        geometry.on('drawStart', dragStartHandler);
+        geometry.on('drawUpdate', drawUpdateHandler);
+        geometry.on('drawEnd', drawEndHandler);
+        geometry.on('editStart', editStartHandler);
+        geometry.on('editEnd', editEndHandler);
+      }
+      break;
+    case 'removeEvent':
+      if (geometry) {
+        geometry.off('drawStart', dragStartHandler);
+        geometry.off('drawUpdate', drawUpdateHandler);
+        geometry.off('drawEnd', drawEndHandler);
+        geometry.off('editStart', editStartHandler);
+        geometry.off('editEnd', editEndHandler);
       }
       break;
     default:

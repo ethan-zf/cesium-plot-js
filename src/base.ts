@@ -162,12 +162,13 @@ export default class Base {
      *  redraw, resulting in a flicker. However, this seems to be a relatively reasonable
      *  approach given the current circumstances."
      */
-    if (this.type === 'polygon') {
-      this.polygonEntity.polygon.hierarchy = new this.cesium.PolygonHierarchy(this.geometryPoints);
-      this.outlineEntity.polyline.positions = [...this.geometryPoints, this.geometryPoints[0]];
-    } else if (this.type === 'line') {
-      this.lineEntity.polyline.positions = this.geometryPoints;
-    }
+    // TODO...
+    // if (this.type === 'polygon') {
+    //   this.polygonEntity.polygon.hierarchy = new this.cesium.PolygonHierarchy(this.geometryPoints);
+    //   this.outlineEntity.polyline.positions = [...this.geometryPoints, this.geometryPoints[0]];
+    // } else if (this.type === 'line') {
+    //   this.lineEntity.polyline.positions = this.geometryPoints;
+    // }
 
     this.eventDispatcher.dispatchEvent('drawEnd', this.getPoints());
   }
