@@ -387,6 +387,7 @@ export default class Base {
     this.removeClickListener();
     this.removeMoveListener();
     this.removeDoubleClickListener();
+    this.removeControlPoints();
   }
 
   on(eventType: EventType, listener: EventListener) {
