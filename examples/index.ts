@@ -120,6 +120,9 @@ buttonGroup.onclick = (evt) => {
     case 'drawFreehandLine':
       geometry = new CesiumPlot.FreehandLine(Cesium, viewer);
       break;
+    case 'drawCurve':
+      geometry = new CesiumPlot.Curve(Cesium, viewer);
+      break;
     case 'drawFreehandPolygon':
       geometry = new CesiumPlot.FreehandPolygon(Cesium, viewer, {
         material: Cesium.Color.GREEN,
