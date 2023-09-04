@@ -23,6 +23,18 @@ export default class SquadCombat extends AttackArrow {
   }
 
   /**
+   * Add points only on click events
+   */
+  addPoint(cartesian: Cartesian3) {
+    this.points.push(cartesian);
+    if (this.points.length < 2) {
+      this.onMouseMove();
+    } else if (this.points.length > 2) {
+      this.lineEntity && this.viewer.entities.remove(this.lineEntity);
+    }
+  }
+
+  /**
    * Draw a shape based on mouse movement points during the initial drawing.
    */
   updateMovingPoint(cartesian: Cartesian3) {
