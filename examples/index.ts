@@ -126,6 +126,9 @@ buttonGroup.onclick = (evt) => {
     case 'drawEllipse':
       geometry = new CesiumPlot.Ellipse(Cesium, viewer);
       break;
+    case 'drawLune':
+      geometry = new CesiumPlot.Lune(Cesium, viewer);
+      break;
     case 'drawFreehandPolygon':
       geometry = new CesiumPlot.FreehandPolygon(Cesium, viewer, {
         material: Cesium.Color.GREEN,
