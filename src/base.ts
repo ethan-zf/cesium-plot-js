@@ -18,6 +18,9 @@ export default class Base {
   style: GeometryStyle | undefined;
   outlineEntity: CesiumTypeOnly.Entity;
   eventDispatcher: EventDispatcher;
+  dragEventHandler: CesiumTypeOnly.ScreenSpaceEventHandler;
+  entityId: string = '';
+  points: CesiumTypeOnly.Cartesian3[] = [];
 
   constructor(cesium: CesiumTypeOnly, viewer: CesiumTypeOnly.Viewer, style?: GeometryStyle) {
     this.cesium = cesium;
@@ -87,11 +90,13 @@ export default class Base {
         if (!cartesian) {
           return;
         }
+
         // "For non-freehand drawn shapes, validate that the distance between two consecutive clicks is greater than 10 meters
         if (!this.freehand && points.length > 0 && !this.checkDistance(cartesian, points[points.length - 1])) {
           return;
         }
         this.addPoint(cartesian);
+
         // Trigger 'drawStart' when the first point is being drawn.
         if (this.getPoints().length === 1) {
           this.eventDispatcher.dispatchEvent('drawStart');
@@ -102,6 +107,7 @@ export default class Base {
         if (!hitEntities || activeEntity.id !== pickedObject.id.id) {
           this.setState('static');
           this.removeControlPoints();
+          this.disableDrag();
           // Trigger 'drawEnd' and return the geometry shape points when exiting the edit mode.
           this.eventDispatcher.dispatchEvent('drawEnd', this.getPoints());
         }
@@ -113,6 +119,7 @@ export default class Base {
             // Hit Geometry Shape.
             this.setState('edit');
             this.addControlPoints();
+            this.draggable();
             this.eventDispatcher.dispatchEvent('editStart');
           }
         }
@@ -151,7 +158,8 @@ export default class Base {
   finishDrawing() {
     this.removeMoveListener();
     this.setState('static');
-
+    const entity = this.polygonEntity || this.lineEntity;
+    this.entityId = entity.id;
     /**
      * "I've noticed that CallbackProperty can lead to significant performance issues.
      *  After drawing multiple shapes, the map becomes noticeably laggy. Using methods
@@ -293,6 +301,7 @@ export default class Base {
     let dragStartPosition: CesiumTypeOnly.Cartesian3;
 
     this.controlPointsEventHandler = new this.cesium.ScreenSpaceEventHandler(this.viewer.canvas);
+
     // Listen for left mouse button press events
     this.controlPointsEventHandler.setInputAction((clickEvent: any) => {
       const pickedObject = this.viewer.scene.pick(clickEvent.position);
@@ -345,6 +354,74 @@ export default class Base {
       this.controlPointsEventHandler.removeInputAction(this.cesium.ScreenSpaceEventType.MOUSE_MOVE);
       this.controlPointsEventHandler.removeInputAction(this.cesium.ScreenSpaceEventType.LEFT_UP);
     }
+  }
+
+  /**
+   * Allow the entire shape to be dragged while in edit mode.
+   */
+  draggable() {
+    let dragging = false;
+    let startPosition: CesiumTypeOnly.Cartesian3 | undefined;
+    this.dragEventHandler = new this.cesium.ScreenSpaceEventHandler(this.viewer.canvas);
+    this.dragEventHandler.setInputAction((event: any) => {
+      const pickRay = this.viewer.scene.camera.getPickRay(event.position);
+      if (pickRay) {
+        const cartesian = this.viewer.scene.globe.pick(pickRay, this.viewer.scene);
+        const pickedObject = this.viewer.scene.pick(event.position);
+        if (this.cesium.defined(pickedObject) && pickedObject.id instanceof CesiumTypeOnly.Entity) {
+          const clickedEntity = pickedObject.id;
+          if (clickedEntity.id == this.entityId) {
+            //Clicking on the current instance's entity initiates drag logic.
+            dragging = true;
+            startPosition = cartesian;
+            this.viewer.scene.screenSpaceCameraController.enableRotate = false;
+          }
+        }
+      }
+    }, this.cesium.ScreenSpaceEventType.LEFT_DOWN);
+
+    this.dragEventHandler.setInputAction((event: any) => {
+      if (dragging && startPosition) {
+        // Retrieve the world coordinates of the current mouse position.
+        const newPosition = this.pixelToCartesian(event.endPosition);
+        if (newPosition) {
+          // Calculate the displacement vector.
+          const translation = this.cesium.Cartesian3.subtract(newPosition, startPosition, new this.cesium.Cartesian3());
+          const newPoints = this.geometryPoints.map((p) => {
+            return this.cesium.Cartesian3.add(p, translation, new this.cesium.Cartesian3());
+          });
+
+          //Move all key points according to a vector.
+          this.points = this.points.map((p) => {
+            return this.cesium.Cartesian3.add(p, translation, new this.cesium.Cartesian3());
+          });
+
+          // Move control points in the same manner.
+          this.controlPoints.map((p: CesiumTypeOnly.Entity) => {
+            const position = p.position?.getValue(this.cesium.JulianDate.now());
+            const newPosition = this.cesium.Cartesian3.add(position, translation, new this.cesium.Cartesian3());
+            p.position?.setValue(newPosition);
+          });
+
+          this.setGeometryPoints(newPoints);
+          startPosition = newPosition;
+        }
+      }
+    }, this.cesium.ScreenSpaceEventType.MOUSE_MOVE);
+
+    // Listen for the mouse release event to end dragging.
+    this.dragEventHandler.setInputAction(() => {
+      dragging = false;
+      startPosition = undefined;
+      this.viewer.scene.screenSpaceCameraController.enableRotate = true;
+    }, this.cesium.ScreenSpaceEventType.LEFT_UP);
+  }
+
+  // Finish editing, disable dragging."
+  disableDrag() {
+    this.dragEventHandler.removeInputAction(this.cesium.ScreenSpaceEventType.LEFT_DOWN);
+    this.dragEventHandler.removeInputAction(this.cesium.ScreenSpaceEventType.MOUSE_MOVE);
+    this.dragEventHandler.removeInputAction(this.cesium.ScreenSpaceEventType.LEFT_UP);
   }
 
   /**
