@@ -12,6 +12,7 @@ import FreehandPolygon from './polygon/freehand-polygon';
 import Curve from './line/curve';
 import Ellipse from './polygon/ellipse';
 import Lune from './polygon/lune';
+import Reactangle from './polygon/rectangle';
 
 const CesiumPlot = {
   FineArrow,
@@ -28,6 +29,7 @@ const CesiumPlot = {
   Curve,
   Ellipse,
   Lune,
+  Reactangle
 };
 
 export default CesiumPlot;

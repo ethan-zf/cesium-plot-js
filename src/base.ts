@@ -157,7 +157,9 @@ export default class Base {
 
   finishDrawing() {
     this.removeMoveListener();
-    this.setState('static');
+    this.setState('edit');
+    this.addControlPoints();
+    this.draggable();
     const entity = this.polygonEntity || this.lineEntity;
     this.entityId = entity.id;
     /**
