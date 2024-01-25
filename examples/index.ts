@@ -69,6 +69,9 @@ buttonGroup.onclick = (evt) => {
     case 'drawReactangle':
       geometry = new CesiumPlot.Reactangle(Cesium, viewer);
       break;
+    case 'drawTriangle':
+      geometry = new CesiumPlot.Triangle(Cesium, viewer);
+      break;
     case 'drawFineArrow':
       geometry = new CesiumPlot.FineArrow(Cesium, viewer, {
         material: Cesium.Color.fromCssColorString('rgba(59, 178, 208, 0.5)'),

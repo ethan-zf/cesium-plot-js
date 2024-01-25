@@ -4,7 +4,7 @@ import { Cartesian3 } from '@examples/cesium';
 
 import { PolygonStyle } from '../interface';
 
-export default class Rectangle extends Base {
+export default class Triangle extends Base {
   points: Cartesian3[] = [];
 
   constructor(cesium: any, viewer: any, style?: PolygonStyle) {
@@ -24,7 +24,7 @@ export default class Rectangle extends Base {
     this.points.push(cartesian);
     if (this.points.length === 1) {
       this.onMouseMove();
-    } else if (this.points.length > 1) {
+    } else if (this.points.length === 3) {
       this.finishDrawing();
     }
   }
@@ -34,9 +34,12 @@ export default class Rectangle extends Base {
    */
   updateMovingPoint(cartesian: Cartesian3) {
     const tempPoints = [...this.points, cartesian];
-    const geometryPoints = this.createRectangle(tempPoints);
-    this.setGeometryPoints(geometryPoints);
-    this.drawPolygon();
+    this.setGeometryPoints(tempPoints);
+    if (tempPoints.length === 2) {
+      this.addFirstLineOfTheArrow();
+    } else {
+      this.drawPolygon();
+    }
   }
 
   /**
@@ -44,16 +47,8 @@ export default class Rectangle extends Base {
    */
   updateDraggingPoint(cartesian: Cartesian3, index: number) {
     this.points[index] = cartesian;
-    const geometryPoints = this.createRectangle(this.points);
-    this.setGeometryPoints(geometryPoints);
+    this.setGeometryPoints(this.points);
     this.drawPolygon();
-  }
-
-  createRectangle(positions: Cartesian3[]) {
-    const [p1, p2] = positions.map(this.cartesianToLnglat);
-    const coords = [...p1, p1[0], p2[1], ...p2, p2[0], p1[1], ...p1];
-    const cartesianPoints = this.cesium.Cartesian3.fromDegreesArray(coords);
-    return cartesianPoints;
   }
 
   getPoints() {
