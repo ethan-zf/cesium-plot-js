@@ -162,6 +162,7 @@ export default class Base {
     this.draggable();
     const entity = this.polygonEntity || this.lineEntity;
     this.entityId = entity.id;
+    // this.entityId = `CesiumPlot-${entity.id}`;
     /**
      * "I've noticed that CallbackProperty can lead to significant performance issues.
      *  After drawing multiple shapes, the map becomes noticeably laggy. Using methods
@@ -372,7 +373,7 @@ export default class Base {
         const pickedObject = this.viewer.scene.pick(event.position);
         if (this.cesium.defined(pickedObject) && pickedObject.id instanceof CesiumTypeOnly.Entity) {
           const clickedEntity = pickedObject.id;
-          if (clickedEntity.id == this.entityId) {
+          if (this.isCurrentEntity(clickedEntity.id)) {
             //Clicking on the current instance's entity initiates drag logic.
             dragging = true;
             startPosition = cartesian;
@@ -407,6 +408,22 @@ export default class Base {
 
           this.setGeometryPoints(newPoints);
           startPosition = newPosition;
+        }
+      } else {
+        const pickRay = this.viewer.scene.camera.getPickRay(event.endPosition);
+        if (pickRay) {
+          const pickedObject = this.viewer.scene.pick(event.endPosition);
+          if (this.cesium.defined(pickedObject) && pickedObject.id instanceof CesiumTypeOnly.Entity) {
+            const clickedEntity = pickedObject.id;
+            // TODO 绘制的图形，需要特殊id标识，可在创建entity时指定id
+            if (this.isCurrentEntity(clickedEntity.id)) {
+              this.viewer.scene.canvas.style.cursor = 'move';
+            } else {
+              this.viewer.scene.canvas.style.cursor = 'default';
+            }
+          } else {
+            this.viewer.scene.canvas.style.cursor = 'default';
+          }
         }
       }
     }, this.cesium.ScreenSpaceEventType.MOUSE_MOVE);
@@ -475,6 +492,11 @@ export default class Base {
 
   off(eventType: EventType, listener: EventListener) {
     this.eventDispatcher.off(eventType, listener);
+  }
+
+  isCurrentEntity(id: string) {
+    // return this.entityId === `CesiumPlot-${id}`;
+    return this.entityId === id;
   }
 
   addPoint(cartesian: CesiumTypeOnly.Cartesian3) {
