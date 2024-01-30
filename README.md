@@ -1,2 +1,2 @@
-# CesiumPlot
-cesium标绘插件
+# CesiumDraw
+cesium绘制插件
