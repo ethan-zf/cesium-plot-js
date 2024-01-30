@@ -66,6 +66,9 @@ const buttonGroup = document.getElementById('button-group') as HTMLElement;
 buttonGroup.onclick = (evt) => {
   const targetElement = evt.target as HTMLElement;
   switch (targetElement.id) {
+    case 'drawCircle':
+      geometry = new CesiumPlot.Circle(Cesium, viewer);
+      break;
     case 'drawPolygon':
       geometry = new CesiumPlot.Polygon(Cesium, viewer);
       break;
