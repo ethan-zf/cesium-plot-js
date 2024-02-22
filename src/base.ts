@@ -1,5 +1,6 @@
 // @ts-ignore
-import * as CesiumTypeOnly from '@examples/cesium';
+// import * as CesiumTypeOnly from 'cesium';
+import * as CesiumTypeOnly from 'cesium';
 import { State, GeometryStyle, PolygonStyle, LineStyle, EventType, EventListener } from './interface';
 import EventDispatcher from './events';
 

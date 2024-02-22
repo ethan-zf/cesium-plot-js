@@ -24,6 +24,9 @@ export default defineConfig(({ mode }) => {
           name: 'CesiumPlot',
           fileName: 'CesiumPlot',
         },
+        rollupOptions: {
+          external: ['cesium']
+        }
       },
     };
   }

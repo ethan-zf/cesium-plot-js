@@ -1,5 +1,5 @@
 // @ts-ignore
-import * as CesiumTypeOnly from '@examples/cesium';
+import * as CesiumTypeOnly from 'cesium';
 
 export type PolygonStyle = {
   material?: CesiumTypeOnly.MaterialProperty;

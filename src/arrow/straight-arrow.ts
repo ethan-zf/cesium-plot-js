@@ -1,7 +1,7 @@
 import * as Utils from '../utils';
 import Base from '../base';
 // @ts-ignore
-import { Cartesian3 } from '@examples/cesium';
+import { Cartesian3 } from 'cesium';
 import { LineStyle } from '../interface';
 
 export default class StraightArrow extends Base {

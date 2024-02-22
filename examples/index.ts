@@ -1,6 +1,7 @@
 import CesiumPlot from '../src';
 // import CesiumPlot from "../dist/CesiumPlot";
-import * as Cesium from './cesium/index';
+// import * as Cesium from './cesium/index';
+import * as Cesium from 'cesium';
 
 let raster = new Cesium.ArcGisMapServerImageryProvider({
   url: 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer',
