@@ -144,7 +144,9 @@ export default class Base {
 
   onDoubleClick() {
     this.eventHandler.setInputAction((evt: any) => {
-      this.finishDrawing();
+      if (this.state === 'drawing') {
+        this.finishDrawing();
+      }
     }, this.cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
   }
 
