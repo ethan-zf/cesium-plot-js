@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CesiumPlot</title>
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.99/Build/Cesium/Cesium.js"></script>
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.99/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+  <style>
+    /* @import url(/node_modules/cesium/Source/Widgets/widgets.css); */
+
+    html,
+    body,
+    #cesiumContainer {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .button-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 10px;
+    }
+
+    .button-container button {
+      flex: 1 0 auto;
+      max-width: 100%;
+      box-sizing: border-box;
+      padding: 4px 10px;
+      background-color: #3498db;
+      color: #ffffff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root"></div>
+  <div id="cesiumContainer"></div>
+  <div class="button-container" id="button-group">
+    <button id="drawPolygon">多边形</button>
+    <button id="drawReactangle">矩形</button>
+    <button id="drawTriangle">三角形</button>
+    <button id="drawCircle">圆形</button>
+    <button id="drawStraightArrow">细直箭头</button>
+    <button id="drawCurvedArrow">曲线箭头</button>
+    <button id="drawFineArrow">直箭头</button>
+    <button id="drawAttackArrow">进攻方向箭头</button>
+    <button id="drawSwallowtailAttackArrow">进攻方向箭头(燕尾)</button>
+    <button id="drawSquadCombat">分队战斗方向</button>
+    <button id="drawSwallowtailSquadCombat">分队战斗方向(燕尾)</button>
+    <button id="drawAssaultDirection">突击方向</button>
+    <button id="drawDoubleArrow">双箭头</button>
+    <button id="drawFreehandLine">自由线</button>
+    <button id="drawFreehandPolygon">自由面</button>
+    <button id="drawCurve">曲线</button>
+    <button id="drawEllipse">椭圆</button>
+    <button id="drawLune">半月面</button>
+    <button id="hide">隐藏</button>
+    <button id="show">显示</button>
+    <button id="remove">删除</button>
+    <button id="addEvent">绑定事件</button>
+    <button id="removeEvent">解绑事件</button>
+  </div>
+  <!-- <script>
+    window.CESIUM_BASE_URL = 'node_modules/cesium/Build/Cesium';
+  </script> -->
+  <script src="../dist/CesiumPlot.umd.cjs"></script>
+  <script type="text/javascript" src="./index.js"></script>
+</body>
+
+</html>
