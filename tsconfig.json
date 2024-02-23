@@ -20,10 +20,10 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "@examples/*": ["./examples/*"]
+      "@examples/*": ["debug/*"]
     },
   },
   // "include": ["src", "examples"],
   "references": [{ "path": "./tsconfig.node.json" }],
-  "exclude": ["node_modules", "./examples/cesium/*", "@examples/cesium/*"]
+  "exclude": ["node_modules", "debug/cesium/*", "@examples/cesium/*"]
 }

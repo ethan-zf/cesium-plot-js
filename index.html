@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CesiumPlot</title>
     <style>
-      @import url(/examples/cesium/Widgets/widgets.css);
+      @import url(/node_modules/cesium/Source/Widgets/widgets.css);
       html,
       body,
       #cesiumContainer {
@@ -70,8 +70,8 @@
       <button id="removeEvent">解绑事件</button>
     </div>
     <script>
-      window.CESIUM_BASE_URL = './examples/cesium';
+      window.CESIUM_BASE_URL = 'node_modules/cesium/Build/Cesium';
     </script>
-    <script type="module" src="./examples/index.ts"></script>
+    <script type="module" src="./debug/index.ts"></script>
   </body>
 </html>

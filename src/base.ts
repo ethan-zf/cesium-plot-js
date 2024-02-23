@@ -77,7 +77,7 @@ export default class Base {
     this.eventHandler = new this.cesium.ScreenSpaceEventHandler(this.viewer.canvas);
     this.eventHandler.setInputAction((evt: any) => {
       const pickedObject = this.viewer.scene.pick(evt.position);
-      const hitEntities = this.cesium.defined(pickedObject) && pickedObject.id instanceof CesiumTypeOnly.Entity;
+      const hitEntities = this.cesium.defined(pickedObject) && pickedObject.id instanceof this.cesium.Entity;
       let activeEntity = this.polygonEntity;
       if (this.type === 'line') {
         activeEntity = this.lineEntity;
@@ -372,7 +372,7 @@ export default class Base {
       if (pickRay) {
         const cartesian = this.viewer.scene.globe.pick(pickRay, this.viewer.scene);
         const pickedObject = this.viewer.scene.pick(event.position);
-        if (this.cesium.defined(pickedObject) && pickedObject.id instanceof CesiumTypeOnly.Entity) {
+        if (this.cesium.defined(pickedObject) && pickedObject.id instanceof this.cesium.Entity) {
           const clickedEntity = pickedObject.id;
           if (this.isCurrentEntity(clickedEntity.id)) {
             //Clicking on the current instance's entity initiates drag logic.
@@ -414,7 +414,7 @@ export default class Base {
         const pickRay = this.viewer.scene.camera.getPickRay(event.endPosition);
         if (pickRay) {
           const pickedObject = this.viewer.scene.pick(event.endPosition);
-          if (this.cesium.defined(pickedObject) && pickedObject.id instanceof CesiumTypeOnly.Entity) {
+          if (this.cesium.defined(pickedObject) && pickedObject.id instanceof this.cesium.Entity) {
             const clickedEntity = pickedObject.id;
             // TODO 绘制的图形，需要特殊id标识，可在创建entity时指定id
             if (this.isCurrentEntity(clickedEntity.id)) {

@@ -1,8 +1,6 @@
 import CesiumPlot from '../src';
-// import CesiumPlot from "../dist/CesiumPlot";
-// import * as Cesium from './cesium/index';
 import * as Cesium from 'cesium';
-
+import 'cesium/Build/Cesium/Widgets/widgets.css';
 let raster = new Cesium.ArcGisMapServerImageryProvider({
   url: 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer',
 });
@@ -29,20 +27,6 @@ viewer.scene.postProcessStages.fxaa.enabled = true;
 viewer.scene.camera.setView({
   destination: Cesium.Cartesian3.fromDegrees(107.857, 35.594498, 10000),
 });
-
-const getCameraInfo = () => {
-  var position = viewer.camera.position;
-  var ellipsoid = viewer.scene.globe.ellipsoid;
-  var cartographic = ellipsoid.cartesianToCartographic(position);
-  var longitude = Cesium.Math.toDegrees(cartographic.longitude);
-  var latitude = Cesium.Math.toDegrees(cartographic.latitude);
-  console.error('camera position:', longitude, latitude);
-  var position = viewer.camera.position;
-  var ellipsoid = viewer.scene.globe.ellipsoid;
-  var cartographic = ellipsoid.cartesianToCartographic(position);
-  var height = cartographic.height;
-  console.error('camera height:', height);
-};
 
 let geometry: any;
 const dragStartHandler = () => {
