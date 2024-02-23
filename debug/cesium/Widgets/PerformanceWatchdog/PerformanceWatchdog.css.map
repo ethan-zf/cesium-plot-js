@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["../../../../Source/Widgets/PerformanceWatchdog/PerformanceWatchdog.css"],
-  "sourcesContent": [".cesium-performance-watchdog-message-area {\r\n  position: relative;\r\n  background-color: yellow;\r\n  color: black;\r\n  padding: 10px;\r\n}\r\n\r\n.cesium-performance-watchdog-message {\r\n  margin-right: 30px;\r\n}\r\n\r\n.cesium-performance-watchdog-message-dismiss {\r\n  position: absolute;\r\n  right: 0;\r\n  margin: 0 10px 0 0;\r\n}\r\n"],
-  "mappings": ";AAAA;AACE;AACA;AACA;AACA;AAAA;AAGF;AACE;AAAA;AAGF;AACE;AACA;AACA;AAAA;",
-  "names": []
-}

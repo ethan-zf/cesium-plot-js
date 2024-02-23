@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["../../../../Source/Widgets/Timeline/lighter.css"],
-  "sourcesContent": [".cesium-lighter .cesium-timeline-bar {\r\n  background: linear-gradient(to bottom, #eeeeee 0%, #ffffff 50%, #fafafa 100%);\r\n}\r\n\r\n.cesium-lighter .cesium-timeline-ticLabel {\r\n  color: #000;\r\n}\r\n\r\n.cesium-lighter .cesium-timeline-ticMain {\r\n  position: absolute;\r\n  bottom: 0;\r\n  left: 0;\r\n  width: 1px;\r\n  height: 50%;\r\n  background: #000;\r\n}\r\n\r\n.cesium-lighter .cesium-timeline-ticSub {\r\n  background: #444;\r\n}\r\n"],
-  "mappings": ";AAAA;AACE;AAAA;AAGF;AACE;AAAA;AAGF;AACE;AACA;AACA;AACA;AACA;AACA;AAAA;AAGF;AACE;AAAA;",
-  "names": []
-}

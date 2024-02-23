@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["../../../../Source/Widgets/SelectionIndicator/SelectionIndicator.css"],
-  "sourcesContent": [".cesium-selection-wrapper {\r\n  position: absolute;\r\n  width: 160px;\r\n  height: 160px;\r\n  pointer-events: none;\r\n  visibility: hidden;\r\n  opacity: 0;\r\n  transition: visibility 0s 0.2s, opacity 0.2s ease-in;\r\n}\r\n\r\n.cesium-selection-wrapper-visible {\r\n  visibility: visible;\r\n  opacity: 1;\r\n  transition: opacity 0.2s ease-out;\r\n}\r\n\r\n.cesium-selection-wrapper svg {\r\n  fill: #2e2;\r\n  stroke: #000;\r\n  stroke-width: 1.1px;\r\n}\r\n"],
-  "mappings": ";AAAA;AACE;AACA;AACA;AACA;AACA;AACA;AACA;AAAA;AAGF;AACE;AACA;AACA;AAAA;AAGF;AACE;AACA;AACA;AAAA;",
-  "names": []
-}
