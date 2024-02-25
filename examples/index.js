@@ -83,27 +83,27 @@ window.onload = () => {
         break;
       case 'drawFineArrow':
         geometry = new CesiumPlot.FineArrow(Cesium, viewer, {
-          material: Cesium.Color.fromCssColorString('rgba(59, 178, 208, 0.5)'),
-          outlineMaterial: Cesium.Color.fromCssColorString('rgba(59, 178, 208, 1)'),
-          outlineWidth: 3,
+          // material: Cesium.Color.fromCssColorString('rgba(59, 178, 208, 0.5)'),
+          // outlineMaterial: Cesium.Color.fromCssColorString('rgba(59, 178, 208, 1)'),
+          // outlineWidth: 3,
         });
         break;
       case 'drawAttackArrow':
         geometry = new CesiumPlot.AttackArrow(Cesium, viewer, {
-          outlineMaterial: Cesium.Color.RED,
+          // outlineMaterial: Cesium.Color.RED,
         });
         break;
       case 'drawSwallowtailAttackArrow':
         geometry = new CesiumPlot.SwallowtailAttackArrow(Cesium, viewer, {
-          outlineMaterial: Cesium.Color.BLUE,
+          // outlineMaterial: Cesium.Color.BLUE,
         });
         break;
       case 'drawSquadCombat':
         geometry = new CesiumPlot.SquadCombat(Cesium, viewer, {
-          outlineMaterial: new Cesium.PolylineDashMaterialProperty({
-            color: Cesium.Color.RED,
-            dashLength: 16.0,
-          }),
+          // outlineMaterial: new Cesium.PolylineDashMaterialProperty({
+          //   color: Cesium.Color.RED,
+          //   dashLength: 16.0,
+          // }),
         });
         break;
       case 'drawSwallowtailSquadCombat':
@@ -111,7 +111,7 @@ window.onload = () => {
         break;
       case 'drawStraightArrow':
         geometry = new CesiumPlot.StraightArrow(Cesium, viewer, {
-          material: Cesium.Color.RED,
+          // material: Cesium.Color.RED,
         });
         break;
       case 'drawAssaultDirection':
@@ -119,12 +119,12 @@ window.onload = () => {
         break;
       case 'drawCurvedArrow':
         geometry = new CesiumPlot.CurvedArrow(Cesium, viewer, {
-          material: Cesium.Color.BLUE,
+          // material: Cesium.Color.BLUE,
         });
         break;
       case 'drawDoubleArrow':
         geometry = new CesiumPlot.DoubleArrow(Cesium, viewer, {
-          outlineMaterial: Cesium.Color.GREEN,
+          // outlineMaterial: Cesium.Color.GREEN,
         });
         break;
       case 'drawFreehandLine':
@@ -141,9 +141,9 @@ window.onload = () => {
         break;
       case 'drawFreehandPolygon':
         geometry = new CesiumPlot.FreehandPolygon(Cesium, viewer, {
-          material: Cesium.Color.GREEN,
-          outlineMaterial: Cesium.Color.fromCssColorString('rgba(59, 178, 208, 1)'),
-          outlineWidth: 2,
+          // material: Cesium.Color.GREEN,
+          // outlineMaterial: Cesium.Color.fromCssColorString('rgba(59, 178, 208, 1)'),
+          // outlineWidth: 2,
         });
         break;
       case 'hide':
