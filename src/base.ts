@@ -110,7 +110,7 @@ export default class Base {
           this.removeControlPoints();
           this.disableDrag();
           // Trigger 'drawEnd' and return the geometry shape points when exiting the edit mode.
-          this.eventDispatcher.dispatchEvent('drawEnd', this.getPoints());
+          this.eventDispatcher.dispatchEvent('editEnd', this.getPoints());
         }
       } else if (this.state === 'static') {
         //When drawing multiple shapes, the click events for all shapes are triggered. Only when hitting a completed shape should it enter editing mode.

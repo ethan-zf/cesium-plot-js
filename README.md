@@ -1,11 +1,10 @@
 # CesiumDraw
-cesium绘制插件
+
+cesium 绘制插件
 
 ![image](https://github.com/ethan-zf/CesiumDraw/assets/19545189/75b93c62-dd10-4c92-825c-c4ab01b454a7)
 
-
 在线示例：[demo](https://ethan-zf.github.io/CesiumDraw/examples/index.html)
-
 
 ### 类
 
@@ -30,16 +29,20 @@ cesium绘制插件
 | Ellipse                | 'polygon' | 椭圆             |
 | Lune                   | 'polygon' | 半月面           |
 
+```
+const geometry = new CesiumPlot.Polygon(Cesium, viewer);
+
+```
+
 ### 类的实例方法
 
-| 方法名      | 参数                                   | 描述     |
-| ----------- | -------------------------------------- | -------- |
-| hide        |                                        | 隐藏     |
-| show        |                                        | 显示     |
-| remove      |                                        | 删除     |
-| addEvent    | (event: EventType, listener: Function) | 绑定事件 |
-| removeEvent | (event: EventType)                     | 解绑事件 |
-
+| 方法名 | 参数                                                    | 描述     |
+| ------ | ------------------------------------------------------- | -------- |
+| hide   |                                                         | 隐藏     |
+| show   |                                                         | 显示     |
+| remove |                                                         | 删除     |
+| on     | (event: EventType, listener: (eventData?: any) => void) | 绑定事件 |
+| off    | (event: EventType)                                      | 解绑事件 |
 
 ### 事件
 
@@ -47,13 +50,27 @@ cesium绘制插件
 
 绘制开始
 
+```
+geometry.on('drawStart', () => {
+  console.log('draw start');
+});
+
+```
+
 - 'drawUpdate'
 
-绘制过程中点位更新
+绘制过程中点位更新，回调事件返回更新的 Cartesian3 点位
+
+```
+geometry.on('drawUpdate', () => {
+  console.log('draw start');
+});
+
+```
 
 - 'drawEnd'
 
-绘制结束
+绘制结束，回调事件返回图形的关键点位
 
 - 'editStart'
 
@@ -61,4 +78,4 @@ cesium绘制插件
 
 - 'editEnd'
 
-编辑结束
+编辑结束，回调事件返回图形的关键点位
