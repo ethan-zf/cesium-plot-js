@@ -1,10 +1,10 @@
-# CesiumDraw
+# CesiumPlot
 
 cesium 标绘插件
 
-![image](https://github.com/ethan-zf/CesiumDraw/assets/19545189/75b93c62-dd10-4c92-825c-c4ab01b454a7)
+![image](https://github.com/ethan-zf/CesiumPlot/assets/19545189/75b93c62-dd10-4c92-825c-c4ab01b454a7)
 
-[在线示例：demo](https://ethan-zf.github.io/CesiumDraw/examples/index.html)
+[在线示例：demo](https://ethan-zf.github.io/CesiumPlot/examples/index.html)
 
 ### 类
 
