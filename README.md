@@ -1,12 +1,14 @@
 # CesiumDraw
 
-cesium 绘制插件
+cesium 标绘插件
 
 ![image](https://github.com/ethan-zf/CesiumDraw/assets/19545189/75b93c62-dd10-4c92-825c-c4ab01b454a7)
 
-在线示例：[demo](https://ethan-zf.github.io/CesiumDraw/examples/index.html)
+[在线示例：demo](https://ethan-zf.github.io/CesiumDraw/examples/index.html)
 
 ### 类
+
+每个图形为独立的类，绑定事件或其他操作通过类的实例来实现
 
 | 类名                   | 类型      | 描述             |
 | ---------------------- | --------- | ---------------- |
@@ -29,9 +31,49 @@ cesium 绘制插件
 | Ellipse                | 'polygon' | 椭圆             |
 | Lune                   | 'polygon' | 半月面           |
 
-```
-const geometry = new CesiumPlot.Polygon(Cesium, viewer);
+### 构造函数
 
+所有图形的构造函数：
+
+类名(cesium: Cesium, viewer: Cesium.Viewer, style:[PolygonStyle](#PolygonStyle) | [LineStyle](#LineStyle))
+
+<h4 id='PolygonStyle'>PolygonStyle</h4>
+
+```
+{
+  material?: Cesium.MaterialProperty;
+  outlineWidth?: number;
+  outlineMaterial?: Cesium.MaterialProperty;
+};
+
+```
+
+<h4 id='LineStyle'>LineStyle</h4>
+
+```
+
+{
+  material?: Cesium.Color;
+  lineWidth?: number;
+};
+
+```
+
+示例
+
+```
+// 初始化viewer
+const viewer = new Cesium.Viewer('cesiumContainer');
+// 抗锯齿
+viewer.scene.postProcessStages.fxaa.enabled = true;
+// 创建图形实例，使用默认样式
+new CesiumPlot.Reactangle(Cesium, viewer);
+// 设置自定义样式
+const geometry = new CesiumPlot.FineArrow(Cesium, viewer, {
+  material: Cesium.Color.fromCssColorString('rgba(59, 178, 208, 0.5)'),
+  outlineMaterial: Cesium.Color.fromCssColorString('rgba(59, 178, 208, 1)'),
+  outlineWidth: 3,
+});
 ```
 
 ### 类的实例方法
@@ -44,33 +86,40 @@ const geometry = new CesiumPlot.Polygon(Cesium, viewer);
 | on     | (event: EventType, listener: (eventData?: any) => void) | 绑定事件 |
 | off    | (event: EventType)                                      | 解绑事件 |
 
+```
+// 隐藏图形
+const geometry = new CesiumPlot.Reactangle(Cesium, viewer);
+geometry.hide();
+```
+
+```
+// 绑定事件
+const geometry = new CesiumPlot.Reactangle(Cesium, viewer);
+geometry.on('drawEnd', (data)=>{
+  console.log(data)
+});
+```
+
 ### 事件
 
 - 'drawStart'
 
 绘制开始
 
-```
-geometry.on('drawStart', () => {
-  console.log('draw start');
-});
-
-```
-
 - 'drawUpdate'
 
 绘制过程中点位更新，回调事件返回更新的 Cartesian3 点位
 
-```
-geometry.on('drawUpdate', () => {
-  console.log('draw start');
-});
-
-```
-
 - 'drawEnd'
 
 绘制结束，回调事件返回图形的关键点位
+
+```
+geometry.on('drawEnd', (data) => {
+  console.log(data);
+});
+
+```
 
 - 'editStart'
 

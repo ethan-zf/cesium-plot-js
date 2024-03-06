@@ -6,21 +6,21 @@ let raster = new Cesium.ArcGisMapServerImageryProvider({
 });
 
 const viewer = new Cesium.Viewer('cesiumContainer', {
-  animation: false,
-  shouldAnimate: true,
-  geocoder: false,
-  homeButton: false,
-  infoBox: false,
-  fullscreenButton: false,
-  sceneModePicker: false,
-  selectionIndicator: false,
-  timeline: false,
-  navigationHelpButton: false,
-  baseLayerPicker: false,
-  imageryProvider: raster,
-  contextOptions: {
-    requestWebgl2: true,
-  },
+  // animation: false,
+  // shouldAnimate: true,
+  // geocoder: false,
+  // homeButton: false,
+  // infoBox: false,
+  // fullscreenButton: false,
+  // sceneModePicker: false,
+  // selectionIndicator: false,
+  // timeline: false,
+  // navigationHelpButton: false,
+  // baseLayerPicker: false,
+  // imageryProvider: raster,
+  // contextOptions: {
+  //   requestWebgl2: true,
+  // },
 });
 
 viewer.scene.postProcessStages.fxaa.enabled = true;
