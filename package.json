@@ -1,6 +1,6 @@
 {
   "name": "cesium-plot-js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "dist/CesiumPlot.umd.js",
   "homepage": "https://github.com/ethan-zf/CesiumPlot",
   "repository": {
