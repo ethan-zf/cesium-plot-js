@@ -1,4 +1,5 @@
-# CesiumPlot
+# cesium-plot-js
+
 
 cesium 标绘插件
 
