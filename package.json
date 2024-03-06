@@ -1,8 +1,18 @@
 {
-  "name": "cesium-plot",
-  "private": true,
+  "name": "cesium-plot-js",
   "version": "0.0.1",
-  "type": "module",
+  "main": "dist/CesiumPlot.umd.js",
+  "homepage": "https://github.com/ethan-zf/CesiumPlot",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:ethan-zf/CesiumPlot.git"
+  },
+  "keywords": [
+    "cesium",
+    "draw",
+    "plot",
+    "map"
+  ],
   "scripts": {
     "dev": "vite --mode dev",
     "build": "vite build --mode prod",

@@ -2,7 +2,7 @@
 
 cesium 标绘插件
 
-![image](https://github.com/ethan-zf/CesiumPlot/assets/19545189/75b93c62-dd10-4c92-825c-c4ab01b454a7)
+![image](https://ethan-zf.github.io/CesiumPlot/examples/plot.png)
 
 [在线示例：demo](https://ethan-zf.github.io/CesiumPlot/examples/index.html)
 
@@ -45,18 +45,15 @@ cesium 标绘插件
   outlineWidth?: number;
   outlineMaterial?: Cesium.MaterialProperty;
 };
-
 ```
 
 <h4 id='LineStyle'>LineStyle</h4>
 
 ```
-
 {
   material?: Cesium.Color;
   lineWidth?: number;
 };
-
 ```
 
 示例
@@ -118,7 +115,6 @@ geometry.on('drawEnd', (data)=>{
 geometry.on('drawEnd', (data) => {
   console.log(data);
 });
-
 ```
 
 - 'editStart'
