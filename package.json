@@ -1,12 +1,17 @@
 {
   "name": "cesium-plot-js",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "dist/CesiumPlot.umd.js",
   "homepage": "https://github.com/ethan-zf/CesiumPlot",
   "repository": {
     "type": "git",
     "url": "git@github.com:ethan-zf/CesiumPlot.git"
   },
+  "files": [
+    "dist/",
+    "README.md",
+    "package.json"
+  ],
   "keywords": [
     "cesium",
     "draw",

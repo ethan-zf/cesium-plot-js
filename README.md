@@ -1,13 +1,46 @@
 # cesium-plot-js
 
-
 cesium 标绘插件
 
-![image](https://ethan-zf.github.io/CesiumPlot/examples/plot.png)
+![image](https://ethan-zf.github.io/cesium-plot-js/examples/plot.png)
 
-[在线示例：demo](https://ethan-zf.github.io/CesiumPlot/examples/index.html)
+[在线示例：demo](https://ethan-zf.github.io/cesium-plot-js/examples/index.html)
 
-### 类
+
+### CDN
+
+1. 引入文件
+
+```
+<script src="https://unpkg.com/cesium-plot-js"></script>
+```
+2. 调用绘制api
+
+```
+  new CesiumPlot.FineArrow(Cesium, viewer);
+```
+
+### NPM
+
+1. install
+
+```
+npm i cesium-plot-js
+```
+
+2. import
+
+```
+import CesiumPlot from 'cesium-plot-js';
+```
+
+3. 调用绘制api
+
+```
+  new CesiumPlot.FineArrow(Cesium, viewer);
+```
+
+### Class
 
 每个图形为独立的类，绑定事件或其他操作通过类的实例来实现
 
@@ -36,9 +69,9 @@ cesium 标绘插件
 
 所有图形的构造函数：
 
-类名(cesium: Cesium, viewer: Cesium.Viewer, style:[PolygonStyle](#PolygonStyle) | [LineStyle](#LineStyle))
+<类名>(cesium: Cesium, viewer: Cesium.Viewer, style?: [PolygonStyle](#PolygonStyle) | [LineStyle](#LineStyle))
 
-<h4 id='PolygonStyle'>PolygonStyle</h4>
+<h4 id='PolygonStyle'>PolygonStyle类型</h4>
 
 ```
 {
@@ -48,7 +81,7 @@ cesium 标绘插件
 };
 ```
 
-<h4 id='LineStyle'>LineStyle</h4>
+<h4 id='LineStyle'>LineStyle类型</h4>
 
 ```
 {
@@ -64,8 +97,6 @@ cesium 标绘插件
 const viewer = new Cesium.Viewer('cesiumContainer');
 // 抗锯齿
 viewer.scene.postProcessStages.fxaa.enabled = true;
-// 创建图形实例，使用默认样式
-new CesiumPlot.Reactangle(Cesium, viewer);
 // 设置自定义样式
 const geometry = new CesiumPlot.FineArrow(Cesium, viewer, {
   material: Cesium.Color.fromCssColorString('rgba(59, 178, 208, 0.5)'),
@@ -98,7 +129,7 @@ geometry.on('drawEnd', (data)=>{
 });
 ```
 
-### 事件
+### Events
 
 - 'drawStart'
 
