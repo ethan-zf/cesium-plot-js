@@ -13,6 +13,8 @@
     "package.json"
   ],
   "keywords": [
+    "cesium-plot",
+    "cesium-draw",
     "cesium",
     "draw",
     "plot",
