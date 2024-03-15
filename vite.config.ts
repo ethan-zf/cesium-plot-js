@@ -23,7 +23,6 @@ export default defineConfig(({ mode }) => {
           entry: path.resolve(__dirname, 'src/index.ts'),
           name: 'CesiumPlot',
           fileName: 'CesiumPlot',
-          formats: ['umd'],
         },
         rollupOptions: {
           external: ['cesium'],
