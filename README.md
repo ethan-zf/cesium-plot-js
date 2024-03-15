@@ -1,6 +1,6 @@
 # cesium-plot-js
 
-cesium 标绘插件
+cesium 军事标绘插件,支持绘制多边形、曲线、箭头等图形
 
 ![image](https://ethan-zf.github.io/cesium-plot-js/examples/plot.png)
 
