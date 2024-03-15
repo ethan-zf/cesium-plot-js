@@ -459,6 +459,7 @@ export default class Base {
       this.polygonEntity.show = true;
       this.outlineEntity.polyline.clampToGround = true;
       this.outlineEntity.show = true;
+      this.lineEntity && (this.lineEntity.show = true);
     } else if (this.type === 'line') {
       this.lineEntity.polyline.clampToGround = true;
       this.lineEntity.show = true;
@@ -470,6 +471,7 @@ export default class Base {
       this.polygonEntity.show = false;
       this.outlineEntity.polyline.clampToGround = false;
       this.outlineEntity.show = false;
+      this.lineEntity && (this.lineEntity.show = false);
     } else if (this.type === 'line') {
       this.lineEntity.polyline.clampToGround = false;
       this.lineEntity.show = false;
@@ -480,6 +482,10 @@ export default class Base {
     if (this.type === 'polygon') {
       this.viewer.entities.remove(this.polygonEntity);
       this.viewer.entities.remove(this.outlineEntity);
+      this.lineEntity && this.viewer.entities.remove(this.lineEntity);
+      this.polygonEntity = null;
+      this.outlineEntity = null;
+      this.lineEntity = null;
     } else if (this.type === 'line') {
       this.viewer.entities.remove(this.lineEntity);
     }

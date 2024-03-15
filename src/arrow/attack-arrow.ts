@@ -38,8 +38,6 @@ export default class AttackArrow extends Base {
     } else if (this.points.length === 2) {
       this.setGeometryPoints(this.points);
       this.drawPolygon();
-    } else {
-      this.lineEntity && this.viewer.entities.remove(this.lineEntity);
     }
   }
 

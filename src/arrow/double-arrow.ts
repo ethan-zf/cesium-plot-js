@@ -42,8 +42,6 @@ export default class DoubleArrow extends Base {
     } else if (this.points.length === 2) {
       this.setGeometryPoints(this.points);
       this.drawPolygon();
-    } else if (this.points.length === 3) {
-      this.lineEntity && this.viewer.entities.remove(this.lineEntity);
     } else {
       this.finishDrawing();
     }
