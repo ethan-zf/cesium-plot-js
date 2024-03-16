@@ -17,3 +17,9 @@ export type GeometryStyle = PolygonStyle | LineStyle;
 
 export type EventType = 'drawStart' | 'drawUpdate' | 'drawEnd' | 'editEnd' | 'editStart';
 export type EventListener = (eventData?: any) => void;
+
+export type VisibleOpts = {
+  duration?: number;
+  delay?: number;
+  callback?: (() => void)
+}

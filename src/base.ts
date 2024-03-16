@@ -1,7 +1,7 @@
 // @ts-ignore
 // import * as CesiumTypeOnly from 'cesium';
 import * as CesiumTypeOnly from 'cesium';
-import { State, GeometryStyle, PolygonStyle, LineStyle, EventType, EventListener } from './interface';
+import { State, GeometryStyle, PolygonStyle, LineStyle, EventType, EventListener, VisibleAnimationOpts } from './interface';
 import EventDispatcher from './events';
 import cloneDeep from 'lodash.clonedeep';
 import merge from 'lodash.merge';
@@ -466,7 +466,12 @@ export default class Base {
    * center at a precision-less position. Thus, when toggling the visibility state, adjust the 'clampToGround'
    *  status first to avoid this issue.
    */
-  show() {
+  show(opts: VisibleAnimationOpts) {
+    if (opts) {
+      const { duration, delay, callback } = opts;
+      this.showWithAnimation(duration, delay, callback);
+      return
+    }
     if (this.type === 'polygon') {
       this.polygonEntity.show = true;
       this.outlineEntity.polyline.clampToGround = true;
@@ -478,7 +483,12 @@ export default class Base {
     }
   }
 
-  hide() {
+  hide(opts: VisibleAnimationOpts) {
+    if (opts) {
+      const { duration, delay, callback } = opts;
+      this.hideWithAnimation(duration, delay, callback);
+      return
+    }
     if (this.type === 'polygon') {
       this.polygonEntity.show = false;
       this.outlineEntity.polyline.clampToGround = false;
@@ -490,7 +500,7 @@ export default class Base {
     }
   }
 
-  showAnimation(duration: number = 1000, delay: number = 0, callback: (() => void) | undefined) {
+  showWithAnimation(duration: number = 1000, delay: number = 0, callback?: (() => void)) {
     if (this.state != 'static' || this.isHidden === false) {
       //If not in a static state or already displayed, do not process.
       return;
@@ -537,7 +547,7 @@ export default class Base {
     }
   }
 
-  hideAnimation(duration: number = 1000, delay: number = 0, callback: (() => void) | undefined) {
+  hideWithAnimation(duration: number = 1000, delay: number = 0, callback?: (() => void)) {
     if (this.state != 'static' || this.isHidden === true) {
       return;
     }
