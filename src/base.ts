@@ -3,6 +3,10 @@
 import * as CesiumTypeOnly from 'cesium';
 import { State, GeometryStyle, PolygonStyle, LineStyle, EventType, EventListener } from './interface';
 import EventDispatcher from './events';
+import cloneDeep from 'lodash.clonedeep';
+import merge from 'lodash.merge';
+
+
 
 export default class Base {
   cesium: typeof CesiumTypeOnly;
@@ -22,6 +26,8 @@ export default class Base {
   dragEventHandler: CesiumTypeOnly.ScreenSpaceEventHandler;
   entityId: string = '';
   points: CesiumTypeOnly.Cartesian3[] = [];
+  isHidden: boolean = false;
+  styleCache: GeometryStyle | undefined;
 
   constructor(cesium: CesiumTypeOnly, viewer: CesiumTypeOnly.Viewer, style?: GeometryStyle) {
     this.cesium = cesium;
@@ -53,6 +59,8 @@ export default class Base {
         style,
       );
     }
+    //Cache the initial settings to avoid modification of properties due to reference type assignment.
+    this.styleCache = cloneDeep(this.style);
   }
 
   /**
@@ -159,13 +167,17 @@ export default class Base {
   }
 
   finishDrawing() {
+    // Some polygons draw a separate line between the first two points before drawing the complete shape; 
+    // this line should be removed after drawing is complete.
+    this.type === 'polygon' && this.lineEntity && this.viewer.entities.remove(this.lineEntity);
+
     this.removeMoveListener();
+    // Editable upon initial drawing completion.
     this.setState('edit');
     this.addControlPoints();
     this.draggable();
     const entity = this.polygonEntity || this.lineEntity;
     this.entityId = entity.id;
-    // this.entityId = `CesiumPlot-${entity.id}`;
     /**
      * "I've noticed that CallbackProperty can lead to significant performance issues.
      *  After drawing multiple shapes, the map becomes noticeably laggy. Using methods
@@ -478,11 +490,170 @@ export default class Base {
     }
   }
 
+  showAnimation(duration: number = 1000, delay: number = 0, callback: (() => void) | undefined) {
+    if (this.state != 'static' || this.isHidden === false) {
+      //If not in a static state or already displayed, do not process.
+      return;
+    }
+    this.isHidden = false;
+    if (this.type === 'polygon') {
+      let alpha = 0.3;
+      const material = this.styleCache.material;
+      if (material.image) {
+        // With Texture
+        alpha = material.color.getValue().alpha;
+      } else {
+        alpha = material.alpha;
+      }
+
+      this.animateOpacity(this.polygonEntity, alpha, duration, delay, callback, this.state);
+      const outlineAlpha = this.styleCache?.outlineMaterial?.alpha;
+      this.animateOpacity(
+        this.outlineEntity,
+        outlineAlpha || 1.0,
+        duration,
+        delay,
+        undefined,
+        this.state,
+      );
+    } else if (this.type === 'line') {
+      const material = this.styleCache.material;
+      let alpha = 1.0;
+      if (material.image) {
+        // With Texture
+        alpha = material.color.alpha;
+      } else if (material.dashLength) {
+        // Dashed Line
+        const color = material.color.getValue();
+        alpha = color.alpha;
+      } else {
+        // Solid Color
+        alpha = this.styleCache?.material?.alpha;
+      }
+      this.animateOpacity(this.lineEntity, alpha, duration, delay, callback, this.state);
+    }
+    if (duration != 0) {
+      this.setState('animating');
+    }
+  }
+
+  hideAnimation(duration: number = 1000, delay: number = 0, callback: (() => void) | undefined) {
+    if (this.state != 'static' || this.isHidden === true) {
+      return;
+    }
+    if (this.type === 'polygon') {
+      this.animateOpacity(this.polygonEntity, 0.0, duration, delay, callback, this.state);
+      this.animateOpacity(this.outlineEntity, 0.0, duration, delay, undefined, this.state);
+    } else if (this.type === 'line') {
+      this.animateOpacity(this.lineEntity, 0.0, duration, delay, callback, this.state);
+    }
+    // if (this.state == 'edit') {
+    // 	this.controlPoints.forEach(p => {
+    // 		this.animateOpacity(p, 0.0, duration, delay, undefined, this.state);
+    // 	});
+    // }
+    if (duration != 0) {
+      this.setState('animating');
+    }
+  }
+
+  animateOpacity(
+    entity: CesiumTypeOnly.Entity,
+    targetAlpha: number,
+    duration: number,
+    delay: number,
+    callback?: () => void,
+    state?: State,
+  ): void {
+    setTimeout(() => {
+      const graphics = entity.polygon || entity.polyline || entity.billboard;
+      let startAlpha: number;
+      let material = graphics.material;
+      if (material) {
+        if (material.image && material.color.alpha !== undefined) {
+          // Texture material, setting the alpha channel in the color of the custom ImageFlowMaterialProperty.
+          startAlpha = material.color.alpha;
+        } else {
+          startAlpha = material.color.getValue().alpha;
+        }
+      } else {
+        // billbord
+        const color = graphics.color.getValue();
+        startAlpha = color.alpha;
+      }
+
+      let startTime = 0;
+
+      const animate = (currentTime: number) => {
+        if (!startTime) {
+          startTime = currentTime;
+        }
+        const elapsedTime = currentTime - startTime;
+
+        if (elapsedTime < duration) {
+          const deltalpha = (elapsedTime / duration) * (targetAlpha - startAlpha);
+          const newAlpha = startAlpha + deltalpha;
+
+          if (material) {
+            if (material.image && material.color.alpha !== undefined) {
+              // Texture Material
+              material.color.alpha = newAlpha;
+            } else {
+              // Solid Color
+              const newColor = material.color.getValue().withAlpha(newAlpha);
+              material.color.setValue(newColor);
+            }
+          } else {
+            // billbord
+            const color = graphics.color.getValue();
+            const newColor = color.withAlpha(newAlpha);
+            graphics.color.setValue(newColor);
+          }
+
+          requestAnimationFrame(animate);
+        } else {
+          // Animation Ended
+          callback && callback();
+          const restoredState = state ? state : 'static';
+
+          if (targetAlpha === 0) {
+            this.isHidden = true;
+          }
+
+          // if (duration == 0) {
+          this.setState('drawing');
+          if (material) {
+            if (material.image && material.color.alpha !== undefined) {
+              // Texture Material
+              material.color.alpha = targetAlpha;
+            } else {
+              // Solid Color
+              const newColor = material.color.getValue().withAlpha(targetAlpha);
+              material.color.setValue(newColor);
+            }
+          } else {
+            // billbord
+            const color = graphics.color.getValue();
+            const newColor = color.withAlpha(targetAlpha);
+            graphics.color.setValue(newColor);
+          }
+          requestAnimationFrame(() => {
+            this.setState(restoredState);
+          });
+          // } else {
+          // 	this.setState(restoredState);
+          // }
+        }
+      };
+
+      requestAnimationFrame(animate);
+    }, delay);
+  }
+
   remove() {
     if (this.type === 'polygon') {
       this.viewer.entities.remove(this.polygonEntity);
       this.viewer.entities.remove(this.outlineEntity);
-      this.lineEntity && this.viewer.entities.remove(this.lineEntity);
       this.polygonEntity = null;
       this.outlineEntity = null;
       this.lineEntity = null;

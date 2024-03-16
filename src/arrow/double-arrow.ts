@@ -42,7 +42,7 @@ export default class DoubleArrow extends Base {
     } else if (this.points.length === 2) {
       this.setGeometryPoints(this.points);
       this.drawPolygon();
-    } else {
+    } else if (this.points.length === 4) {
       this.finishDrawing();
     }
   }
