@@ -1,12 +1,18 @@
 // @ts-ignore
 // import * as CesiumTypeOnly from 'cesium';
 import * as CesiumTypeOnly from 'cesium';
-import { State, GeometryStyle, PolygonStyle, LineStyle, EventType, EventListener, VisibleAnimationOpts } from './interface';
+import {
+  State,
+  GeometryStyle,
+  PolygonStyle,
+  LineStyle,
+  EventType,
+  EventListener,
+  VisibleAnimationOpts,
+} from './interface';
 import EventDispatcher from './events';
 import cloneDeep from 'lodash.clonedeep';
 import merge from 'lodash.merge';
-
-
 
 export default class Base {
   cesium: typeof CesiumTypeOnly;
@@ -167,7 +173,7 @@ export default class Base {
   }
 
   finishDrawing() {
-    // Some polygons draw a separate line between the first two points before drawing the complete shape; 
+    // Some polygons draw a separate line between the first two points before drawing the complete shape;
     // this line should be removed after drawing is complete.
     this.type === 'polygon' && this.lineEntity && this.viewer.entities.remove(this.lineEntity);
 
@@ -458,28 +464,13 @@ export default class Base {
     this.dragEventHandler.removeInputAction(this.cesium.ScreenSpaceEventType.LEFT_UP);
   }
 
-  /**
-   * Uncertain whether it's a Cesium bug, but the lines do not render properly when 'clampToGround'
-   * is not set (display irregularities). After drawing, the camera adjusts its view based on the shape,
-   * which is not desired. Setting 'clampToGround' to true results in proper rendering and no change in
-   * the camera's perspective. However, when hiding this entity, the camera strangely moves towards the Earth's
-   * center at a precision-less position. Thus, when toggling the visibility state, adjust the 'clampToGround'
-   *  status first to avoid this issue.
-   */
   show(opts: VisibleAnimationOpts) {
     if (opts) {
       const { duration, delay, callback } = opts;
       this.showWithAnimation(duration, delay, callback);
-      return
-    }
-    if (this.type === 'polygon') {
-      this.polygonEntity.show = true;
-      this.outlineEntity.polyline.clampToGround = true;
-      this.outlineEntity.show = true;
-      this.lineEntity && (this.lineEntity.show = true);
-    } else if (this.type === 'line') {
-      this.lineEntity.polyline.clampToGround = true;
-      this.lineEntity.show = true;
+      return;
+    } else {
+      this.showWithAnimation(0, 0);
     }
   }
 
@@ -487,20 +478,13 @@ export default class Base {
     if (opts) {
       const { duration, delay, callback } = opts;
       this.hideWithAnimation(duration, delay, callback);
-      return
-    }
-    if (this.type === 'polygon') {
-      this.polygonEntity.show = false;
-      this.outlineEntity.polyline.clampToGround = false;
-      this.outlineEntity.show = false;
-      this.lineEntity && (this.lineEntity.show = false);
-    } else if (this.type === 'line') {
-      this.lineEntity.polyline.clampToGround = false;
-      this.lineEntity.show = false;
+      return;
+    } else {
+      this.hideWithAnimation(0, 0);
     }
   }
 
-  showWithAnimation(duration: number = 1000, delay: number = 0, callback?: (() => void)) {
+  showWithAnimation(duration: number = 1000, delay: number = 0, callback?: () => void) {
     if (this.state != 'static' || this.isHidden === false) {
       //If not in a static state or already displayed, do not process.
       return;
@@ -518,14 +502,7 @@ export default class Base {
 
       this.animateOpacity(this.polygonEntity, alpha, duration, delay, callback, this.state);
       const outlineAlpha = this.styleCache?.outlineMaterial?.alpha;
-      this.animateOpacity(
-        this.outlineEntity,
-        outlineAlpha || 1.0,
-        duration,
-        delay,
-        undefined,
-        this.state,
-      );
+      this.animateOpacity(this.outlineEntity, outlineAlpha || 1.0, duration, delay, undefined, this.state);
     } else if (this.type === 'line') {
       const material = this.styleCache.material;
       let alpha = 1.0;
@@ -547,7 +524,7 @@ export default class Base {
     }
   }
 
-  hideWithAnimation(duration: number = 1000, delay: number = 0, callback?: (() => void)) {
+  hideWithAnimation(duration: number = 1000, delay: number = 0, callback?: () => void) {
     if (this.state != 'static' || this.isHidden === true) {
       return;
     }
