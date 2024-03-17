@@ -6,7 +6,6 @@ cesium 军事标绘插件,支持绘制多边形、曲线、箭头等图形
 
 [在线示例：demo](https://ethan-zf.github.io/cesium-plot-js/examples/index.html)
 
-
 ### CDN
 
 1. 引入文件
@@ -14,7 +13,8 @@ cesium 军事标绘插件,支持绘制多边形、曲线、箭头等图形
 ```
 <script src="https://unpkg.com/cesium-plot-js"></script>
 ```
-2. 调用绘制api
+
+2. 调用绘制 api
 
 ```
   new CesiumPlot.FineArrow(Cesium, viewer);
@@ -34,13 +34,13 @@ npm i cesium-plot-js
 import CesiumPlot from 'cesium-plot-js';
 ```
 
-3. 调用绘制api
+3. 调用绘制 api
 
 ```
   new CesiumPlot.FineArrow(Cesium, viewer);
 ```
 
-### Class
+### Classes
 
 每个图形为独立的类，绑定事件或其他操作通过类的实例来实现
 
@@ -71,7 +71,7 @@ import CesiumPlot from 'cesium-plot-js';
 
 <类名>(cesium: Cesium, viewer: Cesium.Viewer, style?: [PolygonStyle](#PolygonStyle) | [LineStyle](#LineStyle))
 
-<h4 id='PolygonStyle'>PolygonStyle类型</h4>
+<h5 id='PolygonStyle'>PolygonStyle类型</h5>
 
 ```
 {
@@ -81,7 +81,7 @@ import CesiumPlot from 'cesium-plot-js';
 };
 ```
 
-<h4 id='LineStyle'>LineStyle类型</h4>
+<h5 id='LineStyle'>LineStyle类型</h5>
 
 ```
 {
@@ -107,13 +107,23 @@ const geometry = new CesiumPlot.FineArrow(Cesium, viewer, {
 
 ### 类的实例方法
 
-| 方法名 | 参数                                                    | 描述     |
-| ------ | ------------------------------------------------------- | -------- |
-| hide   |                                                         | 隐藏     |
-| show   |                                                         | 显示     |
-| remove |                                                         | 删除     |
-| on     | (event: EventType, listener: (eventData?: any) => void) | 绑定事件 |
-| off    | (event: EventType)                                      | 解绑事件 |
+| 方法名 | 参数                                                                  | 描述                                                 |
+| ------ | --------------------------------------------------------------------- | ---------------------------------------------------- |
+| hide   | options?: [VisibleAnimationOpts](#VisibleAnimationOpts)               | 隐藏，options 可配置过度动画，参数缺省时，不显示动画 |
+| show   | options?: [VisibleAnimationOpts](#VisibleAnimationOpts)               | 显示，options 可配置过度动画，参数缺省时，不显示动画 |
+| remove |                                                                       | 删除                                                 |
+| on     | (event: [EventType](#EventType), listener: (eventData?: any) => void) | 绑定事件                                             |
+| off    | (event: [EventType](#EventType))                                      | 解绑事件                                             |
+
+<h5 id='VisibleAnimationOpts'>VisibleAnimationOpts类型</h5>
+
+```
+{
+  duration?: number;      // 动画持续时间（ms）,默认1000
+  delay?: number;         // 动画延迟启动时间（ms），默认0
+  callback?: (() => void) // 动画结束回调
+};
+```
 
 ```
 // 隐藏图形
@@ -129,17 +139,17 @@ geometry.on('drawEnd', (data)=>{
 });
 ```
 
-### Events
+<h3 id='EventType'>Events</h3>
 
-- 'drawStart'
+- **drawStart**
 
 绘制开始
 
-- 'drawUpdate'
+- **drawUpdate**
 
 绘制过程中点位更新，回调事件返回更新的 Cartesian3 点位
 
-- 'drawEnd'
+- **drawEnd**
 
 绘制结束，回调事件返回图形的关键点位
 
@@ -149,10 +159,10 @@ geometry.on('drawEnd', (data) => {
 });
 ```
 
-- 'editStart'
+- **editStart**
 
 编辑开始
 
-- 'editEnd'
+- **editEnd**
 
 编辑结束，回调事件返回图形的关键点位

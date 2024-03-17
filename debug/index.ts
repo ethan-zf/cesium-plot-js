@@ -6,21 +6,21 @@ let raster = new Cesium.ArcGisMapServerImageryProvider({
 });
 
 const viewer = new Cesium.Viewer('cesiumContainer', {
-  // animation: false,
-  // shouldAnimate: true,
-  // geocoder: false,
-  // homeButton: false,
-  // infoBox: false,
-  // fullscreenButton: false,
-  // sceneModePicker: false,
-  // selectionIndicator: false,
-  // timeline: false,
-  // navigationHelpButton: false,
-  // baseLayerPicker: false,
-  // imageryProvider: raster,
-  // contextOptions: {
-  //   requestWebgl2: true,
-  // },
+  animation: false,
+  shouldAnimate: true,
+  geocoder: false,
+  homeButton: false,
+  infoBox: false,
+  fullscreenButton: false,
+  sceneModePicker: false,
+  selectionIndicator: false,
+  timeline: false,
+  navigationHelpButton: false,
+  baseLayerPicker: false,
+  imageryProvider: raster,
+  contextOptions: {
+    requestWebgl2: true,
+  },
 });
 
 viewer.scene.postProcessStages.fxaa.enabled = true;
@@ -129,7 +129,11 @@ buttonGroup.onclick = (evt) => {
       });
       break;
     case 'hide':
-      geometry && geometry.hide();
+      geometry &&
+        geometry.hide({
+          duration: 1000,
+          delay: 0,
+        });
       break;
     case 'show':
       geometry && geometry.show();
