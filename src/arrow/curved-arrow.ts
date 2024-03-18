@@ -9,11 +9,13 @@ export default class CurvedArrow extends Base {
   arrowLengthScale: number = 5;
   maxArrowLength: number = 3000000;
   t: number;
+  minPointsForShape: number;
 
   constructor(cesium: any, viewer: any, style?: LineStyle) {
     super(cesium, viewer, style);
     this.cesium = cesium;
     this.t = 0.3;
+    this.minPointsForShape = 2;
     this.setState('drawing');
     this.onDoubleClick();
   }
@@ -29,10 +31,7 @@ export default class CurvedArrow extends Base {
     this.points.push(cartesian);
     if (this.points.length < 2) {
       this.onMouseMove();
-    } else if (this.points.length === 2) {
-      this.setGeometryPoints(this.points);
-      this.drawLine();
-    }
+    } 
   }
 
   /**
@@ -40,12 +39,7 @@ export default class CurvedArrow extends Base {
    */
   updateMovingPoint(cartesian: Cartesian3) {
     const tempPoints = [...this.points, cartesian];
-    let geometryPoints = [];
-    if (tempPoints.length === 2) {
-      geometryPoints = this.createStraightArrow(tempPoints);
-    } else {
-      geometryPoints = this.createLine(tempPoints);
-    }
+    let geometryPoints = this.createGraphic(tempPoints);
     this.setGeometryPoints(geometryPoints);
     this.drawLine();
   }
@@ -67,7 +61,7 @@ export default class CurvedArrow extends Base {
    */
   updateDraggingPoint(cartesian: Cartesian3, index: number) {
     this.points[index] = cartesian;
-    const geometryPoints = this.createLine(this.points);
+    const geometryPoints = this.createGraphic(this.points);
     this.setGeometryPoints(geometryPoints);
     this.drawLine();
   }
@@ -75,10 +69,16 @@ export default class CurvedArrow extends Base {
   /**
    * Generate geometric shapes based on key points.
    */
-  createLine(positions: Cartesian3[]) {
+  createGraphic(positions: Cartesian3[]) {
     const lnglatPoints = positions.map((pnt) => {
       return this.cartesianToLnglat(pnt);
     });
+
+    if (positions.length === 2) {
+      // If there are only two points, draw a fine straight arrow.
+      return this.createStraightArrow(positions);
+    }
+
     const curvePoints = Utils.getCurvePoints(this.t, lnglatPoints);
     const pnt1 = lnglatPoints[lnglatPoints.length - 2];
     const pnt2 = lnglatPoints[lnglatPoints.length - 1];
