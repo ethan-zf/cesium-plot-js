@@ -39,10 +39,15 @@ export default class Base {
     this.cesium = cesium;
     this.viewer = viewer;
     this.type = this.getType();
+
     this.mergeStyle(style);
     this.cartesianToLnglat = this.cartesianToLnglat.bind(this);
     this.pixelToCartesian = this.pixelToCartesian.bind(this);
     this.eventDispatcher = new EventDispatcher();
+    // Disable default behavior for double-clicking on entities.
+    viewer.trackedEntity = undefined;
+    viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(this.cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
+
     this.onClick();
   }
 
