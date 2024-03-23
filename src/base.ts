@@ -57,8 +57,8 @@ export default class Base {
     if (this.type === 'polygon') {
       this.style = Object.assign(
         {
-          material: this.cesium.Color.fromCssColorString('rgba(59, 178, 208, 0.2)'),
-          outlineMaterial: this.cesium.Color.fromCssColorString('rgba(59, 178, 208, 1.0)'),
+          material: new this.cesium.Color(),
+          outlineMaterial: new this.cesium.Color(),
           outlineWidth: 2,
         },
         style,
@@ -66,7 +66,7 @@ export default class Base {
     } else if (this.type === 'line') {
       this.style = Object.assign(
         {
-          material: this.cesium.Color.fromCssColorString('rgba(59, 178, 208, 1.0)'),
+          material: new this.cesium.Color(),
           lineWidth: 2,
         },
         style,
@@ -702,7 +702,7 @@ export default class Base {
         }
         let endPoint = points[movingPointIndex];
         // To dynamically add points between the startPoint and endPoint, consistent with the initial drawing logic,
-        // update the point at index movingPointIndex in the points array with the newPosition, 
+        // update the point at index movingPointIndex in the points array with the newPosition,
         // generate the arrow, and execute the animation.
         const t = (elapsedTime - currentSegment * segmentDuration) / segmentDuration;
         const newPosition = this.cesium.Cartesian3.lerp(startPoint, endPoint, t, new this.cesium.Cartesian3());
