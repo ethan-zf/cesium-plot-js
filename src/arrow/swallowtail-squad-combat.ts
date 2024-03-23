@@ -23,12 +23,13 @@ export default class SwallowtailSquadCombat extends SquadCombat {
     this.neckWidthFactor = 0.15;
     this.tailWidthFactor = 0.1;
     this.swallowTailFactor = 1;
+    this.minPointsForShape = 2;
   }
 
   /**
    * Generate geometric shapes based on key points.
    */
-  createPolygon(positions: Cartesian3[]): Cartesian3[] {
+  createGraphic(positions: Cartesian3[]): Cartesian3[] {
     const lnglatPoints = positions.map((pnt) => {
       return this.cartesianToLnglat(pnt);
     });

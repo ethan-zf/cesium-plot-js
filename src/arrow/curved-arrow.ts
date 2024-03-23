@@ -31,7 +31,7 @@ export default class CurvedArrow extends Base {
     this.points.push(cartesian);
     if (this.points.length < 2) {
       this.onMouseMove();
-    } 
+    }
   }
 
   /**
@@ -49,8 +49,8 @@ export default class CurvedArrow extends Base {
     const distance = Utils.MathDistance(pnt1, pnt2);
     let len = distance / this.arrowLengthScale;
     len = len > this.maxArrowLength ? this.maxArrowLength : len;
-    const leftPnt = Utils.getThirdPoint(pnt1, pnt2, Math.PI / 6, len, false);
-    const rightPnt = Utils.getThirdPoint(pnt1, pnt2, Math.PI / 6, len, true);
+    const leftPnt = Utils.getThirdPoint(pnt1, pnt2, Math.PI / 6, len / 3, false);
+    const rightPnt = Utils.getThirdPoint(pnt1, pnt2, Math.PI / 6, len / 3, true);
     const points = [...pnt1, ...pnt2, ...leftPnt, ...pnt2, ...rightPnt];
     const cartesianPoints = this.cesium.Cartesian3.fromDegreesArray(points);
     return cartesianPoints;
@@ -86,8 +86,8 @@ export default class CurvedArrow extends Base {
     const distance = Utils.wholeDistance(lnglatPoints);
     let len = distance / this.arrowLengthScale;
     len = len > this.maxArrowLength ? this.maxArrowLength : len;
-    const leftPnt = Utils.getThirdPoint(pnt1, pnt2, Math.PI / 6, len, false);
-    const rightPnt = Utils.getThirdPoint(pnt1, pnt2, Math.PI / 6, len, true);
+    const leftPnt = Utils.getThirdPoint(pnt1, pnt2, Math.PI / 6, len / 3, false);
+    const rightPnt = Utils.getThirdPoint(pnt1, pnt2, Math.PI / 6, len / 3, true);
     const temp = [].concat(...curvePoints);
     const points = [...temp, ...leftPnt, ...pnt2, ...rightPnt];
     const cartesianPoints = this.cesium.Cartesian3.fromDegreesArray(points);

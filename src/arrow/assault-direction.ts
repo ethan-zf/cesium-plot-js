@@ -13,6 +13,7 @@ export default class AssaultDirection extends FineArrow {
   headWidthFactor: number;
   headAngle: number;
   neckAngle: number;
+  minPointsForShape: number;
 
   constructor(cesium: any, viewer: any, style?: PolygonStyle) {
     super(cesium, viewer, style);
@@ -22,10 +23,11 @@ export default class AssaultDirection extends FineArrow {
     this.headWidthFactor = 0.13;
     this.headAngle = Math.PI / 4;
     this.neckAngle = Math.PI * 0.17741;
+    this.minPointsForShape = 2;
     this.setState('drawing');
   }
 
-  createPolygon(positions: Cartesian3[]) {
+  createGraphic(positions: Cartesian3[]) {
     const [p1, p2] = positions.map(this.cartesianToLnglat);
     const len = Utils.getBaseLength([p1, p2]) * 1.5;
     const tailWidth = len * this.tailWidthFactor;

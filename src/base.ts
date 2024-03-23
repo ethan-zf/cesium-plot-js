@@ -710,7 +710,7 @@ export default class Base {
         tempPoints[tempPoints.length - 1] = newPosition;
         const geometryPoints = this.createGraphic(tempPoints);
         this.setGeometryPoints(geometryPoints);
-        this.showAnimation(0, 0, undefined);
+        this.showWithAnimation(0, 0, undefined);
       };
       this.viewer.clock.onTick.addEventListener(frameListener);
     }, delay);

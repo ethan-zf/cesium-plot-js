@@ -20,6 +20,7 @@ export default class SquadCombat extends AttackArrow {
     this.neckHeightFactor = 0.85;
     this.neckWidthFactor = 0.15;
     this.tailWidthFactor = 0.1;
+    this.minPointsForShape = 2;
   }
 
   /**
@@ -43,7 +44,7 @@ export default class SquadCombat extends AttackArrow {
     if (tempPoints.length < 2) {
       return;
     } else {
-      const geometryPoints = this.createPolygon(tempPoints);
+      const geometryPoints = this.createGraphic(tempPoints);
       this.setGeometryPoints(geometryPoints);
       this.drawPolygon();
     }
@@ -52,7 +53,7 @@ export default class SquadCombat extends AttackArrow {
   /**
    * Generate geometric shapes based on key points.
    */
-  createPolygon(positions: Cartesian3[]): Cartesian3[] {
+  createGraphic(positions: Cartesian3[]): Cartesian3[] {
     const lnglatPoints = positions.map((pnt) => {
       return this.cartesianToLnglat(pnt);
     });

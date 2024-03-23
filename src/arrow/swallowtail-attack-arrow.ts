@@ -26,12 +26,13 @@ export default class SwallowtailAttackArrow extends AttackArrow {
     this.headTailFactor = 0.8;
     this.swallowTailFactor = 1;
     this.swallowTailPnt = [0, 0];
+    this.minPointsForShape = 3;
   }
 
   /**
    * Generate geometric shapes based on key points.
    */
-  createPolygon(positions: Cartesian3[]): Cartesian3[] {
+  createGraphic(positions: Cartesian3[]): Cartesian3[] {
     const lnglatPoints = positions.map((pnt) => {
       return this.cartesianToLnglat(pnt);
     });

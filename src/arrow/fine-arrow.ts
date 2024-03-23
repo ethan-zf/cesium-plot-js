@@ -13,6 +13,7 @@ export default class FineArrow extends Base {
   headWidthFactor: number;
   headAngle: number;
   neckAngle: number;
+  minPointsForShape: number;
 
   constructor(cesium: any, viewer: any, style?: PolygonStyle) {
     super(cesium, viewer, style);
@@ -22,6 +23,7 @@ export default class FineArrow extends Base {
     this.headWidthFactor = 0.25;
     this.headAngle = Math.PI / 8.5;
     this.neckAngle = Math.PI / 13;
+    this.minPointsForShape = 2;
     this.setState('drawing');
   }
 
@@ -38,7 +40,7 @@ export default class FineArrow extends Base {
       this.onMouseMove();
     }
     if (this.points.length === 2) {
-      const geometryPoints = this.createPolygon(this.points);
+      const geometryPoints = this.createGraphic(this.points);
       this.setGeometryPoints(geometryPoints);
       this.drawPolygon();
       this.finishDrawing();
@@ -50,7 +52,7 @@ export default class FineArrow extends Base {
    */
   updateMovingPoint(cartesian: Cartesian3) {
     const tempPoints = [...this.points, cartesian];
-    const geometryPoints = this.createPolygon(tempPoints);
+    const geometryPoints = this.createGraphic(tempPoints);
     this.setGeometryPoints(geometryPoints);
     this.drawPolygon();
   }
@@ -60,7 +62,7 @@ export default class FineArrow extends Base {
    */
   updateDraggingPoint(cartesian: Cartesian3, index: number) {
     this.points[index] = cartesian;
-    const geometryPoints = this.createPolygon(this.points);
+    const geometryPoints = this.createGraphic(this.points);
     this.setGeometryPoints(geometryPoints);
     this.drawPolygon();
   }
@@ -68,7 +70,7 @@ export default class FineArrow extends Base {
   /**
    * Generate geometric shapes based on key points.
    */
-  createPolygon(positions: Cartesian3[]) {
+  createGraphic(positions: Cartesian3[]) {
     const [p1, p2] = positions.map(this.cartesianToLnglat);
     const len = Utils.getBaseLength([p1, p2]);
     const tailWidth = len * this.tailWidthFactor;

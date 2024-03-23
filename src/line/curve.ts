@@ -23,7 +23,7 @@ export default class Curve extends Base {
 	}
 
 	/**
-	 * 仅点击事件会添加点
+	 * Points are only added upon click events.
 	 */
 	addPoint(cartesian: Cartesian3) {
 		this.points.push(cartesian);
@@ -36,7 +36,7 @@ export default class Curve extends Base {
 	}
 
 	/**
-	 * 初次绘制时根据鼠标移动的点位绘制图形.
+	 * Draw the shape based on the mouse movement position during the initial drawing.
 	 */
 	updateMovingPoint(cartesian: Cartesian3) {
 		const tempPoints = [...this.points, cartesian];
@@ -45,25 +45,25 @@ export default class Curve extends Base {
 			this.setGeometryPoints(tempPoints);
 			this.drawLine();
 		} else {
-			geometryPoints = this.createLine(tempPoints);
+			geometryPoints = this.createGraphic(tempPoints);
 			this.setGeometryPoints(geometryPoints);
 		}
 	}
 
 	/**
-	 * 编辑状态下，拖拽关键点位，更新对应关键点位数据
+	 * During editing mode, drag key points to update the corresponding data.
 	 */
 	updateDraggingPoint(cartesian: Cartesian3, index: number) {
 		this.points[index] = cartesian;
-		const geometryPoints = this.createLine(this.points);
+		const geometryPoints = this.createGraphic(this.points);
 		this.setGeometryPoints(geometryPoints);
 		this.drawLine();
 	}
 
 	/**
-	 * 根据关键点生成几何图形点位.
+	 * Generate geometric shape points based on key points..
 	 */
-	createLine(positions: Cartesian3[]) {
+	createGraphic(positions: Cartesian3[]) {
 		const lnglatPoints = positions.map(pnt => {
 			return this.cartesianToLnglat(pnt);
 		});
