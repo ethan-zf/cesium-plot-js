@@ -12,14 +12,20 @@ export type LineStyle = {
   lineWidth?: number;
 };
 
-export type State = 'drawing' | 'edit' | 'static';
+export type State = 'drawing' | 'edit' | 'static' | 'animating';
 export type GeometryStyle = PolygonStyle | LineStyle;
 
 export type EventType = 'drawStart' | 'drawUpdate' | 'drawEnd' | 'editEnd' | 'editStart';
 export type EventListener = (eventData?: any) => void;
 
-export type VisibleOpts = {
+export type VisibleAnimationOpts = {
   duration?: number;
   delay?: number;
-  callback?: (() => void)
-}
+  callback?: () => void;
+};
+
+export type GrowthAnimationOpts = {
+  duration: number;
+  delay: number;
+  callback: Function;
+};

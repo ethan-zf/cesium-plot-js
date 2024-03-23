@@ -1,5 +1,4 @@
 // @ts-ignore
-// import * as CesiumTypeOnly from 'cesium';
 import * as CesiumTypeOnly from 'cesium';
 import {
   State,
@@ -9,10 +8,12 @@ import {
   EventType,
   EventListener,
   VisibleAnimationOpts,
+  GrowthAnimationOpts,
 } from './interface';
 import EventDispatcher from './events';
 import cloneDeep from 'lodash.clonedeep';
-import merge from 'lodash.merge';
+// import merge from 'lodash.merge';
+import * as Utils from './utils';
 
 export default class Base {
   cesium: typeof CesiumTypeOnly;
@@ -34,6 +35,7 @@ export default class Base {
   points: CesiumTypeOnly.Cartesian3[] = [];
   isHidden: boolean = false;
   styleCache: GeometryStyle | undefined;
+  minPointsForShape: number = 0;
 
   constructor(cesium: CesiumTypeOnly, viewer: CesiumTypeOnly.Viewer, style?: GeometryStyle) {
     this.cesium = cesium;
@@ -642,6 +644,170 @@ export default class Base {
     }, delay);
   }
 
+  startGrowthAnimation(opts: GrowthAnimationOpts) {
+    const { duration = 3000, delay = 0, callback } = opts || {};
+    if (this.state !== 'static') {
+      return;
+    }
+    if (!this.minPointsForShape) {
+      console.warn('Growth animation is not supported for this type of shape');
+      return;
+    }
+    this.setState('animating');
+    if (this.minPointsForShape === 4) {
+      // For double arrows, special handling is required.
+      this.doubleArrowGrowthAnimation(duration, delay, callback);
+      return;
+    }
+    setTimeout(() => {
+      this.hideWithAnimation(0, 0, undefined);
+      const points = this.getPoints();
+
+      let segmentDuration = 0;
+      if (this.minPointsForShape === 2) {
+        segmentDuration = duration / (points.length - 1);
+      } else {
+        segmentDuration = duration / (points.length - 2);
+      }
+
+      let startTime = Date.now();
+      let movingPointIndex = 0;
+      this.viewer.clock.shouldAnimate = true;
+
+      const frameListener = (clock) => {
+        const currentTime = Date.now();
+        const elapsedTime = currentTime - startTime;
+        if (elapsedTime >= duration) {
+          // Animation ends
+          callback && callback();
+          startTime = 0;
+          this.viewer.clock.shouldAnimate = false;
+          this.viewer.clock.onTick.removeEventListener(frameListener);
+          this.setState('static');
+          return;
+        }
+
+        const currentSegment = Math.floor(elapsedTime / segmentDuration);
+        let startPoint;
+
+        if (this.minPointsForShape === 2) {
+          movingPointIndex = currentSegment + 1;
+        } else {
+          movingPointIndex = currentSegment + 2;
+        }
+        startPoint = points[movingPointIndex - 1];
+        if (currentSegment == 0 && this.minPointsForShape === 3) {
+          // The face-arrow determined by three points, with the animation starting from the midpoint of the line connecting the first two points.
+          startPoint = this.cesium.Cartesian3.midpoint(points[0], points[1], new this.cesium.Cartesian3());
+        }
+        let endPoint = points[movingPointIndex];
+        // To dynamically add points between the startPoint and endPoint, consistent with the initial drawing logic,
+        // update the point at index movingPointIndex in the points array with the newPosition, 
+        // generate the arrow, and execute the animation.
+        const t = (elapsedTime - currentSegment * segmentDuration) / segmentDuration;
+        const newPosition = this.cesium.Cartesian3.lerp(startPoint, endPoint, t, new this.cesium.Cartesian3());
+        const tempPoints = points.slice(0, movingPointIndex + 1);
+        tempPoints[tempPoints.length - 1] = newPosition;
+        const geometryPoints = this.createGraphic(tempPoints);
+        this.setGeometryPoints(geometryPoints);
+        this.showAnimation(0, 0, undefined);
+      };
+      this.viewer.clock.onTick.addEventListener(frameListener);
+    }, delay);
+  }
+
+  private doubleArrowGrowthAnimation(duration: number = 3000, delay: number = 0, callback?: Function) {
+    setTimeout(() => {
+      this.viewer.entities.remove(this.polygonEntity);
+      this.viewer.entities.remove(this.outlineEntity);
+      this.polygonEntity = null;
+      this.outlineEntity = null;
+      const points = this.getPoints();
+      let startTime = Date.now();
+      this.viewer.clock.shouldAnimate = true;
+
+      const frameListener = (clock) => {
+        const currentTime = Date.now();
+        const elapsedTime = currentTime - startTime;
+        if (elapsedTime >= duration) {
+          // Animation ends
+          callback && callback();
+          startTime = 0;
+          this.viewer.clock.shouldAnimate = false;
+          this.viewer.clock.onTick.removeEventListener(frameListener);
+          this.setState('static');
+          return;
+        }
+
+        // Utils.isClockWise(pnt1, pnt2, pnt3)
+        const midPoint = this.cesium.Cartesian3.midpoint(points[0], points[1], new this.cesium.Cartesian3());
+
+        const startPointLeft = this.cesium.Cartesian3.midpoint(points[0], midPoint, new this.cesium.Cartesian3());
+
+        const startPointRight = this.cesium.Cartesian3.midpoint(midPoint, points[1], new this.cesium.Cartesian3());
+        let endPointLeft = points[3];
+        let endPointRight = points[2];
+        const t = elapsedTime / duration;
+        const controlPoint = this.getBezierControlPointforGrowthAnimation();
+        let curveControlPointsLeft = [startPointLeft, controlPoint.left, endPointLeft];
+        let curveControlPointsRight = [startPointRight, controlPoint.right, endPointRight];
+        const newPositionLeft = this.getNewPosition(curveControlPointsLeft, t);
+        const newPositionRight = this.getNewPosition(curveControlPointsRight, t);
+
+        // Assist in viewing exercise routes
+        // this.viewer.entities.add({
+        // 	position: newPositionLeft,
+        // 	point: {
+        // 		pixelSize: 4,
+        // 		heightReference: this.cesium.HeightReference.CLAMP_TO_GROUND,
+        // 		color: this.cesium.Color.RED,
+        // 	},
+        // });
+        // this.viewer.entities.add({
+        // 	position: newPositionRight,
+        // 	point: {
+        // 		pixelSize: 4,
+        // 		heightReference: this.cesium.HeightReference.CLAMP_TO_GROUND,
+        // 		color: this.cesium.Color.RED,
+        // 	},
+        // });
+        const tempPoints = [...points];
+        tempPoints[2] = newPositionRight;
+        tempPoints[3] = newPositionLeft;
+        const geometryPoints = this.createGraphic(tempPoints);
+        this.setGeometryPoints(geometryPoints);
+        this.drawPolygon();
+      };
+      this.viewer.clock.onTick.addEventListener(frameListener);
+    }, delay);
+  }
+
+  private getNewPosition(curveControlPoints, t) {
+    curveControlPoints = curveControlPoints.map((item) => {
+      return this.cartesianToLnglat(item);
+    });
+    let curvePoints = Utils.getCurvePoints(0.3, curveControlPoints);
+    curvePoints = curvePoints.map((p) => {
+      return this.cesium.Cartesian3.fromDegrees(p[0], p[1]);
+    });
+
+    let newPosition = this.interpolateAlongCurve(curvePoints, t);
+    return newPosition;
+  }
+
+  private interpolateAlongCurve(curvePoints, t) {
+    const numPoints = curvePoints.length - 1;
+    const index = Math.floor(t * numPoints);
+    const tSegment = t * numPoints - index;
+    const startPoint = curvePoints[index];
+    const endPoint = curvePoints[index + 1];
+    const x = startPoint.x + (endPoint.x - startPoint.x) * tSegment;
+    const y = startPoint.y + (endPoint.y - startPoint.y) * tSegment;
+    const z = startPoint.z + (endPoint.z - startPoint.z) * tSegment;
+
+    return new this.cesium.Cartesian3(x, y, z);
+  }
+
   remove() {
     if (this.type === 'polygon') {
       this.viewer.entities.remove(this.polygonEntity);
@@ -691,5 +857,10 @@ export default class Base {
   getType(): 'polygon' | 'line' {
     return 'polygon';
     //Abstract method that must be implemented by subclasses.
+  }
+
+  createGraphic(points: CesiumTypeOnly.Cartesian3[]): CesiumTypeOnly.Cartesian3[] {
+    //Abstract method that must be implemented by subclasses.
+    return [new this.cesium.Cartesian3()];
   }
 }

@@ -15,6 +15,12 @@ export default class DoubleArrow extends Base {
   neckHeightFactor: number;
   connPoint: Position;
   tempPoint4: Position;
+  minPointsForShape: number;
+  llBodyPnts: Position[] = [];
+  rrBodyPnts: Position[] = [];
+  curveControlPointLeft: Cartesian3;
+  curveControlPointRight: Cartesian3;
+  isClockWise: boolean;
 
   constructor(cesium: any, viewer: any, style?: PolygonStyle) {
     super(cesium, viewer, style);
@@ -25,6 +31,7 @@ export default class DoubleArrow extends Base {
     this.neckWidthFactor = 0.15;
     this.connPoint = [0, 0];
     this.tempPoint4 = [0, 0];
+    this.minPointsForShape = 4;
     this.setState('drawing');
   }
 
@@ -42,8 +49,30 @@ export default class DoubleArrow extends Base {
     } else if (this.points.length === 2) {
       this.setGeometryPoints(this.points);
       this.drawPolygon();
-    } else if (this.points.length === 4) {
+    } else if (this.points.length === 3) {
+      this.lineEntity && this.viewer.entities.remove(this.lineEntity);
+    } else {
       this.finishDrawing();
+      this.curveControlPointLeft = this.cesium.Cartesian3.fromDegrees(this.llBodyPnts[2][0], this.llBodyPnts[2][1]);
+      this.curveControlPointRight = this.cesium.Cartesian3.fromDegrees(this.rrBodyPnts[1][0], this.rrBodyPnts[1][1]);
+
+      // 辅助查看插值控制点位置
+      // this.CesiumViewer.entities.add({
+      // 	position: this.curveControlPointLeft,
+      // 	point: {
+      // 		pixelSize: 10,
+      // 		heightReference: this.cesium.HeightReference.CLAMP_TO_GROUND,
+      // 		color: this.cesium.Color.RED,
+      // 	},
+      // });
+      // this.CesiumViewer.entities.add({
+      // 	position: this.curveControlPointRight,
+      // 	point: {
+      // 		pixelSize: 10,
+      // 		heightReference: this.cesium.HeightReference.CLAMP_TO_GROUND,
+      // 		color: this.cesium.Color.RED,
+      // 	},
+      // });
     }
   }
   /**
@@ -55,7 +84,7 @@ export default class DoubleArrow extends Base {
     if (tempPoints.length === 2) {
       this.addFirstLineOfTheArrow();
     } else if (tempPoints.length > 2) {
-      const geometryPoints = this.createPolygon(tempPoints);
+      const geometryPoints = this.createGraphic(tempPoints);
       this.setGeometryPoints(geometryPoints);
       this.drawPolygon();
     }
@@ -66,7 +95,7 @@ export default class DoubleArrow extends Base {
    */
   updateDraggingPoint(cartesian: Cartesian3, index: number) {
     this.points[index] = cartesian;
-    const geometryPoints = this.createPolygon(this.points);
+    const geometryPoints = this.createGraphic(this.points);
     this.setGeometryPoints(geometryPoints);
     this.drawPolygon();
   }
@@ -74,7 +103,7 @@ export default class DoubleArrow extends Base {
   /**
    * Generate geometric shapes based on key points.
    */
-  createPolygon(positions: Cartesian3[]) {
+  createGraphic(positions: Cartesian3[]) {
     const lnglatPoints = positions.map((pnt) => {
       return this.cartesianToLnglat(pnt);
     });
@@ -92,7 +121,8 @@ export default class DoubleArrow extends Base {
     }
     let leftArrowPnts: Position[];
     let rightArrowPnts;
-    if (Utils.isClockWise(pnt1, pnt2, pnt3)) {
+    this.isClockWise = Utils.isClockWise(pnt1, pnt2, pnt3);
+    if (this.isClockWise) {
       leftArrowPnts = this.getArrowPoints(pnt1, this.connPoint, this.tempPoint4, false);
       rightArrowPnts = this.getArrowPoints(this.connPoint, pnt2, pnt3, true);
     } else {
@@ -104,9 +134,11 @@ export default class DoubleArrow extends Base {
     const llBodyPnts = leftArrowPnts.slice(0, t);
     const lArrowPnts = leftArrowPnts.slice(t, t + 5);
     let lrBodyPnts = leftArrowPnts.slice(t + 5, m);
+    this.llBodyPnts = llBodyPnts;
     let rlBodyPnts = rightArrowPnts.slice(0, t);
     const rArrowPnts = rightArrowPnts.slice(t, t + 5);
     const rrBodyPnts = rightArrowPnts.slice(t + 5, m);
+    this.rrBodyPnts = rrBodyPnts;
     rlBodyPnts = Utils.getBezierPoints(rlBodyPnts);
     const bodyPnts = Utils.getBezierPoints(rrBodyPnts.concat(llBodyPnts.slice(1)));
     lrBodyPnts = Utils.getBezierPoints(lrBodyPnts);
@@ -219,5 +251,17 @@ export default class DoubleArrow extends Base {
 
   getPoints() {
     return this.points;
+  }
+
+  getBezierControlPointforGrowthAnimation() {
+    return this.isClockWise
+      ? {
+          left: this.curveControlPointLeft,
+          right: this.curveControlPointRight,
+        }
+      : {
+          right: this.curveControlPointLeft,
+          left: this.curveControlPointRight,
+        };
   }
 }

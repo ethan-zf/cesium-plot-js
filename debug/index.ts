@@ -47,6 +47,7 @@ const editStartHandler = () => {
 const editEndHandler = (geometryPoints: any) => {
   console.error('editEnd', geometryPoints);
 };
+
 const buttonGroup = document.getElementById('button-group') as HTMLElement;
 buttonGroup.onclick = (evt) => {
   const targetElement = evt.target as HTMLElement;
@@ -158,6 +159,12 @@ buttonGroup.onclick = (evt) => {
         geometry.off('drawEnd', drawEndHandler);
         geometry.off('editStart', editStartHandler);
         geometry.off('editEnd', editEndHandler);
+      }
+      break;
+
+    case 'startGrowthAnimation':
+      if (geometry) {
+        geometry.startGrowthAnimation();
       }
       break;
     default:
