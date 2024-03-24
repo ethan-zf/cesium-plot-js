@@ -147,10 +147,16 @@ window.onload = () => {
         });
         break;
       case 'hide':
-        geometry && geometry.hide();
+        geometry &&
+          geometry.hide({
+            deration: 2000,
+          });
         break;
       case 'show':
-        geometry && geometry.show();
+        geometry &&
+          geometry.show({
+            deration: 2000,
+          });
         break;
       case 'remove':
         geometry && geometry.remove();
@@ -172,6 +178,13 @@ window.onload = () => {
           geometry.off('drawEnd', drawEndHandler);
           geometry.off('editStart', editStartHandler);
           geometry.off('editEnd', editEndHandler);
+        }
+        break;
+      case 'startGrowthAnimation':
+        if (geometry) {
+          geometry.startGrowthAnimation({
+            duration: 2000,
+          });
         }
         break;
       default:

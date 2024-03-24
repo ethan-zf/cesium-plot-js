@@ -12,7 +12,7 @@ export type LineStyle = {
   lineWidth?: number;
 };
 
-export type State = 'drawing' | 'edit' | 'static' | 'animating';
+export type State = 'drawing' | 'edit' | 'static' | 'animating' | 'hidden';
 export type GeometryStyle = PolygonStyle | LineStyle;
 
 export type EventType = 'drawStart' | 'drawUpdate' | 'drawEnd' | 'editEnd' | 'editStart';

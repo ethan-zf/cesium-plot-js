@@ -33,7 +33,6 @@ export default class Base {
   dragEventHandler: CesiumTypeOnly.ScreenSpaceEventHandler;
   entityId: string = '';
   points: CesiumTypeOnly.Cartesian3[] = [];
-  isHidden: boolean = false;
   styleCache: GeometryStyle | undefined;
   minPointsForShape: number = 0;
 
@@ -492,11 +491,11 @@ export default class Base {
   }
 
   showWithAnimation(duration: number = 2000, delay: number = 0, callback?: () => void) {
-    if (this.state != 'static' || this.isHidden === false) {
+    if (this.state !== 'hidden') {
       //If not in a static state or already displayed, do not process.
       return;
     }
-    this.isHidden = false;
+    this.setState('static');
     if (this.type === 'polygon') {
       let alpha = 0.3;
       const material = this.styleCache.material;
@@ -532,9 +531,10 @@ export default class Base {
   }
 
   hideWithAnimation(duration: number = 2000, delay: number = 0, callback?: () => void) {
-    if (this.state != 'static' || this.isHidden === true) {
+    if (this.state === 'hidden' || this.state != 'static') {
       return;
     }
+    this.setState('hidden');
     if (this.type === 'polygon') {
       this.animateOpacity(this.polygonEntity, 0.0, duration, delay, callback, this.state);
       this.animateOpacity(this.outlineEntity, 0.0, duration, delay, undefined, this.state);
@@ -610,12 +610,12 @@ export default class Base {
           callback && callback();
           const restoredState = state ? state : 'static';
 
-          if (targetAlpha === 0) {
-            this.isHidden = true;
-          }
+          // if (targetAlpha === 0) {
+          //   this.setState('hidden');
+          // }
 
           // if (duration == 0) {
-          this.setState('drawing');
+          // this.setState('drawing');
           if (material) {
             if (material.image && material.color.alpha !== undefined) {
               // Texture Material
@@ -646,7 +646,7 @@ export default class Base {
 
   startGrowthAnimation(opts: GrowthAnimationOpts) {
     const { duration = 2000, delay = 0, callback } = opts || {};
-    if (this.state !== 'static') {
+    if (this.state === 'hidden' || this.state != 'static') {
       return;
     }
     if (!this.minPointsForShape) {
