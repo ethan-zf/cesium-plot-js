@@ -491,7 +491,7 @@ export default class Base {
     }
   }
 
-  showWithAnimation(duration: number = 1000, delay: number = 0, callback?: () => void) {
+  showWithAnimation(duration: number = 2000, delay: number = 0, callback?: () => void) {
     if (this.state != 'static' || this.isHidden === false) {
       //If not in a static state or already displayed, do not process.
       return;
@@ -531,7 +531,7 @@ export default class Base {
     }
   }
 
-  hideWithAnimation(duration: number = 1000, delay: number = 0, callback?: () => void) {
+  hideWithAnimation(duration: number = 2000, delay: number = 0, callback?: () => void) {
     if (this.state != 'static' || this.isHidden === true) {
       return;
     }
@@ -645,7 +645,7 @@ export default class Base {
   }
 
   startGrowthAnimation(opts: GrowthAnimationOpts) {
-    const { duration = 3000, delay = 0, callback } = opts || {};
+    const { duration = 2000, delay = 0, callback } = opts || {};
     if (this.state !== 'static') {
       return;
     }
@@ -716,7 +716,7 @@ export default class Base {
     }, delay);
   }
 
-  private doubleArrowGrowthAnimation(duration: number = 3000, delay: number = 0, callback?: Function) {
+  private doubleArrowGrowthAnimation(duration: number = 2000, delay: number = 0, callback?: Function) {
     setTimeout(() => {
       this.viewer.entities.remove(this.polygonEntity);
       this.viewer.entities.remove(this.outlineEntity);

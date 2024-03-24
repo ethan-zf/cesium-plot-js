@@ -2,9 +2,16 @@
 
 cesium 军事标绘插件,支持绘制多边形、曲线、箭头等图形
 
-![image](https://ethan-zf.github.io/cesium-plot-js/examples/plot.png)
+![image](https://ethan-zf.github.io/cesium-plot-js/examples/banner.png)
 
-[在线示例：demo](https://ethan-zf.github.io/cesium-plot-js/examples/index.html)
+淡入淡出效果：
+
+![image](https://ethan-zf.github.io/cesium-plot-js/examples/show-hide-animation.gif)
+
+生长动画：
+![image](https://ethan-zf.github.io/cesium-plot-js/examples/attack-arrow-growth.gif)
+
+在线示例： [demo](https://ethan-zf.github.io/cesium-plot-js/examples/index.html)
 
 ### CDN
 
@@ -107,23 +114,22 @@ const geometry = new CesiumPlot.FineArrow(Cesium, viewer, {
 
 ### 类的实例方法
 
-| 方法名 | 参数                                                                  | 描述                                                 |
-| ------ | --------------------------------------------------------------------- | ---------------------------------------------------- |
-| hide   | options?: [VisibleAnimationOpts](#VisibleAnimationOpts)               | 隐藏，options 可配置过度动画，参数缺省时，不显示动画 |
-| show   | options?: [VisibleAnimationOpts](#VisibleAnimationOpts)               | 显示，options 可配置过度动画，参数缺省时，不显示动画 |
-| remove |                                                                       | 删除                                                 |
-| on     | (event: [EventType](#EventType), listener: (eventData?: any) => void) | 绑定事件                                             |
-| off    | (event: [EventType](#EventType))                                      | 解绑事件                                             |
+| 方法名               | 参数                                                                  | 描述                                                 |
+| -------------------- | --------------------------------------------------------------------- | ---------------------------------------------------- |
+| hide                 | options?: [AnimationOpts](#AnimationOpts)                             | 隐藏，options 可配置动画参数，参数缺省时，不显示动画 |
+| show                 | options?: [AnimationOpts](#AnimationOpts)                             | 显示，options 可配置动画参数，参数缺省时，不显示动画 |
+| startGrowthAnimation | options?: [AnimationOpts](#AnimationOpts)                             | 生长动画，options 可配置动画参数                     |
+| remove               |                                                                       | 删除                                                 |
+| on                   | (event: [EventType](#EventType), listener: (eventData?: any) => void) | 绑定事件                                             |
+| off                  | (event: [EventType](#EventType))                                      | 解绑事件                                             |
 
-<h5 id='VisibleAnimationOpts'>VisibleAnimationOpts类型</h5>
+<h5 id='AnimationOpts'>AnimationOpts类型</h5>
 
-```
-{
-  duration?: number;      // 动画持续时间（ms）,默认1000
-  delay?: number;         // 动画延迟启动时间（ms），默认0
-  callback?: (() => void) // 动画结束回调
-};
-```
+| 参数     | 类型       | 默认值 | 描述                   |
+| -------- | ---------- | ------ | ---------------------- |
+| duration | number     | 2000   | 动画持续时间（ms）     |
+| delay    | number     | 0      | 动画延迟启动时间（ms） |
+| callback | () => void | -      | 动画结束回调           |
 
 ```
 // 隐藏图形
