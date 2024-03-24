@@ -1,3 +1,22 @@
+## 0.0.5
+
+---
+
+#### ✨ New Features
+
+- Add: Fade-in Fade-out Animation for Graphics
+
+- Add: Growing Animation for Arrow-shaped Graphics
+
+#### ⚠️ Breaking changes 
+
+- Set Default Style to Cesium Default Style
+
+#### 🐞 Bug fixes
+
+- Disable Cesium's Auto-Centering Viewport Behavior on Double Click
+
+
 ## 0.0.4
 
 ---
