@@ -2,9 +2,9 @@
 import * as CesiumTypeOnly from 'cesium';
 
 export type PolygonStyle = {
-  material?: CesiumTypeOnly.MaterialProperty;
+  material?: CesiumTypeOnly.MaterialProperty | CesiumTypeOnly.Color;
   outlineWidth?: number;
-  outlineMaterial?: CesiumTypeOnly.MaterialProperty;
+  outlineMaterial?: CesiumTypeOnly.MaterialProperty | CesiumTypeOnly.Color;
 };
 
 export type LineStyle = {

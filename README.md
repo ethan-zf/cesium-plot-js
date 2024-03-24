@@ -44,26 +44,26 @@ import CesiumPlot from 'cesium-plot-js';
 
 每个图形为独立的类，绑定事件或其他操作通过类的实例来实现
 
-| 类名                   | 类型      | 描述             |
-| ---------------------- | --------- | ---------------- |
-| Polygon                | 'polygon' | 多边形           |
-| Reactangle             | 'polygon' | 矩形             |
-| Triangle               | 'polygon' | 三角形           |
-| Circle                 | 'polygon' | 圆形             |
-| StraightArrow          | 'line'    | 细直箭头         |
-| CurvedArrow            | 'line'    | 曲线箭头         |
-| FineArrow              | 'polygon' | 直箭头           |
-| AttackArrow            | 'polygon' | 进攻方向箭头     |
-| SwallowtailAttackArrow | 'polygon' | 燕尾进攻方向箭头 |
-| SquadCombat            | 'polygon' | 分队战斗方向     |
-| SwallowtailSquadCombat | 'polygon' | 燕尾分队战斗方向 |
-| AssaultDirection       | 'polygon' | 突击方向         |
-| DoubleArrow            | 'polygon' | 双箭头           |
-| FreehandLine           | 'line'    | 自由线           |
-| FreehandPolygon        | 'polygon' | 自由面           |
-| Curve                  | 'line'    | 曲线             |
-| Ellipse                | 'polygon' | 椭圆             |
-| Lune                   | 'polygon' | 半月面           |
+| 类名                   | 类型      | 描述             | 生长动画 |
+| ---------------------- | --------- | ---------------- | -------- |
+| Polygon                | 'polygon' | 多边形           | ❌       |
+| Reactangle             | 'polygon' | 矩形             | ❌       |
+| Triangle               | 'polygon' | 三角形           | ❌       |
+| Circle                 | 'polygon' | 圆形             | ❌       |
+| StraightArrow          | 'line'    | 细直箭头         | ✔️       |
+| CurvedArrow            | 'line'    | 曲线箭头         | ✔️       |
+| FineArrow              | 'polygon' | 直箭头           | ✔️       |
+| AttackArrow            | 'polygon' | 进攻方向箭头     | ✔️       |
+| SwallowtailAttackArrow | 'polygon' | 燕尾进攻方向箭头 | ✔️       |
+| SquadCombat            | 'polygon' | 分队战斗方向     | ✔️       |
+| SwallowtailSquadCombat | 'polygon' | 燕尾分队战斗方向 | ✔️       |
+| AssaultDirection       | 'polygon' | 突击方向         | ✔️       |
+| DoubleArrow            | 'polygon' | 双箭头           | ✔️       |
+| FreehandLine           | 'line'    | 自由线           | ❌       |
+| FreehandPolygon        | 'polygon' | 自由面           | ❌       |
+| Curve                  | 'line'    | 曲线             | ❌       |
+| Ellipse                | 'polygon' | 椭圆             | ❌       |
+| Lune                   | 'polygon' | 半月面           | ❌       |
 
 ### 构造函数
 
