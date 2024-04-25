@@ -131,6 +131,9 @@ export default class Base {
           this.disableDrag();
           // Trigger 'drawEnd' and return the geometry shape points when exiting the edit mode.
           this.eventDispatcher.dispatchEvent('editEnd', this.getPoints());
+
+          // Fix the issue of map can`t to be dragged due to double clicking control points
+          this.viewer.scene.screenSpaceCameraController.enableRotate = true;
         }
       } else if (this.state === 'static') {
         //When drawing multiple shapes, the click events for all shapes are triggered. Only when hitting a completed shape should it enter editing mode.
