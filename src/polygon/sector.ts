@@ -1,10 +1,10 @@
 import Base from '../base';
 // @ts-ignore
 import { Cartesian3 } from 'cesium';
-
+import * as Utils from '../utils';
 import { PolygonStyle } from '../interface';
 
-export default class Rectangle extends Base {
+export default class Sector extends Base {
   points: Cartesian3[] = [];
 
   constructor(cesium: any, viewer: any, style?: PolygonStyle) {
@@ -24,7 +24,7 @@ export default class Rectangle extends Base {
     this.points.push(cartesian);
     if (this.points.length === 1) {
       this.onMouseMove();
-    } else if (this.points.length > 1) {
+    }else if (this.points.length === 3) {
       this.finishDrawing();
     }
   }
@@ -34,9 +34,30 @@ export default class Rectangle extends Base {
    */
   updateMovingPoint(cartesian: Cartesian3) {
     const tempPoints = [...this.points, cartesian];
-    const geometryPoints = this.createGraphic(tempPoints);
-    this.setGeometryPoints(geometryPoints);
-    this.drawPolygon();
+    this.setGeometryPoints(tempPoints);
+    if (tempPoints.length === 2) {
+      this.addFirstLineOfTheArrow();
+    } else {
+      const geometryPoints = this.createGraphic(tempPoints);
+      this.setGeometryPoints(geometryPoints);
+      this.drawPolygon();
+    }
+  }
+
+  createGraphic(positions: Cartesian3[]) {
+    const lnglatPoints = positions.map((pnt) => {
+      return this.cartesianToLnglat(pnt);
+    });
+    const [center, pnt2, pnt3] = [lnglatPoints[0], lnglatPoints[1], lnglatPoints[2]];
+    const radius = Utils.MathDistance(pnt2, center);
+    const startAngle = Utils.getAzimuth(pnt2, center);
+    const endAngle = Utils.getAzimuth(pnt3, center);
+    const res = Utils.getArcPoints(center, radius, startAngle, endAngle);
+    res.push(center, res[0]);
+
+    const temp = [].concat(...res);
+    const cartesianPoints = this.cesium.Cartesian3.fromDegreesArray(temp);
+    return cartesianPoints;
   }
 
   /**
@@ -47,13 +68,6 @@ export default class Rectangle extends Base {
     const geometryPoints = this.createGraphic(this.points);
     this.setGeometryPoints(geometryPoints);
     this.drawPolygon();
-  }
-
-  createGraphic(positions: Cartesian3[]) {
-    const [p1, p2] = positions.map(this.cartesianToLnglat);
-    const coords = [...p1, p1[0], p2[1], ...p2, p2[0], p1[1], ...p1];
-    const cartesianPoints = this.cesium.Cartesian3.fromDegreesArray(coords);
-    return cartesianPoints;
   }
 
   getPoints() {

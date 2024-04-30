@@ -37,7 +37,7 @@ export default class Ellipse extends Base {
    */
   updateMovingPoint(cartesian: Cartesian3) {
     const tempPoints = [...this.points, cartesian];
-    const geometryPoints = this.createEllipse(tempPoints);
+    const geometryPoints = this.createGraphic(tempPoints);
     this.setGeometryPoints(geometryPoints);
     this.drawPolygon();
   }
@@ -47,12 +47,12 @@ export default class Ellipse extends Base {
    */
   updateDraggingPoint(cartesian: Cartesian3, index: number) {
     this.points[index] = cartesian;
-    const geometryPoints = this.createEllipse(this.points);
+    const geometryPoints = this.createGraphic(this.points);
     this.setGeometryPoints(geometryPoints);
     this.drawPolygon();
   }
 
-  createEllipse(positions: Cartesian3[]) {
+  createGraphic(positions: Cartesian3[]) {
     const lnglatPoints = positions.map((pnt) => {
       return this.cartesianToLnglat(pnt);
     });

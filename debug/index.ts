@@ -55,6 +55,9 @@ buttonGroup.onclick = (evt) => {
     case 'drawCircle':
       geometry = new CesiumPlot.Circle(Cesium, viewer);
       break;
+    case 'drawSector':
+      geometry = new CesiumPlot.Sector(Cesium, viewer);
+      break;
     case 'drawPolygon':
       geometry = new CesiumPlot.Polygon(Cesium, viewer);
       break;
@@ -141,7 +144,7 @@ buttonGroup.onclick = (evt) => {
       break;
     case 'remove':
       geometry && geometry.remove();
-      geometry = null;
+      // geometry = null;
       break;
     case 'addEvent':
       if (geometry) {
@@ -165,6 +168,13 @@ buttonGroup.onclick = (evt) => {
     case 'startGrowthAnimation':
       if (geometry) {
         geometry.startGrowthAnimation();
+      }
+      break;
+    case 'createGeometryFromData':
+      if (geometry) {
+        const points = geometry.getPoints();
+        debugger;
+        geometry.createGeometryFromData(points);
       }
       break;
     default:

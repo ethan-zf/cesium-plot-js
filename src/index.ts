@@ -16,6 +16,7 @@ import Reactangle from './polygon/rectangle';
 import Triangle from './polygon/triangle';
 import Polygon from './polygon/polygon';
 import Circle from './polygon/circle';
+import Sector from './polygon/sector';
 
 const CesiumPlot = {
   FineArrow,
@@ -36,6 +37,7 @@ const CesiumPlot = {
   Triangle,
   Polygon,
   Circle,
+  Sector,
 };
 
 export default CesiumPlot;
