@@ -174,7 +174,12 @@ buttonGroup.onclick = (evt) => {
       if (geometry) {
         const points = geometry.getPoints();
         debugger;
-        geometry.createGeometryFromData(points);
+        CesiumPlot.createGeometryFromData(points);
+      }
+      break;
+    case 'cancelDraw':
+      if (geometry) {
+        geometry.remove();
       }
       break;
     default:

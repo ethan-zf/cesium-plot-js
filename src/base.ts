@@ -35,6 +35,7 @@ export default class Base {
   points: CesiumTypeOnly.Cartesian3[] = [];
   styleCache: GeometryStyle | undefined;
   minPointsForShape: number = 0;
+  tempLineEntity: CesiumTypeOnly.Entity;
 
   constructor(cesium: CesiumTypeOnly, viewer: CesiumTypeOnly.Viewer, style?: GeometryStyle) {
     this.cesium = cesium;
@@ -266,15 +267,21 @@ export default class Base {
     }
   }
 
-  addFirstLineOfTheArrow() {
-    if (!this.lineEntity) {
+  addTempLine() {
+    if (!this.tempLineEntity) {
       // The line style between the first two points matches the outline style.
       const style = this.style as PolygonStyle;
       const lineStyle = {
         material: style.outlineMaterial,
         lineWidth: style.outlineWidth,
       };
-      this.lineEntity = this.addLineEntity(lineStyle);
+      this.tempLineEntity = this.addLineEntity(lineStyle);
+    }
+  }
+  
+  removeTempLine() {
+    if (this.tempLineEntity) {
+      this.viewer.entities.remove(this.tempLineEntity);
     }
   }
 
