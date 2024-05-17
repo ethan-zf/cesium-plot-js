@@ -173,9 +173,15 @@ buttonGroup.onclick = (evt) => {
     case 'createGeometryFromData':
       if (geometry) {
         const points = geometry.getPoints();
-        debugger;
-        CesiumPlot.createGeometryFromData(points);
+        // debugger;
+        // CesiumPlot.createGeometryFromData(points);
+
+        CesiumPlot.createGeometryFromData(Cesium, viewer, {
+          type: 'FineArrow',
+          cartesianPoints: points,
+        });
       }
+
       break;
     case 'cancelDraw':
       if (geometry) {
