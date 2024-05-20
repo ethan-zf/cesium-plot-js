@@ -107,6 +107,11 @@ operationButtonGroup.onclick = (evt) => {
         geometry = CesiumPlot.createGeometryFromData(Cesium, viewer, {
           type: geometryType,
           cartesianPoints: points,
+          style: {
+            material: Cesium.Color.fromCssColorString('rgba(59, 178, 208, 0.5)'),
+            outlineMaterial: Cesium.Color.fromCssColorString('rgba(59, 178, 208, 1)'),
+            outlineWidth: 3,
+          },
         });
       }
       break;
