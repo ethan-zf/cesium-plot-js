@@ -66,6 +66,7 @@ CesiumPlot.createGeometryFromData = (cesium: any, viewer: any, opts: CreateGeome
   }
   geometry.finishDrawing();
   geometry.onClick();
+  return geometry;
 };
 
 export default CesiumPlot;
