@@ -45,30 +45,35 @@
     <div id="root"></div>
     <div id="cesiumContainer"></div>
     <div class="button-container" id="button-group">
-      <button id="drawPolygon">多边形</button>
-      <button id="drawReactangle">矩形</button>
-      <button id="drawTriangle">三角形</button>
-      <button id="drawCircle">圆形</button>
-      <button id="drawStraightArrow">细直箭头</button>
-      <button id="drawCurvedArrow">曲线箭头</button>
-      <button id="drawFineArrow">直箭头</button>
-      <button id="drawAttackArrow">进攻方向箭头</button>
-      <button id="drawSwallowtailAttackArrow">进攻方向箭头(燕尾)</button>
-      <button id="drawSquadCombat">分队战斗方向</button>
-      <button id="drawSwallowtailSquadCombat">分队战斗方向(燕尾)</button>
-      <button id="drawAssaultDirection">突击方向</button>
-      <button id="drawDoubleArrow">双箭头</button>
-      <button id="drawFreehandLine">自由线</button>
-      <button id="drawFreehandPolygon">自由面</button>
-      <button id="drawCurve">曲线</button>
-      <button id="drawEllipse">椭圆</button>
-      <button id="drawLune">半月面</button>
+      <button id="Polygon">多边形</button>
+      <button id="Reactangle">矩形</button>
+      <button id="Triangle">三角形</button>
+      <button id="Circle">圆形</button>
+      <button id="Sector">扇形</button>
+      <button id="StraightArrow">细直箭头</button>
+      <button id="CurvedArrow">曲线箭头</button>
+      <button id="FineArrow">直箭头</button>
+      <button id="AttackArrow">进攻方向箭头</button>
+      <button id="SwallowtailAttackArrow">进攻方向箭头(燕尾)</button>
+      <button id="SquadCombat">分队战斗方向</button>
+      <button id="SwallowtailSquadCombat">分队战斗方向(燕尾)</button>
+      <button id="AssaultDirection">突击方向</button>
+      <button id="DoubleArrow">双箭头</button>
+      <button id="FreehandLine">自由线</button>
+      <button id="FreehandPolygon">自由面</button>
+      <button id="Curve">曲线</button>
+      <button id="Ellipse">椭圆</button>
+      <button id="Lune">半月面</button>
+    </div>
+    <div class="button-container" id="operation-button-group" style="top: 50px;">
       <button id="hide">隐藏</button>
       <button id="show">显示</button>
       <button id="remove">删除</button>
       <button id="addEvent">绑定事件</button>
       <button id="removeEvent">解绑事件</button>
       <button id="startGrowthAnimation">生长动画</button>
+      <button id="createGeometryFromData">根据数据生成图形</button>
+      <button id="cancelDraw">取消绘制</button>
     </div>
     <script>
       window.CESIUM_BASE_URL = 'node_modules/cesium/Build/Cesium';

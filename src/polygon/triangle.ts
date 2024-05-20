@@ -36,8 +36,9 @@ export default class Triangle extends Base {
     const tempPoints = [...this.points, cartesian];
     this.setGeometryPoints(tempPoints);
     if (tempPoints.length === 2) {
-      this.addFirstLineOfTheArrow();
+      this.addTempLine();
     } else {
+      this.removeTempLine();
       this.drawPolygon();
     }
   }

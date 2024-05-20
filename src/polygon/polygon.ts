@@ -25,7 +25,7 @@ export default class Polygon extends Base {
     this.points.push(cartesian);
     if (this.points.length === 1) {
       this.onMouseMove();
-    } 
+    }
   }
 
   /**
@@ -35,8 +35,9 @@ export default class Polygon extends Base {
     const tempPoints = [...this.points, cartesian];
     this.setGeometryPoints(tempPoints);
     if (tempPoints.length === 2) {
-      this.addFirstLineOfTheArrow();
+      this.addTempLine();
     } else {
+      this.removeTempLine();
       this.drawPolygon();
     }
   }

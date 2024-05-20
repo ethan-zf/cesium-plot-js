@@ -35,6 +35,7 @@ export default class Base {
   points: CesiumTypeOnly.Cartesian3[] = [];
   styleCache: GeometryStyle | undefined;
   minPointsForShape: number = 0;
+  tempLineEntity: CesiumTypeOnly.Entity;
 
   constructor(cesium: CesiumTypeOnly, viewer: CesiumTypeOnly.Viewer, style?: GeometryStyle) {
     this.cesium = cesium;
@@ -266,15 +267,21 @@ export default class Base {
     }
   }
 
-  addFirstLineOfTheArrow() {
-    if (!this.lineEntity) {
+  addTempLine() {
+    if (!this.tempLineEntity) {
       // The line style between the first two points matches the outline style.
       const style = this.style as PolygonStyle;
       const lineStyle = {
         material: style.outlineMaterial,
         lineWidth: style.outlineWidth,
       };
-      this.lineEntity = this.addLineEntity(lineStyle);
+      this.tempLineEntity = this.addLineEntity(lineStyle);
+    }
+  }
+
+  removeTempLine() {
+    if (this.tempLineEntity) {
+      this.viewer.entities.remove(this.tempLineEntity);
     }
   }
 
@@ -434,6 +441,11 @@ export default class Base {
           });
 
           this.setGeometryPoints(newPoints);
+          if (this.minPointsForShape === 4) {
+            // 双箭头在整体被拖拽时，需要同步更新生长动画的插值点
+            this.curveControlPointLeft = this.cesium.Cartesian3.add(this.curveControlPointLeft, translation, new this.cesium.Cartesian3());
+            this.curveControlPointRight = this.cesium.Cartesian3.add(this.curveControlPointRight, translation, new this.cesium.Cartesian3());
+          }
           startPosition = newPosition;
         }
       } else {
@@ -718,10 +730,7 @@ export default class Base {
 
   private doubleArrowGrowthAnimation(duration: number = 2000, delay: number = 0, callback?: Function) {
     setTimeout(() => {
-      this.viewer.entities.remove(this.polygonEntity);
-      this.viewer.entities.remove(this.outlineEntity);
-      this.polygonEntity = null;
-      this.outlineEntity = null;
+      this.hideWithAnimation(0, 0, undefined);
       const points = this.getPoints();
       let startTime = Date.now();
       this.viewer.clock.shouldAnimate = true;
@@ -776,7 +785,7 @@ export default class Base {
         tempPoints[3] = newPositionLeft;
         const geometryPoints = this.createGraphic(tempPoints);
         this.setGeometryPoints(geometryPoints);
-        this.drawPolygon();
+        this.showWithAnimation(0, 0, undefined);
       };
       this.viewer.clock.onTick.addEventListener(frameListener);
     }, delay);

@@ -57,6 +57,7 @@ import CesiumPlot from 'cesium-plot-js';
 | Reactangle             | 'polygon' | 矩形             | ❌       |
 | Triangle               | 'polygon' | 三角形           | ❌       |
 | Circle                 | 'polygon' | 圆形             | ❌       |
+| Sector                 | 'polygon' | 扇形             | ❌       |
 | StraightArrow          | 'line'    | 细直箭头         | ✔️       |
 | CurvedArrow            | 'line'    | 曲线箭头         | ✔️       |
 | FineArrow              | 'polygon' | 直箭头           | ✔️       |
@@ -119,6 +120,7 @@ const geometry = new CesiumPlot.FineArrow(Cesium, viewer, {
 | hide                 | options?: [AnimationOpts](#AnimationOpts)                             | 隐藏，options 可配置动画参数，参数缺省时，不显示动画 |
 | show                 | options?: [AnimationOpts](#AnimationOpts)                             | 显示，options 可配置动画参数，参数缺省时，不显示动画 |
 | startGrowthAnimation | options?: [AnimationOpts](#AnimationOpts)                             | 生长动画，options 可配置动画参数                     |
+| getPoints            |                                                                       | 获取图形关键点位                                     |
 | remove               |                                                                       | 删除                                                 |
 | on                   | (event: [EventType](#EventType), listener: (eventData?: any) => void) | 绑定事件                                             |
 | off                  | (event: [EventType](#EventType))                                      | 解绑事件                                             |
@@ -143,6 +145,22 @@ const geometry = new CesiumPlot.Reactangle(Cesium, viewer);
 geometry.on('drawEnd', (data)=>{
   console.log(data)
 });
+```
+
+### 静态方法
+
+**CesiumPlot.createGeometryFromData(cesium: Cesium, viewer: Cesium.Viewer, options:[CreateGeometryFromDataOpts](#CreateGeometryFromDataOpts))**
+
+根据图形的关键点位重新生成图形
+
+<h5 id='CreateGeometryFromDataOpts'>CreateGeometryFromDataOpts参数类型</h5>
+
+```
+{
+  type: 'FineArrow'|'AttackArrow'|'SwallowtailAttackArrow'|'SquadCombat'|'SwallowtailSquadCombat'|'StraightArrow'|'CurvedArrow'|'AssaultDirection'|'DoubleArrow'|'FreehandLine'|'FreehandPolygon'|'Curve'|'Ellipse'|'Lune'|'Reactangle'|'Triangle'|'Polygon'|'Circle'|'Sector', // 图形类型
+  cartesianPoints: Cesium.Cartesian3[], // 图形关键点位，可通过实例方法getPoints或者drawEnd事件获得
+  style?: PolygonStyle | LineStyle // 样式
+}
 ```
 
 <h3 id='EventType'>Events</h3>

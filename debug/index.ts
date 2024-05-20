@@ -29,6 +29,7 @@ viewer.scene.camera.setView({
 });
 
 let geometry: any;
+let geometryType: string;
 const dragStartHandler = () => {
   console.error('start');
 };
@@ -51,84 +52,18 @@ const editEndHandler = (geometryPoints: any) => {
 const buttonGroup = document.getElementById('button-group') as HTMLElement;
 buttonGroup.onclick = (evt) => {
   const targetElement = evt.target as HTMLElement;
+  geometryType = targetElement.id;
+  geometry = new CesiumPlot[geometryType](Cesium, viewer, {
+    material: Cesium.Color.fromCssColorString('rgba(59, 178, 208, 0.5)'),
+    outlineMaterial: Cesium.Color.fromCssColorString('rgba(59, 178, 208, 1)'),
+    outlineWidth: 3,
+  });
+};
+
+const operationButtonGroup = document.getElementById('operation-button-group') as HTMLElement;
+operationButtonGroup.onclick = (evt) => {
+  const targetElement = evt.target as HTMLElement;
   switch (targetElement.id) {
-    case 'drawCircle':
-      geometry = new CesiumPlot.Circle(Cesium, viewer);
-      break;
-    case 'drawPolygon':
-      geometry = new CesiumPlot.Polygon(Cesium, viewer);
-      break;
-    case 'drawReactangle':
-      geometry = new CesiumPlot.Reactangle(Cesium, viewer);
-      break;
-    case 'drawTriangle':
-      geometry = new CesiumPlot.Triangle(Cesium, viewer);
-      break;
-    case 'drawFineArrow':
-      geometry = new CesiumPlot.FineArrow(Cesium, viewer, {
-        material: Cesium.Color.fromCssColorString('rgba(59, 178, 208, 0.5)'),
-        outlineMaterial: Cesium.Color.fromCssColorString('rgba(59, 178, 208, 1)'),
-        outlineWidth: 3,
-      });
-      break;
-    case 'drawAttackArrow':
-      geometry = new CesiumPlot.AttackArrow(Cesium, viewer, {
-        outlineMaterial: Cesium.Color.RED,
-      });
-      break;
-    case 'drawSwallowtailAttackArrow':
-      geometry = new CesiumPlot.SwallowtailAttackArrow(Cesium, viewer, {
-        outlineMaterial: Cesium.Color.BLUE,
-      });
-      break;
-    case 'drawSquadCombat':
-      geometry = new CesiumPlot.SquadCombat(Cesium, viewer, {
-        outlineMaterial: new Cesium.PolylineDashMaterialProperty({
-          color: Cesium.Color.RED,
-          dashLength: 16.0,
-        }),
-      });
-      break;
-    case 'drawSwallowtailSquadCombat':
-      geometry = new CesiumPlot.SwallowtailSquadCombat(Cesium, viewer);
-      break;
-    case 'drawStraightArrow':
-      geometry = new CesiumPlot.StraightArrow(Cesium, viewer, {
-        material: Cesium.Color.RED,
-      });
-      break;
-    case 'drawAssaultDirection':
-      geometry = new CesiumPlot.AssaultDirection(Cesium, viewer);
-      break;
-    case 'drawCurvedArrow':
-      geometry = new CesiumPlot.CurvedArrow(Cesium, viewer, {
-        material: Cesium.Color.BLUE,
-      });
-      break;
-    case 'drawDoubleArrow':
-      geometry = new CesiumPlot.DoubleArrow(Cesium, viewer, {
-        outlineMaterial: Cesium.Color.GREEN,
-      });
-      break;
-    case 'drawFreehandLine':
-      geometry = new CesiumPlot.FreehandLine(Cesium, viewer);
-      break;
-    case 'drawCurve':
-      geometry = new CesiumPlot.Curve(Cesium, viewer);
-      break;
-    case 'drawEllipse':
-      geometry = new CesiumPlot.Ellipse(Cesium, viewer);
-      break;
-    case 'drawLune':
-      geometry = new CesiumPlot.Lune(Cesium, viewer);
-      break;
-    case 'drawFreehandPolygon':
-      geometry = new CesiumPlot.FreehandPolygon(Cesium, viewer, {
-        material: Cesium.Color.GREEN,
-        outlineMaterial: Cesium.Color.fromCssColorString('rgba(59, 178, 208, 1)'),
-        outlineWidth: 2,
-      });
-      break;
     case 'hide':
       geometry &&
         geometry.hide({
@@ -141,7 +76,7 @@ buttonGroup.onclick = (evt) => {
       break;
     case 'remove':
       geometry && geometry.remove();
-      geometry = null;
+      // geometry = null;
       break;
     case 'addEvent':
       if (geometry) {
@@ -161,10 +96,28 @@ buttonGroup.onclick = (evt) => {
         geometry.off('editEnd', editEndHandler);
       }
       break;
-
     case 'startGrowthAnimation':
       if (geometry) {
         geometry.startGrowthAnimation();
+      }
+      break;
+    case 'createGeometryFromData':
+      if (geometry) {
+        const points = geometry.getPoints();
+        geometry = CesiumPlot.createGeometryFromData(Cesium, viewer, {
+          type: geometryType,
+          cartesianPoints: points,
+          style: {
+            material: Cesium.Color.fromCssColorString('rgba(59, 178, 208, 0.5)'),
+            outlineMaterial: Cesium.Color.fromCssColorString('rgba(59, 178, 208, 1)'),
+            outlineWidth: 3,
+          },
+        });
+      }
+      break;
+    case 'cancelDraw':
+      if (geometry) {
+        geometry.remove();
       }
       break;
     default:

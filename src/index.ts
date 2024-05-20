@@ -16,8 +16,12 @@ import Reactangle from './polygon/rectangle';
 import Triangle from './polygon/triangle';
 import Polygon from './polygon/polygon';
 import Circle from './polygon/circle';
+import Sector from './polygon/sector';
 
-const CesiumPlot = {
+import { GeometryStyle } from './interface';
+import * as CesiumTypeOnly from 'cesium';
+
+const CesiumPlot: any = {
   FineArrow,
   AttackArrow,
   SwallowtailAttackArrow,
@@ -36,6 +40,33 @@ const CesiumPlot = {
   Triangle,
   Polygon,
   Circle,
+  Sector,
+};
+
+type CreateGeometryFromDataOpts = {
+  type: string;
+  cartesianPoints: CesiumTypeOnly.Cartesian3[];
+  style: GeometryStyle;
+};
+/**
+ * 根据点位数据生成几何图形
+ * @param points
+ */
+CesiumPlot.createGeometryFromData = (cesium: any, viewer: any, opts: CreateGeometryFromDataOpts) => {
+  const { type, style, cartesianPoints } = opts;
+  const geometry = new CesiumPlot[type](cesium, viewer, style);
+
+  geometry.points = cartesianPoints;
+  const geometryPoints = geometry.createGraphic(cartesianPoints);
+  geometry.setGeometryPoints(geometryPoints);
+  if (geometry.type == 'polygon') {
+    geometry.drawPolygon();
+  } else {
+    geometry.drawLine();
+  }
+  geometry.finishDrawing();
+  geometry.onClick();
+  return geometry;
 };
 
 export default CesiumPlot;
