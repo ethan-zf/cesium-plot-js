@@ -278,7 +278,7 @@ export default class Base {
       this.tempLineEntity = this.addLineEntity(lineStyle);
     }
   }
-  
+
   removeTempLine() {
     if (this.tempLineEntity) {
       this.viewer.entities.remove(this.tempLineEntity);
@@ -725,10 +725,7 @@ export default class Base {
 
   private doubleArrowGrowthAnimation(duration: number = 2000, delay: number = 0, callback?: Function) {
     setTimeout(() => {
-      this.viewer.entities.remove(this.polygonEntity);
-      this.viewer.entities.remove(this.outlineEntity);
-      this.polygonEntity = null;
-      this.outlineEntity = null;
+      this.hideWithAnimation(0, 0, undefined);
       const points = this.getPoints();
       let startTime = Date.now();
       this.viewer.clock.shouldAnimate = true;
@@ -783,7 +780,7 @@ export default class Base {
         tempPoints[3] = newPositionLeft;
         const geometryPoints = this.createGraphic(tempPoints);
         this.setGeometryPoints(geometryPoints);
-        this.drawPolygon();
+        this.showWithAnimation(0, 0, undefined);
       };
       this.viewer.clock.onTick.addEventListener(frameListener);
     }, delay);
