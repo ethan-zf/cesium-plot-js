@@ -53,8 +53,6 @@ export default class DoubleArrow extends Base {
       this.lineEntity && this.viewer.entities.remove(this.lineEntity);
     } else {
       this.finishDrawing();
-      this.curveControlPointLeft = this.cesium.Cartesian3.fromDegrees(this.llBodyPnts[2][0], this.llBodyPnts[2][1]);
-      this.curveControlPointRight = this.cesium.Cartesian3.fromDegrees(this.rrBodyPnts[1][0], this.rrBodyPnts[1][1]);
 
       // // 辅助查看插值控制点位置
       // this.viewer.entities.add({
@@ -76,11 +74,11 @@ export default class DoubleArrow extends Base {
     }
   }
 
-  // finishDrawing() {
-  //   this.curveControlPointLeft = this.cesium.Cartesian3.fromDegrees(this.llBodyPnts[2][0], this.llBodyPnts[2][1]);
-  //   this.curveControlPointRight = this.cesium.Cartesian3.fromDegrees(this.rrBodyPnts[1][0], this.rrBodyPnts[1][1]);
-  //   super.finishDrawing();
-  // }
+  finishDrawing() {
+    this.curveControlPointLeft = this.cesium.Cartesian3.fromDegrees(this.llBodyPnts[2][0], this.llBodyPnts[2][1]);
+    this.curveControlPointRight = this.cesium.Cartesian3.fromDegrees(this.rrBodyPnts[1][0], this.rrBodyPnts[1][1]);
+    super.finishDrawing();
+  }
   /**
    * Draw a shape based on mouse movement points during the initial drawing.
    */

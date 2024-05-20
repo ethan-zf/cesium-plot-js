@@ -441,6 +441,11 @@ export default class Base {
           });
 
           this.setGeometryPoints(newPoints);
+          if (this.minPointsForShape === 4) {
+            // 双箭头在整体被拖拽时，需要同步更新生长动画的插值点
+            this.curveControlPointLeft = this.cesium.Cartesian3.add(this.curveControlPointLeft, translation, new this.cesium.Cartesian3());
+            this.curveControlPointRight = this.cesium.Cartesian3.add(this.curveControlPointRight, translation, new this.cesium.Cartesian3());
+          }
           startPosition = newPosition;
         }
       } else {
