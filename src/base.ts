@@ -870,6 +870,6 @@ export default class Base {
 
   createGraphic(points: CesiumTypeOnly.Cartesian3[]): CesiumTypeOnly.Cartesian3[] {
     //Abstract method that must be implemented by subclasses.
-    return [new this.cesium.Cartesian3()];
+    return points;
   }
 }
