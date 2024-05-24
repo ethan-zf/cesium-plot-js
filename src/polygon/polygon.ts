@@ -51,6 +51,13 @@ export default class Polygon extends Base {
     this.drawPolygon();
   }
 
+  createGraphic(positions: Cartesian3[]) {
+    const lnglatPoints = positions.map(this.cartesianToLnglat);
+    const coords = lnglatPoints.flat();
+    const cartesianPoints = this.cesium.Cartesian3.fromDegreesArray(coords);
+    return cartesianPoints;
+  }
+
   getPoints() {
     return this.points;
   }
