@@ -86,8 +86,8 @@ export default class CurvedArrow extends Base {
     const distance = Utils.wholeDistance(lnglatPoints);
     let len = distance / this.arrowLengthScale;
     len = len > this.maxArrowLength ? this.maxArrowLength : len;
-    const leftPnt = Utils.getThirdPoint(pnt1, pnt2, Math.PI / 6, len / 2, false);
-    const rightPnt = Utils.getThirdPoint(pnt1, pnt2, Math.PI / 6, len / 2, true);
+    const leftPnt = Utils.getThirdPoint(curvePoints[curvePoints.length - 2], curvePoints[curvePoints.length - 1], Math.PI / 6, len / 2, false);
+    const rightPnt = Utils.getThirdPoint(curvePoints[curvePoints.length - 2], curvePoints[curvePoints.length - 1], Math.PI / 6, len / 2, true);
     const temp = [].concat(...curvePoints);
     const points = [...temp, ...leftPnt, ...pnt2, ...rightPnt];
     const cartesianPoints = this.cesium.Cartesian3.fromDegreesArray(points);
