@@ -36,6 +36,25 @@ export default class Polygon extends Base {
   }
 
   /**
+   * backout the last point
+   */
+  removePoint() {
+    if (this.points.length > 0) {
+      this.points.pop();
+      this.setGeometryPoints(this.points);
+      if (this.points.length === 2) {
+        this.addTempLine();
+      } else {
+        this.removeTempLine();
+        this.drawPolygon();
+      }
+      if(this.points.length === 0) {
+        this.removeMoveListener();
+      }
+    }
+  }
+
+  /**
    * Compare whether the positions of two points are equal.
    */
   comparePositions(point1: Cartesian3, point2: Cartesian3) {
