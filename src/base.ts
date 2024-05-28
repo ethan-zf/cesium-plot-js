@@ -824,6 +824,7 @@ export default class Base {
       this.polygonEntity = null;
       this.outlineEntity = null;
       this.lineEntity = null;
+	  if(this.points.length <= 2) this.removeTempLine();
     } else if (this.type === 'line') {
       this.viewer.entities.remove(this.lineEntity);
     }
