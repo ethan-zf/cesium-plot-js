@@ -12,8 +12,15 @@ export type LineStyle = {
   lineWidth?: number;
 };
 
+export type TagStyle = {
+	image?: string;
+	activeImage?: string;
+	width?: number;
+	height?: number;
+  };
+
 export type State = 'drawing' | 'edit' | 'static' | 'animating' | 'hidden';
-export type GeometryStyle = PolygonStyle | LineStyle;
+export type GeometryStyle = PolygonStyle | LineStyle | TagStyle;
 
 export type EventType = 'drawStart' | 'drawUpdate' | 'drawEnd' | 'editEnd' | 'editStart';
 export type EventListener = (eventData?: any) => void;
@@ -29,3 +36,5 @@ export type GrowthAnimationOpts = {
   delay: number;
   callback: Function;
 };
+
+export type Shape = 'polygon' | 'line' | 'tag';

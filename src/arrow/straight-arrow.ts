@@ -2,7 +2,7 @@ import * as Utils from '../utils';
 import Base from '../base';
 // @ts-ignore
 import { Cartesian3 } from 'cesium';
-import { LineStyle } from '../interface';
+import { LineStyle, Shape } from '../interface';
 
 export default class StraightArrow extends Base {
   points: Cartesian3[] = [];
@@ -17,7 +17,7 @@ export default class StraightArrow extends Base {
     this.setState('drawing');
   }
 
-  getType(): 'polygon' | 'line' {
+  getType(): Shape {
     return 'line';
   }
 

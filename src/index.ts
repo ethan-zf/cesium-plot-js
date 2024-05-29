@@ -17,6 +17,7 @@ import Triangle from './polygon/triangle';
 import Polygon from './polygon/polygon';
 import Circle from './polygon/circle';
 import Sector from './polygon/sector';
+import Tag from './tag/tag';
 
 import { GeometryStyle } from './interface';
 import * as CesiumTypeOnly from 'cesium';
@@ -41,6 +42,7 @@ const CesiumPlot: any = {
   Polygon,
   Circle,
   Sector,
+  Tag,
 };
 
 type CreateGeometryFromDataOpts = {
@@ -61,8 +63,10 @@ CesiumPlot.createGeometryFromData = (cesium: any, viewer: any, opts: CreateGeome
   geometry.setGeometryPoints(geometryPoints);
   if (geometry.type == 'polygon') {
     geometry.drawPolygon();
-  } else {
+  } else if (geometry.type == 'line'){
     geometry.drawLine();
+  }else if (geometry.type == 'tag'){
+	geometry.drawTag();
   }
   geometry.finishDrawing();
   geometry.onClick();

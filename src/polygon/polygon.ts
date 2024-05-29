@@ -2,7 +2,7 @@ import Base from '../base';
 // @ts-ignore
 import { Cartesian3 } from 'cesium';
 
-import { PolygonStyle } from '../interface';
+import { PolygonStyle, Shape } from '../interface';
 
 export default class Polygon extends Base {
   points: Cartesian3[] = [];
@@ -14,7 +14,7 @@ export default class Polygon extends Base {
     this.onDoubleClick();
   }
 
-  getType(): 'polygon' | 'line' {
+  getType(): Shape {
     return 'polygon';
   }
 

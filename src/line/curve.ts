@@ -2,7 +2,7 @@ import * as Utils from '../utils';
 import Base from '../base';
 // @ts-ignore
 import { Cartesian3 } from 'kmap-3d-engine';
-import { LineStyle } from '../interface';
+import { LineStyle, Shape } from '../interface';
 
 export default class Curve extends Base {
 	points: Cartesian3[] = [];
@@ -18,7 +18,7 @@ export default class Curve extends Base {
 		this.onDoubleClick();
 	}
 
-	getType(): 'polygon' | 'line' {
+	getType(): Shape {
 		return 'line';
 	}
 
