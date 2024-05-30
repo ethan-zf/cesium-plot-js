@@ -5,27 +5,32 @@ import {
   GeometryStyle,
   PolygonStyle,
   LineStyle,
+  TagStyle,
   EventType,
   EventListener,
   VisibleAnimationOpts,
   GrowthAnimationOpts,
+  Shape
 } from './interface';
 import EventDispatcher from './events';
 import cloneDeep from 'lodash.clonedeep';
 // import merge from 'lodash.merge';
 import * as Utils from './utils';
+import TagDefault from './assets/tag_default.png';
+import TagActive from './assets/tag_active.png';
 
 export default class Base {
   cesium: typeof CesiumTypeOnly;
   viewer: CesiumTypeOnly.Viewer;
   eventHandler: CesiumTypeOnly.ScreenSpaceEventHandler;
   polygonEntity: CesiumTypeOnly.Entity;
+  tagEntity: CesiumTypeOnly.Entity;
   geometryPoints: CesiumTypeOnly.Cartesian3[] = [];
   state: State = 'drawing';
   controlPoints: CesiumTypeOnly.EntityCollection = [];
   controlPointsEventHandler: CesiumTypeOnly.ScreenSpaceEventHandler;
   lineEntity: CesiumTypeOnly.Entity;
-  type!: 'polygon' | 'line';
+  type!: Shape;
   freehand!: boolean;
   style: GeometryStyle | undefined;
   outlineEntity: CesiumTypeOnly.Entity;
@@ -68,6 +73,16 @@ export default class Base {
         {
           material: new this.cesium.Color(),
           lineWidth: 2,
+        },
+        style,
+      );
+    }else if(this.type === 'tag') {
+      this.style = Object.assign(
+        {
+          image: TagDefault,
+          activeImage: TagActive,
+          width: 32,
+          height: 32,
         },
         style,
       );
@@ -189,7 +204,7 @@ export default class Base {
     this.setState('edit');
     this.addControlPoints();
     this.draggable();
-    const entity = this.polygonEntity || this.lineEntity;
+    const entity = this.polygonEntity || this.lineEntity || this.tagEntity;
     this.entityId = entity.id;
     /**
      * "I've noticed that CallbackProperty can lead to significant performance issues.
@@ -257,6 +272,22 @@ export default class Base {
           clampToGround: true,
         },
       });
+    }
+  }
+
+  drawTag() {
+    const style = this.style as TagStyle;
+    if (!this.tagEntity) {
+      this.tagEntity = this.viewer.entities.add({
+        position: this.geometryPoints[0],
+        billboard: {
+          image: style.image,
+          width: style.width,
+          height: style.height,
+        }
+      });
+    } else {
+      this.tagEntity.position = this.geometryPoints[0];
     }
   }
 
@@ -824,6 +855,7 @@ export default class Base {
       this.polygonEntity = null;
       this.outlineEntity = null;
       this.lineEntity = null;
+      if (this.points.length <= 2) this.removeTempLine();
     } else if (this.type === 'line') {
       this.viewer.entities.remove(this.lineEntity);
     }
@@ -863,7 +895,7 @@ export default class Base {
     //Abstract method that must be implemented by subclasses.
   }
 
-  getType(): 'polygon' | 'line' {
+  getType(): Shape {
     return 'polygon';
     //Abstract method that must be implemented by subclasses.
   }

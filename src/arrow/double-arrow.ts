@@ -2,7 +2,7 @@ import Base from '../base';
 import * as Utils from '../utils';
 // @ts-ignore
 import { Cartesian3 } from 'cesium';
-import { PolygonStyle } from '../interface';
+import { PolygonStyle, Shape } from '../interface';
 type Position = [number, number];
 
 export default class DoubleArrow extends Base {
@@ -35,7 +35,7 @@ export default class DoubleArrow extends Base {
     this.setState('drawing');
   }
 
-  getType(): 'polygon' | 'line' {
+  getType(): Shape {
     return 'polygon';
   }
 

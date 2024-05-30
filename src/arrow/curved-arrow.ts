@@ -2,7 +2,7 @@ import * as Utils from '../utils';
 import Base from '../base';
 // @ts-ignore
 import { Cartesian3 } from 'cesium';
-import { LineStyle } from '../interface';
+import { LineStyle, Shape } from '../interface';
 
 export default class CurvedArrow extends Base {
   points: Cartesian3[] = [];
@@ -20,7 +20,7 @@ export default class CurvedArrow extends Base {
     this.onDoubleClick();
   }
 
-  getType(): 'polygon' | 'line' {
+  getType(): Shape {
     return 'line';
   }
 

@@ -3,7 +3,7 @@ import * as Utils from '../utils';
 // @ts-ignore
 import { Cartesian3 } from 'cesium';
 
-import { PolygonStyle } from '../interface';
+import { PolygonStyle, Shape } from '../interface';
 
 export default class Ellipse extends Base {
   points: Cartesian3[] = [];
@@ -16,7 +16,7 @@ export default class Ellipse extends Base {
     this.setState('drawing');
   }
 
-  getType(): 'polygon' | 'line' {
+  getType(): Shape {
     return 'polygon';
   }
 

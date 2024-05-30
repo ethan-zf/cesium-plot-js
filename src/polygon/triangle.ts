@@ -2,7 +2,7 @@ import Base from '../base';
 // @ts-ignore
 import { Cartesian3 } from 'cesium';
 
-import { PolygonStyle } from '../interface';
+import { PolygonStyle, Shape } from '../interface';
 
 export default class Triangle extends Base {
   points: Cartesian3[] = [];
@@ -13,7 +13,7 @@ export default class Triangle extends Base {
     this.setState('drawing');
   }
 
-  getType(): 'polygon' | 'line' {
+  getType(): Shape {
     return 'polygon';
   }
 
