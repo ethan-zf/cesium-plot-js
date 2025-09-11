@@ -36,6 +36,7 @@ export default class Base {
   styleCache: GeometryStyle | undefined;
   minPointsForShape: number = 0;
   tempLineEntity: CesiumTypeOnly.Entity;
+  dataSource: CesiumTypeOnly.CustomDataSource;
 
   constructor(cesium: CesiumTypeOnly, viewer: CesiumTypeOnly.Viewer, style?: GeometryStyle) {
     this.cesium = cesium;
@@ -49,7 +50,8 @@ export default class Base {
     // Disable default behavior for double-clicking on entities.
     viewer.trackedEntity = undefined;
     viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(this.cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
-
+    this.dataSource = new this.cesium.CustomDataSource("entity");
+    viewer.dataSources.add(this.dataSource);
     this.onClick();
   }
 
@@ -134,6 +136,7 @@ export default class Base {
           this.eventDispatcher.dispatchEvent('editEnd', this.getPoints());
         }
       } else if (this.state === 'static') {
+        console.log('here')
         //When drawing multiple shapes, the click events for all shapes are triggered. Only when hitting a completed shape should it enter editing mode.
         if (hitEntities && activeEntity.id === pickedObject.id.id) {
           const pickedGraphics = this.type === 'line' ? pickedObject.id.polyline : pickedObject.id.polygon;
@@ -182,7 +185,7 @@ export default class Base {
   finishDrawing() {
     // Some polygons draw a separate line between the first two points before drawing the complete shape;
     // this line should be removed after drawing is complete.
-    this.type === 'polygon' && this.lineEntity && this.viewer.entities.remove(this.lineEntity);
+    this.type === 'polygon' && this.lineEntity && this.dataSource.entities.remove(this.lineEntity);
 
     this.removeMoveListener();
     // Editable upon initial drawing completion.
@@ -238,7 +241,7 @@ export default class Base {
     };
     if (!this.polygonEntity) {
       const style = this.style as PolygonStyle;
-      this.polygonEntity = this.viewer.entities.add({
+      this.polygonEntity = this.dataSource.entities.add({
         polygon: new this.cesium.PolygonGraphics({
           hierarchy: new this.cesium.CallbackProperty(callback, false),
           show: true,
@@ -247,7 +250,7 @@ export default class Base {
       });
 
       // Due to limitations in PolygonGraphics outlining, a separate line style is drawn.
-      this.outlineEntity = this.viewer.entities.add({
+      this.outlineEntity = this.dataSource.entities.add({
         polyline: {
           positions: new this.cesium.CallbackProperty(() => {
             return [...this.geometryPoints, this.geometryPoints[0]];
@@ -281,12 +284,12 @@ export default class Base {
 
   removeTempLine() {
     if (this.tempLineEntity) {
-      this.viewer.entities.remove(this.tempLineEntity);
+      this.dataSource.entities.remove(this.tempLineEntity);
     }
   }
 
   addLineEntity(style: LineStyle) {
-    const entity = this.viewer.entities.add({
+    const entity = this.dataSource.entities.add({
       polyline: {
         positions: new this.cesium.CallbackProperty(() => this.geometryPoints, false),
         width: style.lineWidth,
@@ -323,7 +326,7 @@ export default class Base {
       //   },
       // });
 
-      return this.viewer.entities.add({
+      return this.dataSource.entities.add({
         position,
         point: {
           pixelSize: 10,
@@ -385,7 +388,7 @@ export default class Base {
   removeControlPoints() {
     if (this.controlPoints.length > 0) {
       this.controlPoints.forEach((entity: CesiumTypeOnly.Entity) => {
-        this.viewer.entities.remove(entity);
+        this.dataSource.entities.remove(entity);
       });
       this.controlPointsEventHandler.removeInputAction(this.cesium.ScreenSpaceEventType.LEFT_DOWN);
       this.controlPointsEventHandler.removeInputAction(this.cesium.ScreenSpaceEventType.MOUSE_MOVE);
@@ -574,7 +577,7 @@ export default class Base {
     setTimeout(() => {
       const graphics = entity.polygon || entity.polyline || entity.billboard;
       let startAlpha: number;
-      let material = graphics.material;
+      const material = graphics.material;
       if (material) {
         if (material.image && material.color.alpha !== undefined) {
           // Texture material, setting the alpha channel in the color of the custom ImageFlowMaterialProperty.
@@ -712,7 +715,7 @@ export default class Base {
           // The face-arrow determined by three points, with the animation starting from the midpoint of the line connecting the first two points.
           startPoint = this.cesium.Cartesian3.midpoint(points[0], points[1], new this.cesium.Cartesian3());
         }
-        let endPoint = points[movingPointIndex];
+        const endPoint = points[movingPointIndex];
         // To dynamically add points between the startPoint and endPoint, consistent with the initial drawing logic,
         // update the point at index movingPointIndex in the points array with the newPosition,
         // generate the arrow, and execute the animation.
@@ -754,12 +757,12 @@ export default class Base {
         const startPointLeft = this.cesium.Cartesian3.midpoint(points[0], midPoint, new this.cesium.Cartesian3());
 
         const startPointRight = this.cesium.Cartesian3.midpoint(midPoint, points[1], new this.cesium.Cartesian3());
-        let endPointLeft = points[3];
-        let endPointRight = points[2];
+        const endPointLeft = points[3];
+        const endPointRight = points[2];
         const t = elapsedTime / duration;
         const controlPoint = this.getBezierControlPointforGrowthAnimation();
-        let curveControlPointsLeft = [startPointLeft, controlPoint.left, endPointLeft];
-        let curveControlPointsRight = [startPointRight, controlPoint.right, endPointRight];
+        const curveControlPointsLeft = [startPointLeft, controlPoint.left, endPointLeft];
+        const curveControlPointsRight = [startPointRight, controlPoint.right, endPointRight];
         const newPositionLeft = this.getNewPosition(curveControlPointsLeft, t);
         const newPositionRight = this.getNewPosition(curveControlPointsRight, t);
 
@@ -800,7 +803,7 @@ export default class Base {
       return this.cesium.Cartesian3.fromDegrees(p[0], p[1]);
     });
 
-    let newPosition = this.interpolateAlongCurve(curvePoints, t);
+    const newPosition = this.interpolateAlongCurve(curvePoints, t);
     return newPosition;
   }
 
@@ -819,13 +822,13 @@ export default class Base {
 
   remove() {
     if (this.type === 'polygon') {
-      this.viewer.entities.remove(this.polygonEntity);
-      this.viewer.entities.remove(this.outlineEntity);
+      this.dataSource.entities.remove(this.polygonEntity);
+      this.dataSource.entities.remove(this.outlineEntity);
       this.polygonEntity = null;
       this.outlineEntity = null;
       this.lineEntity = null;
     } else if (this.type === 'line') {
-      this.viewer.entities.remove(this.lineEntity);
+      this.dataSource.entities.remove(this.lineEntity);
     }
     this.removeClickListener();
     this.removeMoveListener();
